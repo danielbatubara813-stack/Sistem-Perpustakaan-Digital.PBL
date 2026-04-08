@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="text-center mt-6 text-xs font-bold text-black">
-                            Belum punya akun? <a href="#"
+                            Belum punya akun? <a href="{{ route('register-page') }}"
                                 class="text-blue-600 hover:text-blue-800 hover:underline transition-colors w-full">Daftar</a>
                         </div>
                     </form>
