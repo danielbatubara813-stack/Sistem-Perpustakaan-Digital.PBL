@@ -27,7 +27,7 @@
             <li><a href="{{ route('home-page') }}" class="hover:text-blue-200 transition-colors duration-200">Hubungi
                     Kami</a></li>
             <li>
-                <a href="{{ route('home-page') }}"
+                <a href="{{ route('register-page') }}"
                     class="border border-white/60 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white hover:text-blue-800 transition-all duration-200">
                     Daftar
                 </a>
@@ -86,7 +86,7 @@
             </li>
             <li class="my-1 h-px bg-gray-200 mx-2"></li>
             <li class="flex gap-3 px-2 pb-2 pt-1">
-                <a href="{{ route('home-page') }}"
+                <a href="{{ route('register-page') }}"
                     class="flex-1 text-center py-2 rounded-full border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-700 hover:text-white transition-all duration-200">
                     Daftar
                 </a>

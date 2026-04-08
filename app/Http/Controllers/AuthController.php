@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
@@ -12,16 +13,44 @@ class AuthController extends Controller
         return view('login');
     }
 
+    public function register()
+    {
+        return view('register');
+    }
+
     public function proses(Request $request)
     {
-        $username = $request->username;
-        $password = $request->password;
+        $request->validate([
+            'login_id' => 'required',
+            'password' => 'required',
+        ], [
+            'login_id.required' => 'Email / Member ID wajib diisi.',
+            'password.required' => 'Kata sandi wajib diisi.',
+        ]);
 
+        $loginType = filter_var($request->login_id, FILTER_VALIDATE_EMAIL) ? 'email' : 'member_id';
 
-        if ($username == 'admin' && $password == '123') {
+        $credentials = [
+            $loginType => $request->login_id,
+            'password' => $request->password,
+        ];
+
+        if (Auth::attempt($credentials)) {
+            $request->session()->regenerate();
+
             return redirect('/admin/dashboard');
-        } else {
-            return back()->with('error', 'Login gagal');
         }
+
+        return back()->with('error', 'Login gagal. Kombinasi Email/Member ID dan Kata Sandi tidak sesuai.');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect('/login');
     }
 }
