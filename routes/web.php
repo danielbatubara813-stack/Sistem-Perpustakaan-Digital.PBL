@@ -12,6 +12,7 @@ Route::get('/', [HomeController::class, 'homePage'])->name('home-page');
 // halaman login
 Route::get('/login', [AuthController::class, 'login'])->name('login-page');
 Route::get('/register', [AuthController::class, 'register'])->name('register-page');
+Route::post('/register', [AuthController::class, 'prosesRegister']);
 Route::post('/login', [AuthController::class, 'proses']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
