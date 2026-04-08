@@ -1,3 +1,4 @@
+{{-- isi content dari halaman dashboard --}}
 @extends('layout.app-admin')
 
 @section('content')

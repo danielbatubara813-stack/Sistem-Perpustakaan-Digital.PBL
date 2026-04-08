@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
+    // fungsi mengembalikan view pada admin
     public function dashboard()
     {
         return view('admin.dashboard');

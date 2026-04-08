@@ -1,3 +1,4 @@
+{{-- Component sidebar untuk reusability --}}
 <div id="sidebar" class="fixed top-0 left-0 w-64 h-screen bg-white shadow-xl transition-all duration-300 ease-in-out">
     <div class="relative w-full h-full">
         <button id="buttonSidebar" class="absolute top-3 -right-5 bg-blue-800 text-white rounded-full p-2 transition-all duration-300 ease-in-out">

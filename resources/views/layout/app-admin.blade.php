@@ -1,3 +1,4 @@
+{{-- Tamplate atau layout halaman admin --}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,15 +8,19 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Library | Perpustakaan Politeknik Negeri Batam</title>
 
+    {{-- akses tailwind offline yang telah dinstall dan font dari google font --}}
     @vite(['resources/css/app.css', 'resources/css/font.css'])
 </head>
 
 <body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden">
+    {{-- component sidebar dari folder (components.sidebar) --}}
     @include('components.sidebar')
+    {{-- content utama --}}
     <div id="contentSection" class="w-full lg:w-[calc(100%-16rem)] ml-0 lg:ml-64 transition-all duration-300">
         @yield('content')
     </div>
 </body>
+{{-- Script buka tutup sidebar --}}
 <script>
     const sidebar = document.getElementById("sidebar");
     const button = document.getElementById("buttonSidebar");
@@ -51,6 +56,8 @@
         isOpen = !isOpen;
     });
 </script>
+
+{{-- Script untuk grafik chart pada dashboard admin --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const ctxAnggota = document.getElementById('anggotaChart');
@@ -82,7 +89,6 @@
         data: data,
     });
 </script>
-
 <script>
     const ctxPeminjaman = document.getElementById('peminjamanChart');
 
