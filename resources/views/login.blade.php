@@ -99,11 +99,14 @@
                             <input type="password" name="password"
                                 class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
                                 required>
+
+                                @if(!Route::is("admin.login-page"))
                             <div class="text-right mt-2">
                                 <a href="#"
                                     class="text-[11px] font-bold text-gray-800 hover:text-blue-800 transition-colors">Lupa
                                     kata sandi?</a>
                             </div>
+                                @endif
                         </div>
 
                         @if (session('error'))
@@ -118,11 +121,12 @@
                                 Masuk
                             </button>
                         </div>
-
+                        @if(!Route::is("admin.login-page"))
                         <div class="text-center mt-6 text-xs font-bold text-black">
                             Belum punya akun? <a href="{{ route('register-page') }}"
                                 class="text-blue-600 hover:text-blue-800 hover:underline transition-colors w-full">Daftar</a>
                         </div>
+                        @endif
                     </form>
                 </div>
 

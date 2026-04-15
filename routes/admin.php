@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 
 // kumpulan halaman admin
 Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AuthController::class,'login'])->name('login-page');
     // route halaman dashboard admin
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
     // route halaman daftar buku untuk dikelolah
