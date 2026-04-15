@@ -20,7 +20,7 @@
         <ul class="hidden lg:flex items-center gap-7 poppins font-semibold text-sm text-white">
             <li><a href="{{ route('home-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Beranda</a></li>
-            <li><a href="{{ route('home-page') }}" class="hover:text-blue-200 transition-colors duration-200">Cari
+            <li><a href="{{ route('cari-buku-page') }}" class="hover:text-blue-200 transition-colors duration-200">Cari
                     Buku</a></li>
             <li><a href="{{ route('home-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Tentang</a></li>
