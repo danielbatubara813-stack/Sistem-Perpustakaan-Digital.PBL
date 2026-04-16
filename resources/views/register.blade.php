@@ -12,17 +12,12 @@
 
 <body class="poppins antialiased overflow-hidden">
     <div class="relative w-full h-screen flex bg-black">
-        <!-- Background Image (Full screen) -->
-        <img class="absolute top-0 left-0 w-full h-full object-cover z-0" src="{{ asset('static/backgroundHero.jpg') }}"
-            alt="Background">
-        <!-- Overlay (Full screen) -->
+        <img class="absolute top-0 left-0 w-full h-full object-cover z-0"
+            src="{{ asset('static/backgroundHero.jpg') }}" alt="Background">
         <div class="absolute top-0 left-0 w-full h-full bg-black/60 z-10"></div>
 
-        <!-- Content split screen -->
-        <div class="relative z-20 w-full h-full flex">
-            <!-- Left Side (Text content only) -->
-            <div class="flex-1 hidden lg:flex flex-col justify-between p-8 lg:p-12">
-                <!-- Logo -->
+        <div class="relative z-20 w-full h-full flex flex-col lg:flex-row">
+            <div class="w-full lg:w-1/2 hidden lg:flex flex-col justify-between p-8 lg:p-12">
                 <div class="flex items-center gap-3">
                     <img class="w-16 h-16 rounded-md p-1 object-contain"
                         src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
@@ -33,7 +28,6 @@
                     </div>
                 </div>
 
-                <!-- Text Bottom -->
                 <div>
                     <h1 class="text-white text-5xl lg:text-6xl font-extrabold mb-3 tracking-wide">Hey! Hallo!</h1>
                     <p class="text-white text-base lg:text-lg max-w-sm font-semibold leading-snug">
@@ -42,30 +36,11 @@
                 </div>
             </div>
 
-            <!-- Right Side Wrapper (to contain floating button without clipping) -->
-            <div class="w-full lg:w-[450px] xl:w-[500px] h-screen relative shrink-0 z-20">
-                
-                <!-- Back Button (Floating on desktop) -->
-                <div class="hidden lg:block absolute top-12 -left-36 xl:-left-40 z-30">
-                    <a href="{{ route('home-page') ?? '/' }}"
-                        class="inline-flex items-center justify-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors border border-gray-200">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-arrow-left">
-                            <path d="m12 19-7-7 7-7" />
-                            <path d="M19 12H5" />
-                        </svg>
-                        Kembali
-                    </a>
-                </div>
-
-                <!-- Scrolling Form Card -->
-                <div class="w-full h-full bg-white flex flex-col pt-6 pb-6 px-8 lg:px-10 shadow-2xl rounded-l-lg overflow-y-auto">
-                    
-                    <!-- Mobile Back Button -->
-                    <div class="flex justify-start mb-2 lg:hidden">
+            <div class="w-full lg:w-1/2 h-full flex items-center justify-center px-4 py-8 lg:px-12 relative shrink-0 z-20">
+                <div class="w-full max-w-155 relative">
+                    <div class="flex justify-start mb-6 lg:mb-0 lg:absolute lg:top-12 lg:-left-36 xl:-left-40 z-30">
                         <a href="{{ route('home-page') ?? '/' }}"
-                            class="inline-flex items-center justify-center gap-2 bg-white text-black px-4 py-2 rounded-lg text-sm font-bold shadow border border-gray-200 hover:bg-gray-100 transition-colors">
+                            class="inline-flex items-center justify-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-arrow-left">
@@ -75,85 +50,144 @@
                             Kembali
                         </a>
                     </div>
+                    <div class="bg-white shadow-[0_35px_80px_-40px_rgba(15,23,42,0.25)] rounded-4x1 p-6 sm:p-8 lg:p-10 border border-slate-200">
+                        <div class="w-full">
+                            <h2 class="text-3xl font-extrabold text-black mb-1">Daftar Akun!</h2>
+                            <p class="text-[13px] text-gray-500 mb-8 font-medium">Daftarkan akun anda ke perpustakaan digital</p>
+                        </div>
 
-                    <!-- Form Container -->
-                    <div class="flex-1 flex flex-col justify-center w-full max-w-sm mx-auto mt-2 lg:mt-0">
-                        <h2 class="text-3xl font-extrabold text-black mb-1">Daftar Akun!</h2>
-                        <p class="text-[13px] text-gray-500 mb-6 font-medium">Daftarkan akun anda ke perpustakaan digital
-                        </p>
+                        <form method="POST" action="/register" enctype="multipart/form-data" class="space-y-5">
+                        @csrf
 
-                        <form method="POST" action="/register" class="space-y-4">
-                            @csrf
+                        <div class="space-y-1">
+                            <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-mail">
+                                    <path d="M4 4h16v16H4z" />
+                                    <path d="M22 6 12 13 2 6" />
+                                </svg>
+                                Email
+                            </label>
+                            <input type="email" name="email"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                required>
+                        </div>
 
-                            <!-- NIK/NIBN -->
-                            <div class="space-y-1.5 text-start">
+                        <div class="space-y-1">
+                            <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-user">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                NIK / NIDN
+                            </label>
+                            <input type="text" name="nik"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                required>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-user">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                                Nama Pengguna
+                            </label>
+                            <input type="text" name="name"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                required>
+                        </div>
+
+                        <div class="space-y-1">
+                            <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-phone">
+                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                                </svg>
+                                No Handphone
+                            </label>
+                            <input type="text" name="no_handphone"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                required>
+                        </div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div class="space-y-1">
                                 <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-building">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                                        <path d="M9 8h.01M15 8h.01M9 12h.01M15 12h.01M9 16h.01M15 16h.01" />
+                                    </svg>
+                                    Instansi
+                                </label>
+                                <input type="text" name="instansi"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                    required>
+                            </div>
+                            <div class="space-y-1">
+                                <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                         stroke-linejoin="round" class="lucide lucide-user">
                                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                         <circle cx="12" cy="7" r="4" />
                                     </svg>
-                                    NIK / NIBN
+                                    Jenis Kelamin
                                 </label>
-                                <input type="text" name="nik"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                                    required>
+                                <select name="gender" required
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-[10px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
                             </div>
+                        </div>
 
-                            <!-- Email -->
-                            <div class="space-y-1.5 text-start">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div class="space-y-1">
                                 <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-user">
-                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                        <circle cx="12" cy="7" r="4" />
+                                        stroke-linejoin="round" class="lucide lucide-calendar">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" />
+                                        <path d="M16 2v4M8 2v4M3 10h18" />
                                     </svg>
-                                    Email
+                                    Tanggal Lahir
                                 </label>
-                                <input type="email" name="email"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                <input type="date" name="tanggal_lahir"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
                                     required>
                             </div>
-
-                            <!-- Nama Lengkap -->
-                            <div class="space-y-1.5 text-start">
+                            <div class="space-y-1">
                                 <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-user-check">
-                                        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                                        <circle cx="9" cy="7" r="4" />
-                                        <polyline points="16 11 18 13 22 9" />
+                                        stroke-linejoin="round" class="lucide lucide-image">
+                                        <path d="M21 15V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v10" />
+                                        <path d="M7 15l2-2 3 3 4-4 4 4" />
+                                        <path d="M21 21H3" />
                                     </svg>
-                                    Nama Lengkap
+                                    Photo KTP
                                 </label>
-                                <input type="text" name="name"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                <input type="file" name="photo_ktp" accept="image/*"
+                                    class="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-slate-100 file:text-slate-900 hover:file:bg-slate-200"
                                     required>
                             </div>
+                        </div>
 
-                            <!-- No Handphone -->
-                            <div class="space-y-1.5 text-start">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                            <div class="space-y-1">
                                 <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-phone">
-                                        <path
-                                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
-                                    </svg>
-                                    No Handphone
-                                </label>
-                                <input type="text" name="no_handphone"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                                    required>
-                            </div>
-
-                            <!-- Kata Sandi -->
-                            <div class="space-y-1.5 text-start">
-                                <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                         stroke-linejoin="round" class="lucide lucide-lock">
                                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
@@ -162,14 +196,12 @@
                                     Kata Sandi
                                 </label>
                                 <input type="password" name="password"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
                                     required>
                             </div>
-
-                            <!-- Konfirmasi Kata Sandi -->
-                            <div class="space-y-1.5 text-start">
+                            <div class="space-y-1">
                                 <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24"
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                         stroke-linejoin="round" class="lucide lucide-lock">
                                         <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
@@ -178,32 +210,31 @@
                                     Konfirmasi Kata Sandi
                                 </label>
                                 <input type="password" name="password_confirmation"
-                                    class="w-full px-4 py-2 border border-gray-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
                                     required>
                             </div>
+                        </div>
 
-                            @if ($errors->any())
-                                <div class="text-red-500 text-sm mt-2 font-bold text-center">
-                                    Terjadi kesalahan, cek kembali inputan Anda.
-                                </div>
-                            @endif
-
-                            <div class="pt-2">
-                                <button type="submit"
-                                    class="w-full bg-[#2a2c85] text-white font-bold py-3 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
-                                    DAFTAR
-                                </button>
+                        @if ($errors->any())
+                            <div class="text-red-500 text-sm mt-2 font-bold text-center">
+                                Terjadi kesalahan, cek kembali inputan Anda.
                             </div>
+                        @endif
 
-                            <div class="text-center mt-3 text-xs font-bold text-black pb-2">
-                                Sudah punya akun? <a href="{{ route('login-page') ?? '/login' }}"
-                                    class="text-blue-600 hover:text-blue-800 hover:underline transition-colors w-full">Masuk</a>
-                            </div>
-                        </form>
-                    </div>
+                        <button type="submit"
+                            class="w-full bg-blue-800 text-white font-bold py-3 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
+                            DAFTAR
+                        </button>
+
+                        <div class="text-center mt-6 text-xs font-bold text-black">
+                            Sudah punya akun? <a href="{{ route('login-page') ?? '/login' }}"
+                                class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">Masuk</a>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 </body>
 
 </html>

@@ -44,7 +44,7 @@
 
             <!-- Right Side (Full height Login Card) -->
             <div
-                class="w-full lg:w-[450px] xl:w-[500px] h-screen bg-white flex flex-col pt-8 pb-8 px-8 lg:px-12 relative shrink-0 shadow-2xl z-20 rounded-l-lg">
+                class="w-full lg:w-112.5 xl:w-125 h-screen bg-white flex flex-col pt-8 pb-8 px-8 lg:px-12 relative shrink-0 shadow-2xl z-20 rounded-l-lg">
 
                 <!-- Back Button -->
                 <div class="flex justify-start mb-6 lg:mb-0 lg:absolute lg:top-12 lg:-left-36 xl:-left-40 z-30">
@@ -117,7 +117,7 @@
 
                         <div class="pt-4">
                             <button type="submit"
-                                class="w-full bg-[#2a2c85] text-white font-bold py-3.5 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
+                                class="w-full bg-blue-800 text-white font-bold py-3.5 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
                                 Masuk
                             </button>
                         </div>
