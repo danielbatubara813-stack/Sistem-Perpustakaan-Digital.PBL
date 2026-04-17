@@ -20,6 +20,7 @@
 
         <!-- Content split screen -->
         <div class="relative z-20 w-full h-full flex">
+
             <!-- Left Side (Text content only) -->
             <div class="flex-1 hidden lg:flex flex-col justify-between p-8 lg:p-12">
                 <!-- Logo -->
@@ -43,97 +44,104 @@
             </div>
 
             <!-- Right Side (Full height Login Card) -->
-            <div
-                class="w-full lg:w-112.5 xl:w-125 h-screen bg-white flex flex-col pt-8 pb-8 px-8 lg:px-12 relative shrink-0 shadow-2xl z-20 rounded-l-lg">
+            <div class="w-full lg:w-6/12 xl:w-5/12 h-screen flex items-center justify-center px-4 lg:px-12">
 
-                <!-- Back Button -->
-                <div class="flex justify-start mb-6 lg:mb-0 lg:absolute lg:top-12 lg:-left-36 xl:-left-40 z-30">
+                <div class="relative w-full max-w-md">
+
+                    <!-- Back Button (floating to the left of the card) -->
                     <a href="{{ route('home-page') ?? '/' }}"
-                        class="inline-flex items-center justify-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-arrow-left">
+                        class="absolute top-0 -left-36 inline-flex items-center justify-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors whitespace-nowrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-arrow-left">
                             <path d="m12 19-7-7 7-7" />
                             <path d="M19 12H5" />
                         </svg>
                         Kembali
                     </a>
-                </div>
 
-                <!-- Form Container -->
-                <div class="flex-1 flex flex-col justify-center w-full max-w-sm mx-auto">
-                    <h2 class="text-3xl font-extrabold text-black mb-1">Selamat Datang!</h2>
-                    <p class="text-[13px] text-gray-500 mb-8 font-medium">Masuk untuk dapat melakukan peminjaman buku
-                    </p>
+                    <!-- Login Card -->
+                    <div class="w-full bg-white rounded-3xl shadow-2xl px-10 py-12">
 
-                    <form method="POST" action="/login" class="space-y-6">
-                        @csrf
+                        <h2 class="text-3xl font-extrabold text-black text-center mb-2">Selamat Datang!</h2>
+                        <p class="text-sm text-gray-500 text-center mb-8 font-medium">
+                            Masuk untuk dapat melakukan peminjaman buku
+                        </p>
 
-                        <!-- Email / Member ID -->
-                        <div class="space-y-2 text-start">
-                            <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-user">
-                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
-                                Email / Member ID
-                            </label>
-                            <input type="text" name="login_id"
-                                class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                                required>
-                        </div>
+                        <form method="POST" action="/login" class="space-y-6">
+                            @csrf
 
-                        <!-- Kata Sandi -->
-                        <div class="space-y-2 text-start relative">
-                            <label class="flex items-center gap-2 text-xs font-bold text-black">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-lock">
-                                    <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                                </svg>
-                                Kata Sandi
-                            </label>
-                            <input type="password" name="password"
-                                class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                                required>
+                            <!-- Email / Member ID -->
+                            <div class="space-y-2 text-start">
+                                <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user">
+                                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                        <circle cx="12" cy="7" r="4" />
+                                    </svg>
+                                    Email / Member ID
+                                </label>
+                                <input type="text" name="login_id"
+                                    class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                    required>
+                            </div>
+
+                            <!-- Kata Sandi -->
+                            <div class="space-y-2 text-start">
+                                <label class="flex items-center gap-2 text-xs font-bold text-black">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                                        stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-lock">
+                                        <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                    </svg>
+                                    Kata Sandi
+                                </label>
+                                <input type="password" name="password"
+                                    class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                                    required>
 
                                 @if(!Route::is("admin.login-page"))
-                            <div class="text-right mt-2">
-                                <a href="#"
-                                    class="text-[11px] font-bold text-gray-800 hover:text-blue-800 transition-colors">Lupa
-                                    kata sandi?</a>
-                            </div>
+                                <div class="text-right mt-2">
+                                    <a href="#"
+                                        class="text-[11px] font-bold text-gray-800 hover:text-blue-800 transition-colors">Lupa
+                                        kata sandi?</a>
+                                </div>
                                 @endif
-                        </div>
-
-                        @if (session('error'))
-                            <div class="text-red-500 text-sm mt-2 font-bold text-center">
-                                {{ session('error') }}
                             </div>
-                        @endif
 
-                        <div class="pt-4">
-                            <button type="submit"
-                                class="w-full bg-blue-800 text-white font-bold py-3.5 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
-                                Masuk
-                            </button>
-                        </div>
-                        @if(!Route::is("admin.login-page"))
-                        <div class="text-center mt-6 text-xs font-bold text-black">
-                            Belum punya akun? <a href="{{ route('register-page') }}"
-                                class="text-blue-600 hover:text-blue-800 hover:underline transition-colors w-full">Daftar</a>
-                        </div>
-                        @endif
-                    </form>
+                            @if (session('error'))
+                                <div class="text-red-500 text-sm mt-2 font-bold text-center">
+                                    {{ session('error') }}
+                                </div>
+                            @endif
+
+                            <div class="pt-2">
+                                <button type="submit"
+                                    class="w-full bg-blue-800 text-white font-bold py-3.5 rounded-full hover:bg-blue-900 transition-colors shadow-lg text-sm tracking-widest uppercase">
+                                    Masuk
+                                </button>
+                            </div>
+
+                            @if(!Route::is("admin.login-page"))
+                            <div class="text-center mt-6 text-xs font-bold text-black">
+                                Belum punya akun?
+                                <a href="{{ route('register-page') }}"
+                                    class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">Daftar</a>
+                            </div>
+                            @endif
+
+                        </form>
+                    </div>
+                    <!-- End Login Card -->
+
                 </div>
-
-                <!-- Safe area spacer to push form exactly to center -->
-                <div class="mt-auto hidden lg:block"></div>
             </div>
+            <!-- End Right Side -->
+
         </div>
+    </div>
 </body>
 
 </html>
