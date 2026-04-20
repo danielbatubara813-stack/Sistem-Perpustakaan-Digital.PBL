@@ -2,7 +2,7 @@
 @extends('layout.main-app')
 
 @section('content')
-    <div class="py-12 px-2 sm:px-6 md:px-12 lg:px-24 grid grid-cols-4 gap-4">
+    <div class="py-12 px-4 sm:px-6 md:px-12 lg:px-24 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <div class="bg-white h-max rounded-lg border border-gray-300 shadow-md p-4">
             <form action="" class="space-y-4">
                 <div class="w-full max-w-sm rounded-xl filter-collapse" id="tahunContainer">
@@ -199,15 +199,16 @@
                 </div>
             </form>
         </div>
-        <div class="col-span-3 bg-white rounded-lg border border-gray-300 shadow-md p-4">
+        <div class="lg:col-span-3 bg-white rounded-lg border border-gray-300 shadow-md p-4">
             <div class="w-full flex flex-col gap-4">
                 @foreach ($koleksi_baru as $item)
-                    <a href="">
+                    <a href="{{ route('detail-buku-page', $item['id']) }}">
                         <div
                             class="border border-gray-300 p-4 rounded-md transition-all duration-300 ease-in-out hover:shadow-md">
-                            <div class="w-full grid grid-cols-6 gap-2">
+                            <div
+                                class="w-full grid grid-cols-1 lg:grid-cols-6 place-items-center space-y-4 lg:space-y-0 gap-0 lg:gap-2">
                                 <img src="{{ $item['cover'] }}"
-                                    class="aspect-[1/1.6] w-36 rounded-md object-fit border shadow-md border-gray-300"
+                                    class="aspect-[1/1.6] w-64 lg:w-36 rounded-md object-fit border shadow-md border-gray-300"
                                     alt="">
                                 <div class="col-span-4 space-y-4">
                                     <h4 class="font-bold text-xl">{{ $item['judul'] }}</h4>
@@ -227,25 +228,25 @@
                                     </div>
                                     <div>
                                         <table class="border-separate border-spacing-y-2">
-                                            <tbody>
-                                                <tr>
+                                            <tbody class="space-y-4">
+                                                <tr class="flex flex-col lg:flex-row">
                                                     <td class="pr-18 text-nowrap align-text-top font-bold text-black">Edisi
                                                     </td>
                                                     <td class="text-gray-700">{{ $item['edisi'] }}</td>
                                                 </tr>
-                                                <tr>
+                                                <tr class="flex flex-col lg:flex-row">
                                                     <td class="pr-18 text-nowrap align-text-top font-bold text-black">
                                                         ISBN/ISSN
                                                     </td>
                                                     <td class="text-gray-700">{{ $item['isbn'] }}</td>
                                                 </tr>
-                                                <tr>
+                                                <tr class="flex flex-col lg:flex-row">
                                                     <td class="pr-18 text-nowrap align-text-top font-bold text-black">No
                                                         Panggil
                                                     </td>
                                                     <td class="text-gray-700">{{ $item['no_panggil'] }}</td>
                                                 </tr>
-                                                <tr>
+                                                <tr class="flex flex-col lg:flex-row">
                                                     <td class="pr-18 text-nowrap align-text-top font-bold text-black">
                                                         Deskripsi
                                                     </td>
@@ -256,7 +257,7 @@
                                     </div>
                                 </div>
                                 <div
-                                    class="w-full aspect-square border border-gray-2 rounded-lg text-center flex items-center justify-center flex-col gap-4">
+                                    class="w-36 lg:w-full aspect-square border border-gray-2 rounded-lg text-center flex items-center justify-center flex-col gap-4">
                                     <h4 class="text-sm">Ketersediaan</h4>
                                     <h1 class="text-4xl font-bold">2</h1>
                                 </div>

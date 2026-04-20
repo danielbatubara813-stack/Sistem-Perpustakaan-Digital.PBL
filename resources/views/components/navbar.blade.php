@@ -24,7 +24,8 @@
                     Buku</a></li>
             <li><a href="{{ route('home-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Tentang</a></li>
-            <li><a href="{{ route('home-page') }}" class="hover:text-blue-200 transition-colors duration-200">Hubungi
+            <li><a href="{{ route('hubungi-kami-page') }}"
+                    class="hover:text-blue-200 transition-colors duration-200">Hubungi
                     Kami</a></li>
             <li>
                 <a href="{{ route('register-page') }}"
@@ -67,7 +68,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('home-page') }}"
+                <a href="{{ route('cari-buku-page') }}"
                     class="block py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-150">
                     Cari Buku
                 </a>
@@ -79,7 +80,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('home-page') }}"
+                <a href="{{ route('hubungi-kami-page') }}"
                     class="block py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-150">
                     Hubungi Kami
                 </a>
