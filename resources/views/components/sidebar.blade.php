@@ -56,6 +56,21 @@
                             <span class="relative z-10">Buku</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.anggota') }}"
+                            class="{{ request()->routeIs('admin.anggota*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
+                            <span
+                                class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="24" height="24"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M7 21v-2a4 4 0 0 1 3-3.87" />
+                                <path d="M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                            </svg>
+                            <span class="relative z-10">Anggota</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
