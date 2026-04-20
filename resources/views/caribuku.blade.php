@@ -205,8 +205,7 @@
                     <a href="{{ route('detail-buku-page', $item['id']) }}">
                         <div
                             class="border border-gray-300 p-4 rounded-md transition-all duration-300 ease-in-out hover:shadow-md">
-                            <div
-                                class="w-full grid grid-cols-1 lg:grid-cols-6 place-items-center space-y-4 lg:space-y-0 gap-0 lg:gap-2">
+                            <div class="w-full grid grid-cols-1 lg:grid-cols-6 space-y-4 lg:space-y-0 gap-0 lg:gap-2">
                                 <img src="{{ $item['cover'] }}"
                                     class="aspect-[1/1.6] w-64 lg:w-36 rounded-md object-fit border shadow-md border-gray-300"
                                     alt="">
@@ -226,34 +225,24 @@
                                     <div class="border border-gray-300 rounded-full px-6 py-1 w-max text-sm">
                                         <p>{{ $item['penulis'] }}</p>
                                     </div>
-                                    <div>
-                                        <table class="border-separate border-spacing-y-2">
-                                            <tbody class="space-y-4">
-                                                <tr class="flex flex-col lg:flex-row">
-                                                    <td class="pr-18 text-nowrap align-text-top font-bold text-black">Edisi
-                                                    </td>
-                                                    <td class="text-gray-700">{{ $item['edisi'] }}</td>
-                                                </tr>
-                                                <tr class="flex flex-col lg:flex-row">
-                                                    <td class="pr-18 text-nowrap align-text-top font-bold text-black">
-                                                        ISBN/ISSN
-                                                    </td>
-                                                    <td class="text-gray-700">{{ $item['isbn'] }}</td>
-                                                </tr>
-                                                <tr class="flex flex-col lg:flex-row">
-                                                    <td class="pr-18 text-nowrap align-text-top font-bold text-black">No
-                                                        Panggil
-                                                    </td>
-                                                    <td class="text-gray-700">{{ $item['no_panggil'] }}</td>
-                                                </tr>
-                                                <tr class="flex flex-col lg:flex-row">
-                                                    <td class="pr-18 text-nowrap align-text-top font-bold text-black">
-                                                        Deskripsi
-                                                    </td>
-                                                    <td class="text-gray-700">{{ $item['deskripsi'] }}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-5 gap-2">
+                                            <h4 class="font-bold text-black">Edisi</h4>
+                                            <p class="col-span-4">{{ $item['edisi'] }}</p>
+                                        </div>
+                                        <div class="grid grid-cols-5 gap-2">
+                                            <h4 class="font-bold text-black">ISBN/ISSN</h4>
+                                            <p class="col-span-4">{{ $item['isbn'] }}</p>
+                                        </div>
+                                        <div class="grid grid-cols-5 gap-2">
+                                            <h4 class="font-bold text-black">No
+                                                Panggil</h4>
+                                            <p class="col-span-4">{{ $item['no_panggil'] }}</p>
+                                        </div>
+                                        <div class="grid grid-cols-5 gap-2">
+                                            <h4 class="font-bold text-black">Deskripsi</h4>
+                                            <p class="col-span-4">{{ $item['deskripsi'] }}</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <div
