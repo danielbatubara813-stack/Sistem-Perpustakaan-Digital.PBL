@@ -11,4 +11,14 @@ class BukuController extends Controller
     {
         return view('admin.buku');
     }
+
+    public function create()
+    {
+        return view('admin.buku-create');
+    }
+    
+    public function edit($id)
+    {
+        return view('admin.buku-edit', ['id' => $id]);
+    }
 }
