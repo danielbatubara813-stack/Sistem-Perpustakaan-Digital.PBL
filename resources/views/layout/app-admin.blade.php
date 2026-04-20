@@ -12,7 +12,7 @@
     @vite(['resources/css/app.css', 'resources/css/font.css'])
 </head>
 
-<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden">
+<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins">
     {{-- component sidebar dari folder (components.sidebar) --}}
     @include('components.sidebar')
     {{-- content utama --}}

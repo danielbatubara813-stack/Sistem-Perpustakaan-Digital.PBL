@@ -1,10 +1,12 @@
 {{-- Component sidebar untuk reusability --}}
 <div id="sidebar" class="fixed top-0 left-0 w-64 h-screen bg-white shadow-xl transition-all duration-300 ease-in-out">
     <div class="relative w-full h-full">
-        <button id="buttonSidebar" class="absolute top-3 -right-5 bg-blue-800 text-white rounded-full p-2 transition-all duration-300 ease-in-out">
-            <svg id="iconBtn" xmlns="http://www.w3.org/2000/svg" class="rotate-180 transition-all duration-300 ease-in-out" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-chevron-right-icon lucide-chevron-right">
+        <button id="buttonSidebar"
+            class="absolute top-3 -right-5 bg-blue-800 text-white rounded-full p-2 transition-all duration-300 ease-in-out">
+            <svg id="iconBtn" xmlns="http://www.w3.org/2000/svg"
+                class="rotate-180 transition-all duration-300 ease-in-out" width="24" height="24"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
                 <path d="m9 18 6-6-6-6" />
             </svg>
         </button>
@@ -63,10 +65,12 @@
                                 class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="24" height="24"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M17 21v-2a4 4 0 0 0-3-3.87" />
-                                <path d="M7 21v-2a4 4 0 0 1 3-3.87" />
-                                <path d="M12 7a4 4 0 1 0 0-8 4 4 0 0 0 0 8z" />
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-users-icon lucide-users">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <path d="M16 3.128a4 4 0 0 1 0 7.744" />
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+                                <circle cx="9" cy="7" r="4" />
                             </svg>
                             <span class="relative z-10">Anggota</span>
                         </a>
