@@ -55,13 +55,13 @@ class PeminjamanController extends Controller
     public function peminjamanSekarangPage()
     {
         $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.peminjamanSekarang', compact('koleksi_baru'));
+        return view('profile.peminjaman-sekarang', compact('koleksi_baru'));
     }
 
     public function sejarahPeminjamanPage()
     {
         $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.sejarahPeminjaman', compact('koleksi_baru'));
+        return view('profile.sejarah-peminjaman', compact('koleksi_baru'));
     }
 
 }

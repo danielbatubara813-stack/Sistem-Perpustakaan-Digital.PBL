@@ -1,6 +1,6 @@
 @extends('layout.main-app')
 
-@section('title', 'Hubungi Kami')
+@section('title', 'Detail Buku ' . $buku['judul'])
 
 @section('content')
     <div class="relative h-96">
@@ -11,7 +11,8 @@
     </div>
     <div
         class="px-4 sm:px-6 md:px-12 lg:18 xl:px-24 py-12 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 space-y-4 lg:space-y-0 gap-0 md:gap-4">
-        <div class="bg-white h-max p-6 rounded-md border border-gray-300 shadow-md space-y-4 flex flex-col justify-center items-center">
+        <div
+            class="bg-white h-max p-6 rounded-md border border-gray-300 shadow-md space-y-4 flex flex-col justify-center items-center">
             <img src="{{ $buku['cover'] }}"
                 class="aspect-[1/1.6] w-3/5 lg:w-full rounded-md object-fit border shadow-md border-gray-300" alt="">
             <button onclick="copyLink()"

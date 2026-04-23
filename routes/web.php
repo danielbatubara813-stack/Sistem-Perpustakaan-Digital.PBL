@@ -1,10 +1,12 @@
 <?php
 
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BukuController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\LupaPasswordController;
+use App\Http\Controllers\Auth\RegisterController;
+
+use App\Http\Controllers\DaftarBukuController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\HubungiKamiController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileAnggotaController;
@@ -12,28 +14,37 @@ use Illuminate\Support\Facades\Route;
 
 // halaman beranda untuk pengunjung
 Route::get('/', [HomeController::class, 'homePage'])->name('home-page');
-Route::get('/cari-buku', [BukuController::class, 'cariBukuPage'])->name('cari-buku-page');
-Route::get('/hubungi-kami', [HubungiKamiController::class, 'hubungiKamiPage'])->name('hubungi-kami-page');
-Route::post('/hubungi-kami/kirim-pesan', [HubungiKamiController::class, 'kirimPesan'])->name('kirim-pesan');
-Route::get('/detail-buku/{id_buku}', [BukuController::class, 'detailBukuPage'])->name('detail-buku-page');
 
-Route::prefix('profile')->name('profile.')->group(function(){
+Route::get('/cari-buku', [DaftarBukuController::class, 'cariBukuPage'])->name('cari-buku-page');
+Route::get('/detail-buku/{id_buku}', [DaftarBukuController::class, 'detailBukuPage'])->name('detail-buku-page');
+
+// Routing halaman hubungi kami
+Route::get('/hubungi-kami', [HubungiKamiController::class, 'hubungiKamiPage'])->name('hubungi-kami-page');
+// Routing proses hubungi kami
+Route::post('/hubungi-kami/kirim-pesan', [HubungiKamiController::class, 'kirimPesan'])->name('kirim-pesan');
+
+Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');
     Route::get('/sejarah-peminjaman', [PeminjamanController::class, 'sejarahPeminjamanPage'])->name('sejarah-peminjaman-page');
     Route::get('/akun-saya', [ProfileAnggotaController::class, 'akunSayaPage'])->name('akun-saya-page');
 });
 
-// halaman login
-Route::get('/login', [AuthController::class, 'login'])->name('login-page');
-Route::post('/login', [AuthController::class, 'proses']);
+// Routing halaman login
+Route::get('/login', [LoginController::class, 'login'])->name('login-page');
+// Routing proses login
+Route::post('/login', [LoginController::class, 'proses']);
 
-Route::get('/register', [AuthController::class, 'register'])->name('register-page');
-Route::post('/register', [AuthController::class, 'prosesRegister']);
+// Routing halaman register
+Route::get('/register', [RegisterController::class, 'register'])->name('register-page');
+// Routing proses register
+Route::post('/register', [RegisterController::class, 'prosesRegister']);
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+// Routing proses logout
+Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-// halaman lupa password
+// Routing halaman lupa password
 Route::get('/lupa-password', [LupaPasswordController::class, 'tampilForm'])->name('lupa-password.tampil');
+// Routing proses lupa password
 Route::post('/lupa-password', [LupaPasswordController::class, 'prosesReset'])->name('lupa-password.proses');
 
 require 'admin.php';

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Library | Perpustakaan Politeknik Negeri Batam</title>
+    <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
     {{-- akses tailwind offline yang telah dinstall dan font dari google font --}}
     @vite(['resources/css/app.css', 'resources/css/font.css'])
@@ -17,7 +17,10 @@
     @include('components.sidebar')
     {{-- content utama --}}
     <div id="contentSection" class="w-full lg:w-[calc(100%-16rem)] ml-0 lg:ml-64 transition-all duration-300">
-        @yield('content')
+        <div class="p-6">
+            <x-header-admin :title="$title ?? 'Dashboard'" :description="$description ?? 'Default description'" />
+            @yield('content')
+        </div>
     </div>
 </body>
 {{-- Script buka tutup sidebar --}}
@@ -56,7 +59,69 @@
         isOpen = !isOpen;
     });
 </script>
+{{-- Script untuk select semua data --}}
+<script>
+    (function() {
+        const selectAllBtn = document.getElementById('selectAllTopBtn');
+        const deleteBtn = document.getElementById('deleteSelected');
+        const rowCheckboxes = () => Array.from(document.querySelectorAll('input.row-checkbox'));
+        let active = false;
 
+        const setSelectAllVisual = (el, state) => {
+            if (!el) return;
+            const iconChecked = el.querySelector('.icon-checked');
+            const iconUnchecked = el.querySelector('.icon-unchecked');
+            if (iconChecked) iconChecked.classList.toggle('hidden', !state);
+            if (iconUnchecked) iconUnchecked.classList.toggle('hidden', state);
+            el.classList.toggle('bg-blue-700', state);
+        };
+
+        if (selectAllBtn) {
+            selectAllBtn.addEventListener('click', function() {
+                active = !active;
+                rowCheckboxes().forEach(cb => cb.checked = active);
+                setSelectAllVisual(this, active);
+            });
+        }
+
+        // keep selectAll button state in sync when rows change
+        rowCheckboxes().forEach(cb => cb.addEventListener('change', function() {
+            if (!selectAllBtn) return;
+            const all = rowCheckboxes();
+            const allChecked = all.length && all.every(c => c.checked);
+            active = !!allChecked;
+            setSelectAllVisual(selectAllBtn, active);
+        }));
+
+        if (deleteBtn) {
+            deleteBtn.addEventListener('click', function() {
+                const checked = rowCheckboxes().filter(c => c.checked);
+                if (!checked.length) return alert('Pilih minimal satu data.');
+                if (confirm(`Hapus ${checked.length} item yang dipilih?`)) {
+                    alert('Fungsi hapus belum diimplementasikan.');
+                }
+            });
+        }
+
+        // update daftar label based on selected type
+        const daftarLabel = document.getElementById('daftarTypeLabel');
+        const filterType = document.getElementById('filter-type');
+
+        function updateDaftarLabel() {
+            if (!daftarLabel) return;
+            if (!filterType) {
+                daftarLabel.textContent = '';
+                return;
+            }
+            const txt = filterType.options[filterType.selectedIndex].text || '';
+            daftarLabel.textContent = (txt && txt !== 'Tipe Keanggotaan') ? `(${txt})` : '';
+        }
+        if (filterType) {
+            filterType.addEventListener('change', updateDaftarLabel);
+            updateDaftarLabel();
+        }
+    })();
+</script>
 {{-- Script untuk grafik chart pada dashboard admin --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class BukuController extends Controller
+class DaftarBukuController extends Controller
 {
     public function ambilDataBuku()
     {
@@ -306,7 +306,7 @@ class BukuController extends Controller
     public function cariBukuPage()
     {
         $koleksi_baru = $this->ambilDataBuku();
-        return view('caribuku', compact('koleksi_baru'));
+        return view('cari-buku', compact('koleksi_baru'));
     }
 
     public function detailBukuPage($id_buku)

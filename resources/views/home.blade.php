@@ -1,6 +1,8 @@
 {{-- Isi content halaman beranda --}}
 @extends('layout.main-app')
 
+@section('title', 'Beranda')
+
 @section('content')
 
     {{-- section koleksi baru --}}

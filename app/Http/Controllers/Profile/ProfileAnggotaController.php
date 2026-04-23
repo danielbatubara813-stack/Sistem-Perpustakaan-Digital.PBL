@@ -8,6 +8,6 @@ class ProfileAnggotaController extends Controller
 {
     public function akunSayaPage()
     {
-        return view('profile.akunSaya');
+        return view('profile.akun-saya');
     }
 }

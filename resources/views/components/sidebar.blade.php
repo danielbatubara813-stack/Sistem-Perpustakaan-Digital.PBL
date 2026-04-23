@@ -4,7 +4,7 @@
         <button id="buttonSidebar"
             class="absolute top-3 -right-5 bg-blue-800 text-white rounded-full p-2 transition-all duration-300 ease-in-out">
             <svg id="iconBtn" xmlns="http://www.w3.org/2000/svg"
-                class="rotate-180 transition-all duration-300 ease-in-out" width="24" height="24"
+                class="rotate-180 transition-all duration-300 ease-in-out" width="20" height="20"
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                 stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
                 <path d="m9 18 6-6-6-6" />
@@ -26,13 +26,13 @@
                         return Route::currentRouteName() === $routeName ? $activeClass : '';
                     }
                 @endphp
-                <ul class="space-y-2">
+                <ul class="space-y-2 text-sm">
                     <li>
                         <a href="{{ route('admin.dashboard') }}"
                             class="{{ is_route_active('admin.dashboard') }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
                             <span
                                 class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="24" height="24"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round">
                                 <rect width="7" height="9" x="3" y="3" rx="1" />
@@ -48,7 +48,7 @@
                             class="{{ is_route_active('admin.buku') }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
                             <span
                                 class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="24" height="24"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-book-icon lucide-book">
@@ -59,11 +59,11 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.anggota') }}"
-                            class="{{ request()->routeIs('admin.anggota*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
+                        <a href="{{ route('admin.anggota.daftar') }}"
+                            class="{{ request()->routeIs('admin.anggota.*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
                             <span
                                 class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
-                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="24" height="24"
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                 stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-users-icon lucide-users">
@@ -73,6 +73,22 @@
                                 <circle cx="9" cy="7" r="4" />
                             </svg>
                             <span class="relative z-10">Anggota</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
+                            class="{{ request()->routeIs('admin.data-terkendali*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
+                            <span
+                                class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-file-icon lucide-file">
+                                <path
+                                    d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+                                <path d="M14 2v5a1 1 0 0 0 1 1h5" />
+                            </svg>
+                            <span class="relative z-10">Data Terkendali</span>
                         </a>
                     </li>
                 </ul>

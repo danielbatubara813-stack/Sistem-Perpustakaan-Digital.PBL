@@ -1,5 +1,6 @@
 {{-- Isi content halaman beranda --}}
 @extends('layout.main-app')
+@section('title', 'Cari Buku')
 
 @section('content')
     <div class="py-12 px-4 sm:px-6 md:px-12 lg:px-24 grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

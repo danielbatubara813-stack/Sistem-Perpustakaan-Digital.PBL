@@ -10,7 +10,7 @@ class HubungiKamiController extends Controller
 {
     public function hubungiKamiPage()
     {
-        return view('hubungikami');
+        return view('hubungi-kami');
     }
     public function kirimPesan(Request $request)
     {

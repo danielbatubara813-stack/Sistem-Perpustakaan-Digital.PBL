@@ -1,5 +1,5 @@
 @extends('layout.profile-anggota-app')
-@section('title', 'Peminjaman Terkini')
+@section('title', 'Sejarah Peminjaman')
 
 @section('content')
     <div class="w-full flex flex-col gap-4 p-4">
