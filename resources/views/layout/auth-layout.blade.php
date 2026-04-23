@@ -69,7 +69,7 @@
                 <div class="relative w-full">
 
                     <!-- Login Card -->
-                    <div class="w-full h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto">
+                    <div class="w-full h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto scrollbar-hide">
 
                         @yield('content')
                         
