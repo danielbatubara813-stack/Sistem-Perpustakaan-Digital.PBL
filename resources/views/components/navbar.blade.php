@@ -27,18 +27,74 @@
             <li><a href="{{ route('hubungi-kami-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Hubungi
                     Kami</a></li>
-            <li>
-                <a href="{{ route('register-page') }}"
-                    class="border border-white/60 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white hover:text-blue-800 transition-all duration-200">
-                    Daftar
-                </a>
+            <li class="relative">
+
+                <button id="userDropdownButton" data-dropdown-toggle="userDropdown"
+                    class="flex items-center flex-row-reverse text-end gap-4 w-full">
+
+                    <img class="w-12 h-12 aspect-square rounded-full border-2 border-white object-cover object-top"
+                        src="https://i.pinimg.com/1200x/8f/57/20/8f5720a971ba30c735213e9429c7a7e2.jpg" alt="">
+
+                    <div>
+                        <p class="font-bold">Daniel Anju Adinov Batubara</p>
+                        <p class="text-xs font-light">danielanju1234@gmail.com</p>
+                    </div>
+                </button>
+
+                <!-- Dropdown menu -->
+                <div id="userDropdown"
+                    class="hidden z-50 mt-2 w-full bg-white rounded-md shadow-lg border divide-y divide-gray-100">
+                    <ul class="p-2 text-sm text-gray-700">
+                        <li>
+                            <a href="{{ route('profile.akun-saya-page') }}"
+                                class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
+                                <div
+                                    class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
+                                </div>
+                                <span>Akun Saya</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('profile.peminjaman-sekarang-page') }}"
+                                class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
+                                <div
+                                    class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
+                                </div>
+                                <span>Peminjaman Terkini</span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{{ route('profile.sejarah-peminjaman-page') }}"
+                                class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
+                                <div
+                                    class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
+                                </div>
+                                <span>Sejarah Peminjaman</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
             </li>
-            <li>
-                <a href="{{ route('login-page') }}"
-                    class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-blue-100 transition-all duration-200 shadow">
-                    Masuk
-                </a>
-            </li>
+            @auth
+
+            @endauth
+            {{-- @guest
+                <li>
+                    <a href="{{ route('register-page') }}"
+                        class="border border-white/60 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white hover:text-blue-800 transition-all duration-200">
+                        Daftar
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('login-page') }}"
+                        class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-blue-100 transition-all duration-200 shadow">
+                        Masuk
+                    </a>
+                </li>
+            @endguest --}}
         </ul>
 
         {{-- Hamburger button (mobile) --}}
@@ -86,16 +142,18 @@
                 </a>
             </li>
             <li class="my-1 h-px bg-gray-200 mx-2"></li>
-            <li class="flex gap-3 px-2 pb-2 pt-1">
-                <a href="{{ route('register-page') }}"
-                    class="flex-1 text-center py-2 rounded-full border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-700 hover:text-white transition-all duration-200">
-                    Daftar
-                </a>
-                <a href="{{ route('login-page') }}"
-                    class="flex-1 text-center py-2 rounded-full bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all duration-200 shadow">
-                    Masuk
-                </a>
-            </li>
+            @guest
+                <li class="flex gap-3 px-2 pb-2 pt-1">
+                    <a href="{{ route('register-page') }}"
+                        class="flex-1 text-center py-2 rounded-full border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-700 hover:text-white transition-all duration-200">
+                        Daftar
+                    </a>
+                    <a href="{{ route('login-page') }}"
+                        class="flex-1 text-center py-2 rounded-full bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all duration-200 shadow">
+                        Masuk
+                    </a>
+                </li>
+            @endguest
         </ul>
     </div>
 </nav>

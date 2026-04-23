@@ -6,6 +6,8 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LupaPasswordController;
 use App\Http\Controllers\HubungiKamiController;
+use App\Http\Controllers\PeminjamanController;
+use App\Http\Controllers\ProfileAnggotaController;
 use Illuminate\Support\Facades\Route;
 
 // halaman beranda untuk pengunjung
@@ -14,6 +16,12 @@ Route::get('/cari-buku', [BukuController::class, 'cariBukuPage'])->name('cari-bu
 Route::get('/hubungi-kami', [HubungiKamiController::class, 'hubungiKamiPage'])->name('hubungi-kami-page');
 Route::post('/hubungi-kami/kirim-pesan', [HubungiKamiController::class, 'kirimPesan'])->name('kirim-pesan');
 Route::get('/detail-buku/{id_buku}', [BukuController::class, 'detailBukuPage'])->name('detail-buku-page');
+
+Route::prefix('profile')->name('profile.')->group(function(){
+    Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');
+    Route::get('/sejarah-peminjaman', [PeminjamanController::class, 'sejarahPeminjamanPage'])->name('sejarah-peminjaman-page');
+    Route::get('/akun-saya', [ProfileAnggotaController::class, 'akunSayaPage'])->name('akun-saya-page');
+});
 
 // halaman login
 Route::get('/login', [AuthController::class, 'login'])->name('login-page');

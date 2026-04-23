@@ -1,3 +1,18 @@
+@php
+    $isProfile = request()->routeIs('profile.*');
+@endphp
+
+@if ($isProfile)
+    {{-- Hero kecil --}}
+    <section id="hero">
+        <div class="w-full h-64 relative">
+            <div class="absolute top-0 left-0 bg-linear-to-l from-black/75 via-black/50 to-black/75 w-full h-full z-10">
+            </div>
+            <img class="absolute top-0 left-0 w-full h-full object-cover z-0"
+                src="{{ asset('static/backgroundHero.jpg') }}" alt="">
+        </div>
+    </section>
+@else
     {{-- section hero --}}
     <section id="hero">
         <div class="w-full h-screen max-h-270 relative">
@@ -23,3 +38,4 @@
             </div>
         </div>
     </section>
+@endif
