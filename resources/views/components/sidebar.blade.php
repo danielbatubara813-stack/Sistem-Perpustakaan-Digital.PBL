@@ -76,6 +76,24 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.peminjaman') }}"
+                            class="{{ request()->routeIs('admin.peminjaman*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
+                            <span
+                                class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M8 6h13" />
+                                <path d="M8 12h13" />
+                                <path d="M8 18h13" />
+                                <path d="M3 6h.01" />
+                                <path d="M3 12h.01" />
+                                <path d="M3 18h.01" />
+                            </svg>
+                            <span class="relative z-10">Peminjaman</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
                             class="{{ request()->routeIs('admin.data-terkendali*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
                             <span

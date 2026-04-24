@@ -39,6 +39,24 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // route untuk menyimpan jenis keanggotaan
         Route::post('/jenis', [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
     });
+    // halaman peminjaman admin
+    Route::get('/peminjaman', function () {
+        $title = 'Peminjaman';
+        $description = 'Kelola daftar peminjaman buku';
+        return view('admin.peminjaman.peminjaman', compact('title', 'description'));
+    })->name('peminjaman');
+    // halaman aturan peminjaman admin
+    Route::get('/peminjaman/aturan', function () {
+        $title = 'Aturan Peminjaman';
+        $description = 'Aturan peminjaman untuk tiap tipe keanggotaan dan koleksi';
+        return view('admin.peminjaman.aturan', compact('title', 'description'));
+    })->name('peminjaman.aturan');
+    // halaman pengembalian admin (placeholder)
+    Route::get('/pengembalian', function () {
+        $title = 'Pengembalian';
+        $description = 'Kelola pengembalian buku';
+        return view('admin.pengembalian.pengembalian', compact('title', 'description'));
+    })->name('pengembalian');
     Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
         Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {
             Route::get('/', [TipeKoleksiController::class, 'index'])->name('index');
