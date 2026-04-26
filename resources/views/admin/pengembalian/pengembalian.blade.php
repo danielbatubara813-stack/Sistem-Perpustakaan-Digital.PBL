@@ -8,22 +8,43 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a href="#" class="px-4 py-2 text-sm text-slate-600">Peminjaman</a>
-                <a href="#" class="px-4 py-2 text-sm bg-blue-600 text-white shadow rounded">Pengembalian</a>
-            </div>
-
-            <div>
-                <a href="#"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
-                    Catat Pengembalian
-                </a>
+        {{-- Tabs --}}
+        <div class="mb-4">
+            <div class="bg-slate-100 rounded-md px-2 py-1 inline-flex items-center gap-2">
+                <button data-tab="list" class="tab-btn px-4 py-2 text-sm text-slate-600">Daftar Pengembalian</button>
+                <button data-tab="return" class="tab-btn px-4 py-2 text-sm bg-blue-600 text-white shadow rounded">Pengembalian Buku</button>
+                <button data-tab="quick" class="tab-btn px-4 py-2 text-sm text-slate-600">Pengembalian Buku Cepat</button>
             </div>
         </div>
 
-        <div class="overflow-x-auto mt-2">
-            <p class="text-sm text-slate-500">Halaman pengembalian masih kosong (placeholder).</p>
+        <div id="tab-content">
+            @include('admin.pengembalian.buku')
+            @include('admin.pengembalian.daftar')
+            @include('admin.pengembalian.cepat')
         </div>
+
+        <script>
+            (function(){
+                const tabs = document.querySelectorAll('.tab-btn');
+                const panels = document.querySelectorAll('.tab-panel');
+                function setActive(tabName){
+                    tabs.forEach(b=>{
+                        if(b.dataset.tab===tabName){
+                            b.classList.remove('text-slate-600');
+                            b.classList.add('bg-blue-600','text-white','shadow','rounded');
+                        } else {
+                            b.classList.remove('bg-blue-600','text-white','shadow','rounded');
+                            b.classList.add('text-slate-600');
+                        }
+                    });
+                    panels.forEach(p=>p.classList.add('hidden'));
+                    const active = document.getElementById('tab-'+tabName);
+                    if(active) active.classList.remove('hidden');
+                }
+                tabs.forEach(b=>b.addEventListener('click', ()=> setActive(b.dataset.tab)));
+                // default to return tab
+                setActive('return');
+            })();
+        </script>
     </div>
 @endsection

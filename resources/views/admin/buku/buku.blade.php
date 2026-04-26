@@ -12,7 +12,7 @@
                 <h2 class="text-lg font-semibold tracking-wide">12 Daftar buku</h2>
             </div>
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <button
+                <a href="{{ route('admin.buku.create') }}"
                     class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -21,7 +21,7 @@
                         <path d="M5 12h14" />
                     </svg>
                     Tambah Buku
-                </button>
+                </a>
             </div>
         </div>
 

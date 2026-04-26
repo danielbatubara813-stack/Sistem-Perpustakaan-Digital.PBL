@@ -94,6 +94,21 @@
                         </a>
                     </li>
                     <li>
+                        <a href="{{ route('admin.pengembalian') }}"
+                            class="{{ request()->routeIs('admin.pengembalian*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
+                            <span
+                                class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="20" height="20"
+                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H7" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            <span class="relative z-10">Pengembalian</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
                             class="{{ request()->routeIs('admin.data-terkendali*') ? 'bg-blue-800 text-white' : '' }} flex gap-4 items-center rounded-md p-3 relative group overflow-hidden text-black hover:text-white transition-all duration-300">
                             <span
