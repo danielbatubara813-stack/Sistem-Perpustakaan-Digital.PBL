@@ -22,7 +22,7 @@
                     class="hover:text-blue-200 transition-colors duration-200">Beranda</a></li>
             <li><a href="{{ route('cari-buku-page') }}" class="hover:text-blue-200 transition-colors duration-200">Cari
                     Buku</a></li>
-            <li><a href="{{ route('home-page') }}"
+            <li><a href="{{ route('tentang-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Tentang</a></li>
             <li><a href="{{ route('hubungi-kami-page') }}"
                     class="hover:text-blue-200 transition-colors duration-200">Hubungi
@@ -130,7 +130,7 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('home-page') }}"
+                <a href="{{ route('tentang-page') }}"
                     class="block py-2.5 px-4 rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-all duration-150">
                     Tentang
                 </a>

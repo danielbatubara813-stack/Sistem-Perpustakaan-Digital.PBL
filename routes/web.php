@@ -10,6 +10,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HubungiKamiController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\ProfileAnggotaController;
+use App\Http\Controllers\TentangController;
 use Illuminate\Support\Facades\Route;
 
 // halaman beranda untuk pengunjung
@@ -22,6 +23,8 @@ Route::get('/detail-buku/{id_buku}', [DaftarBukuController::class, 'detailBukuPa
 Route::get('/hubungi-kami', [HubungiKamiController::class, 'hubungiKamiPage'])->name('hubungi-kami-page');
 // Routing proses hubungi kami
 Route::post('/hubungi-kami/kirim-pesan', [HubungiKamiController::class, 'kirimPesan'])->name('kirim-pesan');
+// Routing halaman tentang
+Route::get('/tentang', [TentangController::class, 'tentangPage'])->name('tentang-page');
 
 Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');
