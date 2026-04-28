@@ -55,7 +55,7 @@
         <div class="grid md:grid-cols-2 gap-6 text-left">
 
             {{-- VISI --}}
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="font-bold mb-2">VISI</h3>
                 <p class="text-sm">
                     Visi dari Polibatam adalah menjadi politeknik generasi baru yang bermutu, adaptif, inovatif, dan bermitra erat dengan industri dan masyarakat untuk mendukung Indonesia Maju dan Sejahtera 2045.
@@ -63,7 +63,7 @@
             </div>
 
             {{-- MISI --}}
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="font-bold mb-2">MISI</h3>
                 <p class="text-sm">
                     Misi dari Polibatam adalah aktif dalam proses kreasi, penyebaran dan penerapan sains dan teknologi melalui layanan pendidikan tinggi vokasi dan penelitian terapan yang bermutu.
@@ -72,7 +72,7 @@
         </div>
 
         {{-- TUJUAN --}}
-        <div class="bg-gray-300 p-6 rounded-lg shadow mt-6 text-left">
+        <div class="border border-gray-300 p-6 rounded-lg shadow mt-6 text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
             <h3 class="font-bold mb-2">TUJUAN</h3>
             <ul class="list-disc pl-5 text-sm space-y-1">
                 <li>Terwujudnya layanan pembelajaran bermutu</li>
@@ -90,22 +90,22 @@
 
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 p-6 rounded-lg shadow text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="text-xl font-bold">21,615</h3>
                 <p class="text-sm">Total Koleksi</p>
             </div>
 
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 p-6 rounded-lg shadow text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="text-xl font-bold">9,188</h3>
                 <p class="text-sm">Total Judul</p>
             </div>
 
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 p-6 rounded-lg shadow text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="text-xl font-bold">21,324</h3>
                 <p class="text-sm">Buku Tersedia</p>
             </div>
 
-            <div class="bg-gray-300 p-6 rounded-lg shadow">
+            <div class="border border-gray-300 p-6 rounded-lg shadow text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                 <h3 class="text-xl font-bold">532</h3>
                 <p class="text-sm">Total Anggota</p>
             </div>
