@@ -7,8 +7,8 @@
             class="absolute top-4 -right-5 bg-blue-800 text-white rounded-full p-2 transition-all duration-300 ease-in-out z-10">
             <svg id="iconBtn" xmlns="http://www.w3.org/2000/svg"
                 class="rotate-180 transition-all duration-300 ease-in-out" width="18" height="18"
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
                 <path d="m9 18 6-6-6-6" />
             </svg>
         </button>
@@ -40,7 +40,8 @@
                 <li>
                     <a href="{{ route('admin.dashboard') }}"
                         class="{{ is_route_active('admin.dashboard') }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -54,12 +55,14 @@
                 </li>
                 <li>
                     <a href="{{ route('admin.buku') }}"
-                        class="{{ is_route_active('admin.buku') }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        class="{{ request()->routeIs(['admin.buku', 'admin.buku.*']) ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+                            <path
+                                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
                         </svg>
                         <span class="relative z-10">Daftar Buku</span>
                     </a>
@@ -67,7 +70,8 @@
                 <li>
                     <a href="{{ route('admin.anggota.daftar') }}"
                         class="{{ request()->routeIs('admin.anggota.*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -82,12 +86,17 @@
                 <li>
                     <a href="{{ route('admin.peminjaman') }}"
                         class="{{ request()->routeIs('admin.peminjaman*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M8 6h13" /><path d="M8 12h13" /><path d="M8 18h13" />
-                            <path d="M3 6h.01" /><path d="M3 12h.01" /><path d="M3 18h.01" />
+                            <path d="M8 6h13" />
+                            <path d="M8 12h13" />
+                            <path d="M8 18h13" />
+                            <path d="M3 6h.01" />
+                            <path d="M3 12h.01" />
+                            <path d="M3 18h.01" />
                         </svg>
                         <span class="relative z-10">Peminjaman</span>
                     </a>
@@ -95,7 +104,8 @@
                 <li>
                     <a href="{{ route('admin.pengembalian') }}"
                         class="{{ request()->routeIs('admin.pengembalian*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -109,11 +119,13 @@
                 <li>
                     <a href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
                         class="{{ request()->routeIs('admin.data-terkendali*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
-                        <span class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                        <span
+                            class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
+                            <path
+                                d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
                             <path d="M14 2v5a1 1 0 0 0 1 1h5" />
                         </svg>
                         <span class="relative z-10">Data Terkendali</span>
@@ -133,7 +145,8 @@
                 <button type="submit"
                     class="w-full flex gap-3 items-center rounded-lg px-3 py-2.5 text-sm text-gray-700
                            bg-gray-200 relative group overflow-hidden hover:text-white transition-all duration-300">
-                    <span class="absolute inset-0 w-0 bg-red-600 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
+                    <span
+                        class="absolute inset-0 w-0 bg-red-600 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">

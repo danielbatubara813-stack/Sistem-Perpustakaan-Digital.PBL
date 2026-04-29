@@ -9,21 +9,10 @@
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-4 flex items-center justify-between">
             @include('components.submenu-admin')
-            <div>
-                <a href="{{ route('admin.data-terkendali.subjek.create') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Tambah Subjek
-                </a>
-            </div>
+
         </div>
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between">
             <div class="">
                 <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
                     <input id="search" type="text" placeholder="Cari..."
@@ -51,7 +40,25 @@
                     </button>
                 </div>
             </div>
-
+            <div>
+                <a href="{{ route('admin.data-terkendali.subjek.create') }}"
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-plus">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Tambah Subjek
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h2 class="text-lg font-semibold tracking-wide">{{ count($subjek) }} Daftar tipe koleksi</h2>
+            </div>
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
@@ -85,7 +92,6 @@
                 </button>
             </div>
         </div>
-
         <div class="overflow-x-auto mt-6">
             <table class="min-w-full text-sm text-left text-gray-600">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">

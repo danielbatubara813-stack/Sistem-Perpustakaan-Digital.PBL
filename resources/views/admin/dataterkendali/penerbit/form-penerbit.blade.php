@@ -7,7 +7,9 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        @include('components.submenu-admin')
+        <div class="mb-4 flex items-center justify-between">
+            @include('components.submenu-admin')
+        </div>
 
         @if (Route::is('admin.data-terkendali.penerbit.create'))
             @php

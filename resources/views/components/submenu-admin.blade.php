@@ -17,13 +17,29 @@
 @if (Route::is(['admin.peminjaman', 'admin.peminjaman.*']))
     <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
         <a href="{{ route('admin.peminjaman') }}"
-            class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
+            class="px-4 py-2 text-sm {{ request()->routeIs(['admin.peminjaman.catat-peminjaman', 'admin.peminjaman']) ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
             Peminjaman</a>
         <a href="{{ route('admin.peminjaman.aturan') }}"
-            class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman.aturan') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Aturan
+            class="px-4 py-2 text-sm {{ request()->routeIs(['admin.peminjaman.aturan', 'admin.peminjaman.aturan.*']) ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Aturan
             Peminjaman</a>
-        <a href="{{ route('admin.peminjaman.aturan') }}"
-            class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman.aturan') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
+        <a href="{{ route('admin.peminjaman.reservasi') }}"
+            class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman.reservasi') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
             Reservasi</a>
+    </div>
+@endif
+
+@if (Route::is(['admin.pengembalian', 'admin.pengembalian.*']))
+    <div class="mb-4 flex items-center justify-between">
+        <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
+            <a href="{{ route('admin.pengembalian') }}"
+                class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
+                Pengembalian</a>
+            <a href="{{ route('admin.pengembalian.buku') }}"
+                class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.buku') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
+                Buku</a>
+            <a href="{{ route('admin.pengembalian.cepat') }}"
+                class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.cepat') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
+                Cepat</a>
+        </div>
     </div>
 @endif

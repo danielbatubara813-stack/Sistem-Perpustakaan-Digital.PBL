@@ -9,20 +9,7 @@
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         {{-- Tabs --}}
-
-        <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a href="{{ route('admin.pengembalian') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
-                    Pengembalian</a>
-                <a href="{{ route('admin.pengembalian.buku') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.buku') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
-                    Buku</a>
-                <a href="{{ route('admin.pengembalian.cepat') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.cepat') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
-                    Cepat</a>
-            </div>
-        </div>
+        @include('components.submenu-admin')
         @php
             if (!isset($member)) {
                 $member = [
@@ -53,7 +40,7 @@
             }
         @endphp
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between">
             <div class="">
                 <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
                     <input id="search2" type="text" placeholder="Cari..."
@@ -65,14 +52,14 @@
                         <option>30 hari</option>
                     </select>
                     <select id="filter-status2"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Semua Status</option>
                         <option>Dikembalikan</option>
                         <option>Terlambat</option>
                         <option>Hilang</option>
                     </select>
                     <select id="filter-sort2"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Terbaru</option>
                         <option>Terlama</option>
                     </select>
@@ -88,6 +75,12 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <h4 class="text-sm font-semibold mb-2">12 Daftar Pengembalian</h4>
 
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
@@ -123,7 +116,6 @@
             </div>
         </div>
 
-        <h4 class="text-sm font-semibold mb-2">12 Daftar Pengembalian</h4>
         <div class="overflow-x-auto mt-4">
             <table class="min-w-full text-sm text-left text-gray-600">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">

@@ -46,15 +46,23 @@
                     class="hidden z-50 mt-2 w-full bg-white rounded-md shadow-lg border divide-y divide-gray-100">
                     <ul class="p-2 text-sm text-gray-700">
                         <li>
-                            <a href="{{ route('profile.akun-saya-page') }}"
+                            <a href="{{ route('profile.reservasi-page') }}"
                                 class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
                                 <div
                                     class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
                                 </div>
-                                <span>Akun Saya</span>
+                                <span>Reservasi</span>
                             </a>
                         </li>
-
+                        <li>
+                            <a href="{{ route('profile.daftar-reservasi-page') }}"
+                                class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
+                                <div
+                                    class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
+                                </div>
+                                <span>Daftar Reservasi</span>
+                            </a>
+                        </li>
                         <li>
                             <a href="{{ route('profile.peminjaman-sekarang-page') }}"
                                 class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
@@ -72,6 +80,15 @@
                                     class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
                                 </div>
                                 <span>Sejarah Peminjaman</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('profile.akun-saya-page') }}"
+                                class="block px-4 py-2 rounded-md hover:bg-blue-100 relative group transition-all duration-300 ease-in-out">
+                                <div
+                                    class="hidden group-hover:block absolute top-0 right-0 h-full w-0.5 rounded-md bg-blue-600 transition-all duration-300 ease-in-out">
+                                </div>
+                                <span>Akun Saya</span>
                             </a>
                         </li>
                     </ul>

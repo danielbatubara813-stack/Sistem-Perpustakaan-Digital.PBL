@@ -83,6 +83,15 @@ class PeminjamanController extends Controller
         ];
         return $loans;
     }
+    public function ambilDataRules()
+    {
+        $rules = $rules ?? [
+            ['tipe_anggota' => 'Mahasiswa', 'tipe_koleksi' => 'Referensi', 'jumlah' => 2, 'periode' => '7 Hari'],
+            ['tipe_anggota' => 'Dosen', 'tipe_koleksi' => 'Sirkulasi', 'jumlah' => 3, 'periode' => '14 Hari'],
+            ['tipe_anggota' => 'Staf', 'tipe_koleksi' => 'Referensi', 'jumlah' => 1, 'periode' => '7 Hari'],
+        ];
+        return $rules;
+    }
     public function index()
     {
         $loans = $this->ambilDataLoan();
@@ -96,7 +105,18 @@ class PeminjamanController extends Controller
     {
         $title = 'Aturan Peminjaman';
         $description = 'Aturan peminjaman untuk tiap tipe keanggotaan dan koleksi';
+        $rules = $this->ambilDataRules();
 
-        return view('admin.peminjaman.aturan', compact('title', 'description'));
+        return view('admin.peminjaman.aturan', compact('title', 'description', 'rules'));
+    }
+
+    public function catatPeminjaman()
+    {
+        return view('admin.peminjaman.catat-peminjaman');
+    }
+
+    public function aturanCreate()
+    {
+        return view('admin.peminjaman.form-aturan-peminjaman');
     }
 }

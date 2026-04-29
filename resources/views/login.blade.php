@@ -41,7 +41,7 @@
 
                 @if (!Route::is('admin.login-page'))
                     <div class="text-right mt-2">
-                        <a href="{{ route('lupa-password.tampil') }}"
+                        <a href="{{ route('verifikasi-email') }}"
                             class="text-[11px] font-bold text-gray-800 hover:text-blue-800 transition-colors">
                             Lupa kata sandi?
                         </a>

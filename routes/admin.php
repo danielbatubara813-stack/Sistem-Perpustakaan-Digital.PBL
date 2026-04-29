@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\DataTerkendali\PenulisController;
 use App\Http\Controllers\Admin\DataTerkendali\SubjekController;
 use App\Http\Controllers\Admin\DataTerkendali\TipeKoleksiController;
 use App\Http\Controllers\Admin\Peminjaman\PeminjamanController;
+use App\Http\Controllers\Admin\Peminjaman\ReservasiController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianBukuController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianCepatController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianController;
@@ -51,6 +52,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
         ->name('peminjaman.aturan');
+    Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
+        ->name('peminjaman.aturan.create');
+    Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
+        ->name('peminjaman.catat-peminjaman');
+
+    Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
 
     // Pengembalian
     Route::get('/pengembalian', [PengembalianController::class, 'index'])
@@ -59,6 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         ->name('pengembalian.cepat');
     Route::get('/pengembalian/buku', [PengembalianBukuController::class, 'index'])
         ->name('pengembalian.buku');
+
 
     Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
         Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {

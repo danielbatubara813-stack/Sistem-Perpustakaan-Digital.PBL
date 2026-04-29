@@ -48,4 +48,9 @@ class LupaPasswordController extends Controller
         return redirect()->route('login')
             ->with('success', 'Kata sandi berhasil diubah. Silakan login.');
     }
+
+    public function verifikasiEmail()
+    {
+        return view('verifikasi-email');
+    }
 }

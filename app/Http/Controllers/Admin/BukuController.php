@@ -95,9 +95,4 @@ class BukuController extends Controller
     {
         return view('admin.buku.form-buku');
     }
-
-    public function edit($id)
-    {
-        return view('admin.buku.buku-edit', ['id' => $id]);
-    }
 }

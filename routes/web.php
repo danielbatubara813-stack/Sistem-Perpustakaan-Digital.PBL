@@ -50,6 +50,7 @@ Route::post('/register', [RegisterController::class, 'prosesRegister']);
 // Routing proses logout
 Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
+Route::get('/verifikasi-email', [LupaPasswordController::class, 'verifikasiEmail'])->name('verifikasi-email');
 // Routing halaman lupa password
 Route::get('/lupa-password', [LupaPasswordController::class, 'tampilForm'])->name('lupa-password.tampil');
 // Routing proses lupa password

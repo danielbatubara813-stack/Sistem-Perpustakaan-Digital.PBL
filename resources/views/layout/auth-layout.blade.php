@@ -36,17 +36,19 @@
                         </div>
                     </div>
 
-                    <!-- tombol kanan atas -->
-                    <a href="{{ route('home-page') ?? '/' }}"
-                        class="ml-auto translate-x-6 lg:translate-x-12 inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="m12 19-7-7 7-7" />
-                            <path d="M19 12H5" />
-                        </svg>
-                        Kembali
-                    </a>
+                    @if (!Route::is('lupa-password.tampil'))
+                        <!-- tombol kanan atas -->
+                        <a href="{{ route('home-page') ?? '/' }}"
+                            class="ml-auto translate-x-6 lg:translate-x-12 inline-flex items-center gap-2 bg-white text-black px-5 py-2.5 rounded-lg text-sm font-bold shadow-md hover:bg-gray-100 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="m12 19-7-7 7-7" />
+                                <path d="M19 12H5" />
+                            </svg>
+                            Kembali
+                        </a>
+                    @endif
                 </div>
 
                 <!-- BOTTOM -->
@@ -69,10 +71,11 @@
                 <div class="relative w-full">
 
                     <!-- Login Card -->
-                    <div class="w-full h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto scrollbar-hide">
+                    <div
+                        class="w-full h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto scrollbar-hide">
 
                         @yield('content')
-                        
+
                     </div>
                     <!-- End Login Card -->
 

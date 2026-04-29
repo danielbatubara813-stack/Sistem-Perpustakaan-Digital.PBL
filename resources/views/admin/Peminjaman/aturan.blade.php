@@ -10,20 +10,10 @@
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-4 flex items-center justify-between">
             @include('components.submenu-admin')
-            <div>
-                <a href="#"
-                    class="inline-flex items-center gap-2 bg-white border border-slate-300 text-slate-700 rounded-md px-4 py-2 text-sm shadow transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Tambah Aturan
-                </a>
-            </div>
+
         </div>
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between">
             <div class="">
                 <div class="bg-slate-100 rounded-md p-2 flex items-center gap-2">
                     <input id="search-aturan" type="text" placeholder="Cari..."
@@ -40,15 +30,36 @@
                     </button>
                 </div>
             </div>
+            <div>
+                <a href="{{ route('admin.peminjaman.aturan.create') }}"
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Tambah Aturan
+                </a>
+            </div>
 
+        </div>
+
+    </div>
+    <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h2 class="text-lg font-semibold tracking-wide">{{ count($rules) }} Daftar aturan peminjaman</h2>
+            </div>
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
+                    <!-- unchecked icon -->
                     <svg class="icon-unchecked" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
                         <rect x="3" y="3" width="18" height="18" rx="2" />
                     </svg>
+                    <!-- checked icon (hidden by default) -->
                     <svg class="icon-checked hidden" xmlns="http://www.w3.org/2000/svg" width="14" height="14"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
@@ -60,7 +71,8 @@
                 <button id="deleteSelected"
                     class="inline-flex items-center justify-center gap-2 rounded-md bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-700 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-trash2-icon lucide-trash-2">
                         <path d="M10 11v6" />
                         <path d="M14 11v6" />
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
@@ -71,14 +83,6 @@
                 </button>
             </div>
         </div>
-
-        @php
-            $rules = $rules ?? [
-                ['tipe_anggota' => 'Mahasiswa', 'tipe_koleksi' => 'Referensi', 'jumlah' => 2, 'periode' => '7 Hari'],
-                ['tipe_anggota' => 'Dosen', 'tipe_koleksi' => 'Sirkulasi', 'jumlah' => 3, 'periode' => '14 Hari'],
-                ['tipe_anggota' => 'Staf', 'tipe_koleksi' => 'Referensi', 'jumlah' => 1, 'periode' => '7 Hari'],
-            ];
-        @endphp
 
         <div class="overflow-x-auto mt-6">
             <table class="min-w-full text-sm text-left text-gray-600">
@@ -122,7 +126,7 @@
         </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-slate-500">Menampilkan 1 hingga 10 dari {{ count($rules) }} data</p>
+            <p class="text-sm text-slate-500">Menampilkan 1 hingga {{ count($rules) }} dari {{ count($rules) }} data</p>
             <div class="inline-flex items-center rounded-2xl bg-slate-100 p-1">
                 <button
                     class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">&lt;</button>

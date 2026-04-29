@@ -158,9 +158,11 @@
                 </div>
 
                 {{-- Button --}}
-                <div class="flex justify-end gap-3 pt-4">
-                    <button class="bg-gray-300 px-4 py-2 rounded">Simpan</button>
-                    <button class="bg-gray-300 px-4 py-2 rounded">Batal</button>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="submit" name="submit" value="submit"
+                        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">Submit</button>
+                    <a href="{{ route('admin.buku') }}"
+                        class="inline-flex items-center gap-2 bg-white border border-slate-300 text-slate-700 rounded-md px-4 py-2 text-sm shadow-sm transition">Batal</a>
                 </div>
 
             </div>

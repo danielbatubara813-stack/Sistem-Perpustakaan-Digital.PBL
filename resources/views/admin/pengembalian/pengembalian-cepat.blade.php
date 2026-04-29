@@ -7,20 +7,7 @@
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         {{-- Tabs --}}
-
-        <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a href="{{ route('admin.pengembalian') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
-                    Pengembalian</a>
-                <a href="{{ route('admin.pengembalian.buku') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.buku') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
-                    Buku</a>
-                <a href="{{ route('admin.pengembalian.cepat') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.cepat') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Pengembalian
-                    Cepat</a>
-            </div>
-        </div>
+        @include('components.submenu-admin')
         @php
             if (!isset($quickBooks)) {
                 $quickBooks = [

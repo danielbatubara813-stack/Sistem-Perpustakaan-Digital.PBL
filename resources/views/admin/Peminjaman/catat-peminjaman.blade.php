@@ -1,13 +1,15 @@
 @extends('layout.app-admin')
-@section('title', 'Pengembalian')
+@section('title', 'Peminjaman')
 @php
-    $title = 'Pengembalian';
-    $description = 'Kelola pengembalian buku dan catat pengembalian baru.';
+    $title = 'Peminjaman';
+    $description = 'Kelola daftar peminjaman buku dan catat peminjaman baru.';
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         {{-- Tabs --}}
-        @include('components.submenu-admin')
+        <div class="mb-4 flex items-center justify-between">
+            @include('components.submenu-admin')
+        </div>
         @php
             if (!isset($member)) {
                 $member = [
@@ -37,7 +39,34 @@
             }
         @endphp
 
-        <h3 class="font-bold text-lg mb-4">CATAT PENGEMBALIAN</h3>
+        <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg mb-4">CATAT PENGEMBALIAN</h3>
+            <div class="space-x-4">
+                <button
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-save-icon lucide-save">
+                        <path
+                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                    </svg>
+                    Mulai Peminjaman</button>
+                <a href="{{ route('admin.peminjaman') }}"
+                    class="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-trash2-icon lucide-trash-2">
+                        <path d="M10 11v6" />
+                        <path d="M14 11v6" />
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                        <path d="M3 6h18" />
+                        <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    </svg>
+                    Batal Peminjaman</a>
+            </div>
+        </div>
 
         <div class="mb-4">
             <label class="block text-sm text-slate-600 mb-2">ID Anggota</label>
@@ -97,7 +126,7 @@
                     @foreach ($memberLoans as $loan)
                         <tr class="odd:bg-white even:bg-slate-100">
                             <td class="px-6 py-4 align-top">
-                                <button class="px-3 py-1 rounded-md bg-slate-200 text-slate-700">Kembalikan</button>
+                                <button class="px-3 py-1 rounded-md bg-slate-200 text-slate-700">Perpanjang</button>
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900 flex items-center gap-4">
                                 <div
