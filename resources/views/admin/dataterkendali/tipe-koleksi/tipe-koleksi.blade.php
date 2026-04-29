@@ -8,16 +8,8 @@
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a id="daftarTab" href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.tipe-koleksi.index') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Tipe
-                    Koleksi <span id="daftarTypeLabel" class="ml-2 text-sm text-slate-500"></span></a>
-                <a href="{{ route('admin.data-terkendali.subjek.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.subjek.index') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Subjek</a>
-                <a href="{{ route('admin.data-terkendali.dok-bahasa.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.dok-bahasa.index') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Dok
-                    Bahasa</a>
-            </div>
+            @include('components.submenu-admin')
+
             <div>
                 <a href="{{ route('admin.data-terkendali.tipe-koleksi.create') }}"
                     class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">

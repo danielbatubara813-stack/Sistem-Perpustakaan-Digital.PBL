@@ -6,8 +6,14 @@ use App\Http\Controllers\Admin\Anggota\JenisKeanggotaanController;
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DataTerkendali\DokBahasaController;
+use App\Http\Controllers\Admin\DataTerkendali\PenerbitController;
+use App\Http\Controllers\Admin\DataTerkendali\PenulisController;
 use App\Http\Controllers\Admin\DataTerkendali\SubjekController;
 use App\Http\Controllers\Admin\DataTerkendali\TipeKoleksiController;
+use App\Http\Controllers\Admin\Peminjaman\PeminjamanController;
+use App\Http\Controllers\Admin\Pengembalian\PengembalianBukuController;
+use App\Http\Controllers\Admin\Pengembalian\PengembalianCepatController;
+use App\Http\Controllers\Admin\Pengembalian\PengembalianController;
 use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
@@ -39,24 +45,21 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // route untuk menyimpan jenis keanggotaan
         Route::post('/jenis', [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
     });
-    // halaman peminjaman admin
-    Route::get('/peminjaman', function () {
-        $title = 'Peminjaman';
-        $description = 'Kelola daftar peminjaman buku';
-        return view('admin.peminjaman.peminjaman', compact('title', 'description'));
-    })->name('peminjaman');
-    // halaman aturan peminjaman admin
-    Route::get('/peminjaman/aturan', function () {
-        $title = 'Aturan Peminjaman';
-        $description = 'Aturan peminjaman untuk tiap tipe keanggotaan dan koleksi';
-        return view('admin.peminjaman.aturan', compact('title', 'description'));
-    })->name('peminjaman.aturan');
-    // halaman pengembalian admin (placeholder)
-    Route::get('/pengembalian', function () {
-        $title = 'Pengembalian';
-        $description = 'Kelola pengembalian buku';
-        return view('admin.pengembalian.pengembalian', compact('title', 'description'));
-    })->name('pengembalian');
+
+    // Peminjaman
+    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
+
+    Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
+        ->name('peminjaman.aturan');
+
+    // Pengembalian
+    Route::get('/pengembalian', [PengembalianController::class, 'index'])
+        ->name('pengembalian');
+    Route::get('/pengembalian/cepat', [PengembalianCepatController::class, 'index'])
+        ->name('pengembalian.cepat');
+    Route::get('/pengembalian/buku', [PengembalianBukuController::class, 'index'])
+        ->name('pengembalian.buku');
+
     Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
         Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {
             Route::get('/', [TipeKoleksiController::class, 'index'])->name('index');
@@ -75,6 +78,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::get('/create', [DokBahasaController::class, 'create'])->name('create');
             Route::post('/', [DokBahasaController::class, 'store'])->name('store');
             Route::get('/{id}/edit', [DokBahasaController::class, 'edit'])->name('edit');
+        });
+
+        Route::prefix('penulis')->name('penulis.')->group(function () {
+            Route::get('/', [PenulisController::class, 'index'])->name('index');
+            Route::get('/create', [PenulisController::class, 'create'])->name('create');
+            Route::post('/', [PenulisController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [PenulisController::class, 'edit'])->name('edit');
+        });
+
+        Route::prefix('penerbit')->name('penerbit.')->group(function () {
+            Route::get('/', [PenerbitController::class, 'index'])->name('index');
+            Route::get('/create', [PenerbitController::class, 'create'])->name('create');
+            Route::post('/', [PenerbitController::class, 'store'])->name('store');
+            Route::get('/{id}/edit', [PenerbitController::class, 'edit'])->name('edit');
         });
     });
 });

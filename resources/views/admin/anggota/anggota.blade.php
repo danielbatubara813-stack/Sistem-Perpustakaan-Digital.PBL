@@ -7,8 +7,8 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
+        <div class="flex flex-col gap-4">
+            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2 w-max">
                 <a id="daftarTab" href="{{ route('admin.anggota.daftar') }}"
                     class="px-4 py-2 text-sm {{ request()->routeIs('admin.anggota.daftar') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Daftar
                     Anggota <span id="daftarTypeLabel" class="ml-2 text-sm text-slate-500"></span></a>
@@ -16,55 +16,63 @@
                     class="px-4 py-2 text-sm {{ request()->routeIs('admin.anggota.jenis*') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Jenis
                     Keanggotaan</a>
             </div>
-            <div>
-                <a href="{{ route('admin.anggota.create') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Tambah Anggota
-                </a>
-            </div>
-        </div>
 
-        <div class="flex items-center justify-between mb-6">
-            <div class="">
-                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
-                    <input id="search" type="text" placeholder="Cari anggota..."
-                        class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    <select id="filter-type"
-                        class="min-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Tipe Keanggotaan</option>
-                        <option>Mahasiswa</option>
-                        <option>Dosen</option>
-                    </select>
-                    <select id="filter-status"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Status</option>
-                        <option>Aktif</option>
-                        <option>Tidak Aktif</option>
-                    </select>
-                    <select id="filter-sort"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Terbaru</option>
-                        <option>Terpopuler</option>
-                        <option>Terlama</option>
-                    </select>
-                    <button
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
-                        aria-label="Cari">
+            <div class="flex items-center justify-between">
+                <div class="">
+                    <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
+                        <input id="search" type="text" placeholder="Cari anggota..."
+                            class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                        <select id="filter-type"
+                            class="min-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                            <option>Tipe Keanggotaan</option>
+                            <option>Mahasiswa</option>
+                            <option>Dosen</option>
+                        </select>
+                        <select id="filter-status"
+                            class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                            <option>Status</option>
+                            <option>Aktif</option>
+                            <option>Tidak Aktif</option>
+                        </select>
+                        <select id="filter-sort"
+                            class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                            <option>Terbaru</option>
+                            <option>Terpopuler</option>
+                            <option>Terlama</option>
+                        </select>
+                        <button
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+                            aria-label="Cari">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <a href="{{ route('admin.anggota.create') }}"
+                        class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
+                            <path d="M12 5v14" />
+                            <path d="M5 12h14" />
                         </svg>
-                    </button>
+                        Tambah Anggota
+                    </a>
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <h2 class="text-lg font-semibold tracking-wide">{{ count($members) }} Daftar anggota</h2>
+            </div>
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
@@ -99,31 +107,6 @@
             </div>
         </div>
 
-        @php
-            $members = $members ?? [
-                [
-                    'identity' => '3312501025',
-                    'name' => 'Daniel Anju Adinov Batubara',
-                    'type' => 'Mahasiswa',
-                    'status' => 'Menunggu',
-                    'updated' => '08-04-2026 10:02:22',
-                ],
-                [
-                    'identity' => '12345',
-                    'name' => 'Cynthia Lasmini',
-                    'type' => 'Dosen Tetap',
-                    'status' => 'Aktif',
-                    'updated' => '08-04-2026 10:02:22',
-                ],
-                [
-                    'identity' => '67890',
-                    'name' => 'Rudi Hartono',
-                    'type' => 'Dosen Magang',
-                    'status' => 'Aktif',
-                    'updated' => '08-04-2026 10:02:22',
-                ],
-            ];
-        @endphp
 
         <div class="overflow-x-auto mt-6">
             <table class="min-w-full text-sm text-left text-gray-600">
@@ -168,7 +151,8 @@
             </table>
         </div>
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-slate-500">Menampilkan 1 hingga 10 dari 12 data</p>
+            <p class="text-sm text-slate-500">Menampilkan 1 hingga {{ count($members) }} dari {{ count($members) }} data
+            </p>
             <div class="inline-flex items-center rounded-2xl bg-slate-100 p-1">
                 <button
                     class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">&lt;</button>
@@ -182,4 +166,5 @@
             </div>
         </div>
     </div>
+
 @endsection

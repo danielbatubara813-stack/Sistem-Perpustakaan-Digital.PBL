@@ -7,23 +7,7 @@
 @endphp
 @section('content')
     <div class="bg-white rounded-3xl shadow-lg p-6">
-        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-                <h2 class="text-lg font-semibold tracking-wide">12 Daftar buku</h2>
-            </div>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a href="{{ route('admin.buku.create') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Tambah Buku
-                </a>
-            </div>
-        </div>
+
 
         <div class="flex items-center justify-between">
             <div class="">
@@ -64,7 +48,25 @@
                     </button>
                 </div>
             </div>
-
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <a href="{{ route('admin.buku.create') }}"
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-plus">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Tambah Buku
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white rounded-3xl shadow-lg p-6 mt-4">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h2 class="text-lg font-semibold tracking-wide">{{ count($books) }} Daftar buku</h2>
+            </div>
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
@@ -98,7 +100,6 @@
                 </button>
             </div>
         </div>
-
         <div class="overflow-x-auto mt-6">
             <table class="min-w-full text-left text-sm text-slate-600">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
@@ -174,5 +175,6 @@
             </div>
         </div>
     </div>
+
 
 @endsection

@@ -7,18 +7,7 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a id="daftarTab" href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.tipe-koleksi*') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Tipe
-                    Koleksi <span id="daftarTypeLabel" class="ml-2 text-sm text-slate-500"></span></a>
-                <a href="{{ route('admin.data-terkendali.subjek.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.subjek*') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Subjek</a>
-                <a href="{{ route('admin.data-terkendali.dok-bahasa.index') }}"
-                    class="px-4 py-2 text-sm {{ request()->routeIs('admin.data-terkendali.dok-bahasa*') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">Dok
-                    Bahasa</a>
-            </div>
-        </div>
+        @include('components.submenu-admin')
 
         @if (Route::is('admin.data-terkendali.subjek.create'))
             @php
@@ -42,8 +31,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
                 <label class="sm:col-span-3 text-sm text-slate-700">Nama Subjek*</label>
                 <div class="sm:col-span-9">
-                    <input name="nama_subjek" value="{{ old('nama_subjek') }}" type="text"
-                        placeholder="Contoh: Mahasiswa"
+                    <input name="nama_subjek" value="{{ old('nama_subjek') }}" type="text" placeholder="Contoh: Teknologi"
                         class="w-full max-w-96 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
                     @error('nama_subjek')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>

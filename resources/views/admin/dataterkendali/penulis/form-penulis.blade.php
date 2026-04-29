@@ -1,28 +1,26 @@
 @extends('layout.app-admin')
 
-@section('title', 'Kelola Dok Bahasa')
+@section('title', 'Kelola Tipe Koleksi')
 @php
-    $title = 'Daftar Dokumen Bahasa';
-    $description = 'Kelola Dokumen Bahasa untuk bahasa yang digunakan buku';
+    $title = 'Daftar penulis';
+    $description = 'Kelola penulis untuk penulis buku perpustakaan';
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            @include('components.submenu-admin')
-        </div>
+        @include('components.submenu-admin')
 
-        @if (Route::is('admin.data-terkendali.dok-bahasa.create'))
+        @if (Route::is('admin.data-terkendali.penulis.create'))
             @php
-                $route = route('admin.data-terkendali.dok-bahasa.store');
+                $route = route('admin.data-terkendali.penulis.store');
                 $method = 'POST';
             @endphp
         @else
             @php
-                $route = route('admin.data-terkendali.dok-bahasa.update', $tipe->id);
+                $route = route('admin.data-terkendali.penulis.update', $tipe->id);
                 $method = 'PUT';
             @endphp
         @endif
-        <h2 class="font-bold text-lg my-4">From Dokumen Bahasa</h2>
+        <h2 class="font-bold text-lg my-4">From Penulis</h2>
         <form action="{{ $route }}" method="POST" class="space-y-4">
             @csrf
             @if ($method == 'PUT')
@@ -31,23 +29,26 @@
                 @method('POST')
             @endif
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                <label class="sm:col-span-3 text-sm text-slate-700">Kode Dok Bahasa*</label>
+                <label class="sm:col-span-3 text-sm text-slate-700">Nama penulis*</label>
                 <div class="sm:col-span-9">
-                    <input name="kode_dok_bahasa" value="{{ old('kode_dok_bahasa') }}" type="text"
-                        placeholder="Contoh: ID"
-                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    @error('kode_dok_bahasa')
+                    <input name="nama_penulis" value="{{ old('nama_penulis') }}" type="text"
+                        placeholder="Contoh: Tere Liye"
+                        class="w-full max-w-96 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                    @error('nama_penulis')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                <label class="sm:col-span-3 text-sm text-slate-700">Nama Dok Bahasa*</label>
+                <label class="sm:col-span-3 text-sm text-slate-700">Tipe penulis*</label>
                 <div class="sm:col-span-9">
-                    <input name="nama_dok_bahasa" value="{{ old('nama_dok_bahasa') }}" type="text"
-                        placeholder="Contoh: Bahasa Indonesia"
-                        class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    @error('nama_dok_bahasa')
+                    <select name="tipe_penulis" id=""
+                        class="w-full max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        <option value="">Nama Orang</option>
+                        <option value="">Organisasi</option>
+                        <option value="">Konferensi</option>
+                    </select>
+                    @error('tipe_penulis')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>

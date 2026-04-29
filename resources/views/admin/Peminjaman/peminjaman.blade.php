@@ -9,26 +9,12 @@
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-4 flex items-center justify-between">
-            <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2">
-                <a href="{{ route('admin.peminjaman') }}" class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Daftar
-                    Peminjaman</a>
-                <a href="{{ route('admin.peminjaman.aturan') }}" class="px-4 py-2 text-sm {{ request()->routeIs('admin.peminjaman.aturan') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">Aturan Peminjaman</a>
-            </div>
+            @include('components.submenu-admin')
 
-            <div>
-                <a href="#"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
-                    </svg>
-                    Catat Pinjaman
-                </a>
-            </div>
+
         </div>
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between">
             <div class="">
                 <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
                     <input id="search" type="text" placeholder="Cari..."
@@ -46,22 +32,40 @@
                         <option>Belum Jatuh Tempo</option>
                     </select>
                     <select id="filter-sort"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Terbaru</option>
                         <option>Terlama</option>
                     </select>
                     <button
                         class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
                         aria-label="Cari">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8" />
                             <path d="m21 21-4.3-4.3" />
                         </svg>
                     </button>
                 </div>
             </div>
-
+            <div>
+                <a href="#"
+                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14" />
+                        <path d="M5 12h14" />
+                    </svg>
+                    Catat Pinjaman
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
+        <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <h2 class="text-lg font-semibold tracking-wide">{{ count($loans) }} Daftar peminjaman</h2>
+            </div>
             <div class="flex items-center justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
@@ -108,33 +112,6 @@
                 </button>
             </div>
         </div>
-
-        @php
-            $loans = $loans ?? [
-                [
-                    'member' => 'Daniel Anju Adinov Batubara',
-                    'identity' => '3312501025',
-                    'kode_item' => '0735712573',
-                    'tanggal_pinjam' => '02-04-2026 10:02:22',
-                    'jatuh_tempo' => '09-04-2026 10:02:22',
-                ],
-                [
-                    'member' => 'Cynthia Lasmini',
-                    'identity' => '3312501026',
-                    'kode_item' => '0735712574',
-                    'tanggal_pinjam' => '03-04-2026 12:20:05',
-                    'jatuh_tempo' => '10-04-2026 12:20:05',
-                ],
-                [
-                    'member' => 'Rudi Hartono',
-                    'identity' => '3312501027',
-                    'kode_item' => '0735712575',
-                    'tanggal_pinjam' => '04-04-2026 09:15:00',
-                    'jatuh_tempo' => '11-04-2026 09:15:00',
-                ],
-            ];
-        @endphp
-
         <div class="overflow-x-auto mt-6">
             <table class="min-w-full text-sm text-left text-gray-600">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
@@ -148,7 +125,8 @@
                 </thead>
                 <tbody>
                     @foreach ($loans as $loan)
-                        <tr class="hover:bg-gray-100 transition-all duration-150 ease-in-out odd:bg-white even:bg-slate-100">
+                        <tr
+                            class="hover:bg-gray-100 transition-all duration-150 ease-in-out odd:bg-white even:bg-slate-100">
                             <td class="px-6 py-4">
                                 <input type="checkbox"
                                     class="row-checkbox h-5 w-5 rounded-full border-slate-300 text-blue-600 focus:ring-blue-500" />
@@ -172,7 +150,7 @@
         </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-slate-500">Menampilkan 1 hingga 10 dari 12 data</p>
+            <p class="text-sm text-slate-500">Menampilkan 1 hingga {{ count($loans) }} dari {{ count($loans) }} data</p>
             <div class="inline-flex items-center rounded-2xl bg-slate-100 p-1">
                 <button
                     class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">&lt;</button>

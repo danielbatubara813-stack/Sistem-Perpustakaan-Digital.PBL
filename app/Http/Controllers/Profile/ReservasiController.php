@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Profile;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class PeminjamanController extends Controller
+class ReservasiController extends Controller
 {
-    public function ambilDataBuku()
+    public function ambilData()
     {
-        $koleksi_baru = [
+        $reservasi = [
             [
                 'id' => 1,
                 'judul' => 'Laut Bercerita',
@@ -25,9 +25,8 @@ class PeminjamanController extends Controller
                 'subject' => ['Fiksi', 'Sejarah', 'Sosial Politik', 'Novel Indonesia'],
                 'deskripsi' => 'Novel yang mengangkat kisah aktivis mahasiswa pada masa Orde Baru.',
 
-                'kode_item_buku' => 'BK001246',
-                'tanggal_jatuh_tempo' => '16-04-2026',
-                'status_peminjaman' => 'Masa Peminjaman',
+                'tanggal_pengajuan' => '16-04-2026',
+                'status_reservasi' => 'Menunggu Konfirmasi',
             ],
 
             [
@@ -45,24 +44,21 @@ class PeminjamanController extends Controller
                 'subject' => ['Programming', 'Laravel', 'PHP', 'Web Development'],
                 'deskripsi' => 'Panduan dasar framework Laravel untuk pemula.',
 
-                'kode_item_buku' => 'BK001301',
-                'tanggal_jatuh_tempo' => '26-04-2026',
-                'status_peminjaman' => 'Jatuh Tempo',
+                'tanggal_pengajuan' => '26-04-2026',
+                'status_reservasi' => 'Sudah Konfirmasi',
             ],
         ];
-
-        return $koleksi_baru;
+        return $reservasi;
     }
-    public function peminjamanSekarangPage()
+    public function reservasi()
     {
-        $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.peminjaman-sekarang', compact('koleksi_baru'));
+        $reservasi = $this->ambilData();
+        return view('profile.reservasi', compact('reservasi'));
     }
 
-    public function sejarahPeminjamanPage()
+    public function daftarReservasi()
     {
-        $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.sejarah-peminjaman', compact('koleksi_baru'));
+        $reservasi = $this->ambilData();
+        return view('profile.daftar-reservasi', compact('reservasi'));
     }
-
 }

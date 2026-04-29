@@ -3,9 +3,41 @@
 
 @section('content')
     <div class="w-full flex flex-col gap-4 p-4 space-y-4">
-        <form class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <h2 class="col-span-2 text-lg font-bold">Data Anggota</h2>
 
+            <div class="col-span-2 ">
+                <form action="" class="flex items-center gap-2">
+                    <!-- Preview -->
+                    <div class="flex items-center justify-center">
+                        <img id="preview" src="https://via.placeholder.com/150"
+                            class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Profile Image
+                        </label>
+                        <!-- Input File -->
+                        <input type="file" id="imageInput" accept="image/*"
+                            class="block w-lg border border-gray-300 rounded-md text-sm px-6 py-2 text-gray-500
+               file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100
+               cursor-pointer" />
+                        <p class="text-sm font-bold italic mt-2">Format: JPEG, PNG, JPG. Maks: 10MB</p>
+                    </div>
+                    <button type="submit"
+                        class="bg-blue-600 p-2 w-max px-6 rounded-md text-white flex gap-4 items-center justify-center hover:bg-blue-700 ease-in-out transition-all duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
+                            <path
+                                d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                            <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                        </svg>
+                        <span>Simpan</span>
+                    </button>
+                </form>
+            </div>
             <!-- Nama Anggota -->
             <div class="flex flex-col gap-4">
                 <label for="nama_anggota">Nama Anggota</label>
@@ -40,7 +72,7 @@
                 <input id="tanggal_registrasi" type="date" value="2026-04-16" readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
-        </form>
+        </div>
         <form action="" class="grid grid-cols-2 gap-4">
             <h2 class="col-span-2 text-lg font-bold">Ganti Kata Sandi</h2>
             <!-- Kata Sandi -->
@@ -93,8 +125,9 @@
                         class="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500">
 
                         <!-- Eye -->
-                        <svg class="eye-open w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg class="eye-open w-5 h-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round">
                             <path
                                 d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
                             <circle cx="12" cy="12" r="3" />
@@ -114,21 +147,9 @@
                     </button>
                 </div>
             </div>
-            <div class="flex gap-4">
-                <button type="submit"
-                    class="bg-blue-600 p-2 w-full rounded-md text-white flex gap-4 items-center justify-center hover:bg-blue-700 ease-in-out transition-all duration-300">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
-                        <path
-                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                    </svg>
-                    <span>Simpan</span>
-                </button>
+            <div class="col-span-2 flex justify-end items-center gap-4">
                 <button
-                    class="bg-slate-500 p-2 w-full rounded-md text-white flex gap-4 items-center justify-center
+                    class="bg-slate-500 py-2 w-max px-6 rounded-md text-white flex gap-4 items-center justify-center
                     hover:bg-slate-600 ease-in-out transition-all duration-300"
                     type="reset">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -139,6 +160,19 @@
                     </svg>
                     <span>Reset</span>
                 </button>
+                <button type="submit"
+                    class="bg-blue-600 py-2 w-max px-6 rounded-md text-white flex gap-4 items-center justify-center hover:bg-blue-700 ease-in-out transition-all duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
+                        <path
+                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                    </svg>
+                    <span>Simpan</span>
+                </button>
+
             </div>
         </form>
     </div>
@@ -162,5 +196,23 @@
             eyeOpen.classList.remove('hidden');
             eyeClose.classList.add('hidden');
         }
+    </script>
+    <script>
+        const input = document.getElementById('imageInput');
+        const preview = document.getElementById('preview');
+
+        input.addEventListener('change', function() {
+            const file = this.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                }
+
+                reader.readAsDataURL(file);
+            }
+        });
     </script>
 @endsection

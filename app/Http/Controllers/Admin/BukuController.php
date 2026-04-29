@@ -93,7 +93,7 @@ class BukuController extends Controller
 
     public function create()
     {
-        return view('admin.buku.buku-create');
+        return view('admin.buku.form-buku');
     }
 
     public function edit($id)

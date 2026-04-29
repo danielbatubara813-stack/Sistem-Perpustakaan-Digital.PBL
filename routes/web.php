@@ -8,9 +8,12 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DaftarBukuController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HubungiKamiController;
-use App\Http\Controllers\PeminjamanController;
-use App\Http\Controllers\ProfileAnggotaController;
+use App\Http\Controllers\Profile\ReservasiController;
 use App\Http\Controllers\TentangController;
+
+use App\Http\Controllers\Profile\PeminjamanController;
+use App\Http\Controllers\Profile\ProfileAnggotaController;
+
 use Illuminate\Support\Facades\Route;
 
 // halaman beranda untuk pengunjung
@@ -30,6 +33,8 @@ Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');
     Route::get('/sejarah-peminjaman', [PeminjamanController::class, 'sejarahPeminjamanPage'])->name('sejarah-peminjaman-page');
     Route::get('/akun-saya', [ProfileAnggotaController::class, 'akunSayaPage'])->name('akun-saya-page');
+    Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi-page');
+    Route::get('/daftar-reservasi', [ReservasiController::class, 'daftarReservasi'])->name('daftar-reservasi-page');
 });
 
 // Routing halaman login
