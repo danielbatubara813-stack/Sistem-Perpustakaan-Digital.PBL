@@ -17,7 +17,11 @@
                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
                     </svg>
-                    Email / Member ID
+                    @if (Route::is('admin.login-page'))
+                        Username
+                    @else
+                        Email / Member ID
+                    @endif
                 </label>
                 <input type="text" name="login_id"
                     class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"

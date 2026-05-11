@@ -118,7 +118,7 @@
                             <td class="px-6 py-4 text-center align-middle">{{ $rule['jumlah'] }}</td>
                             <td class="px-6 py-4 text-center align-middle">{{ $rule['periode'] }}</td>
                             <td class="px-6 py-4 text-right">
-                                <a href="#"
+                                <a href="{{ route('admin.peminjaman.aturan.create') }}"
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-md text-black bg-amber-300 hover:bg-amber-400 transition"
                                     aria-label="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"

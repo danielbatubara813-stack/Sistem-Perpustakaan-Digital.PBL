@@ -59,7 +59,7 @@
             <div class="mt-6 flex justify-end gap-3">
                 <button type="submit"
                     class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">Simpan</button>
-                <a href="{{ route('admin.data-terkendali.tipe-koleksi.index') }}"
+                <a href="{{ route('admin.data-terkendali.penulis.index') }}"
                     class="inline-flex items-center gap-2 bg-white border border-slate-300 text-slate-700 rounded-md px-4 py-2 text-sm shadow-sm transition">Batal</a>
             </div>
         </form>

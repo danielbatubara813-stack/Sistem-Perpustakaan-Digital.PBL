@@ -142,7 +142,7 @@
                             <td class="px-3 py-3 text-slate-700 text-center">{{ $book['jumlah_copy'] }}</td>
                             <td class="px-3 py-3 text-right">
                                 <div class="inline-flex items-center gap-2 justify-end">
-                                    <button
+                                    <a href="{{ route('admin.buku.create') }}"
                                         class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-yellow-300 text-black hover:bg-yellow-400 transition"
                                         aria-label="Edit">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
@@ -150,7 +150,7 @@
                                             stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit-2">
                                             <path d="m17 3 4 4L7 21H3v-4L17 3z" />
                                         </svg>
-                                    </button>
+                                    </a>
                                 </div>
                             </td>
                         </tr>

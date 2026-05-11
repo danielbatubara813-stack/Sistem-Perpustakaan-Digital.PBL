@@ -154,7 +154,7 @@
                             <td class="px-6 py-4 hidden lg:table-cell">{{ $member['status'] }}</td>
                             <td class="px-6 py-4 hidden lg:table-cell">{{ $member['updated'] }}</td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.anggota.edit', $member['id'] ?? $loop->index) }}"
+                                <a href="{{ route('admin.anggota.create') }}"
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-md text-black bg-amber-300 hover:bg-amber-400 transition"
                                     aria-label="Edit">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
