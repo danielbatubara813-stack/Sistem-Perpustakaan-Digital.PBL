@@ -8,63 +8,47 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        {{-- Tabs --}}
-        @include('components.submenu-admin')
-        @php
-            if (!isset($member)) {
-                $member = [
-                    'name' => 'NICOLAS',
-                    'id' => '314265',
-                ];
-            }
+        <div class="flex flex-col gap-4">
 
-            if (!isset($memberLoans)) {
-                $memberLoans = [
-                    [
-                        'judul' => 'PostgreSQL : a comprehensive guide to building, programming, and...',
-                        'kode_item' => 'E0040150C90DB6E8',
-                        'tanggal_pinjam' => '02-04-2026 10:02:22',
-                        'jatuh_tempo' => '09-04-2026 10:02:22',
-                        'tanggal_kembali' => '08-04-2026 10:02:22',
-                        'denda' => '0 Rp',
-                    ],
-                    [
-                        'judul' => 'Laut Bercerita',
-                        'kode_item' => 'E0040150C90DF610',
-                        'tanggal_pinjam' => '02-04-2026 10:02:22',
-                        'jatuh_tempo' => '09-04-2026 10:02:22',
-                        'tanggal_kembali' => '09-04-2026 10:02:22',
-                        'denda' => '5.000 Rp',
-                    ],
-                ];
-            }
-        @endphp
+            {{-- Tabs --}}
+            @include('components.submenu-admin')
 
-        <div class="flex items-center justify-between">
-            <div class="">
-                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
+            {{-- Filter --}}
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+
+                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
+
                     <input id="search2" type="text" placeholder="Cari..."
-                        class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                        class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+
                     <select id="filter-tanggal2"
-                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Hari ini</option>
                         <option>7 hari</option>
                         <option>30 hari</option>
                     </select>
+
                     <select id="filter-status2"
-                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Semua Status</option>
                         <option>Dikembalikan</option>
                         <option>Terlambat</option>
                         <option>Hilang</option>
                     </select>
+
                     <select id="filter-sort2"
-                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Terbaru</option>
                         <option>Terlama</option>
                     </select>
+
                     <button
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white
+                    border border-slate-300 text-slate-700 hover:bg-slate-50 transition shrink-0"
                         aria-label="Cari">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -73,10 +57,40 @@
                             <path d="m21 21-4.3-4.3" />
                         </svg>
                     </button>
+
                 </div>
             </div>
         </div>
     </div>
+    @php
+        if (!isset($member)) {
+            $member = [
+                'name' => 'NICOLAS',
+                'id' => '314265',
+            ];
+        }
+
+        if (!isset($memberLoans)) {
+            $memberLoans = [
+                [
+                    'judul' => 'PostgreSQL : a comprehensive guide to building, programming, and...',
+                    'kode_item' => 'E0040150C90DB6E8',
+                    'tanggal_pinjam' => '02-04-2026 10:02:22',
+                    'jatuh_tempo' => '09-04-2026 10:02:22',
+                    'tanggal_kembali' => '08-04-2026 10:02:22',
+                    'denda' => '0 Rp',
+                ],
+                [
+                    'judul' => 'Laut Bercerita',
+                    'kode_item' => 'E0040150C90DF610',
+                    'tanggal_pinjam' => '02-04-2026 10:02:22',
+                    'jatuh_tempo' => '09-04-2026 10:02:22',
+                    'tanggal_kembali' => '09-04-2026 10:02:22',
+                    'denda' => '5.000 Rp',
+                ],
+            ];
+        }
+    @endphp
 
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -117,7 +131,7 @@
         </div>
 
         <div class="overflow-x-auto mt-4">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left text-gray-600 text-nowrap">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
                     <tr>
                         <th class="px-6 py-3 w-12">Pilih</th>

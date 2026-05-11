@@ -8,18 +8,26 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            @include('components.submenu-admin')
+        <div class="flex flex-col gap-4">
 
-        </div>
+            {{-- Submenu --}}
+            <div class="flex items-center justify-between">
+                @include('components.submenu-admin')
+            </div>
 
-        <div class="flex items-center justify-between">
-            <div class="">
-                <div class="bg-slate-100 rounded-md p-2 flex items-center gap-2">
+            {{-- Search + Button --}}
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+
+                {{-- Search Group --}}
+                <div class="bg-slate-100 rounded-md p-2 flex items-center gap-2 w-full md:w-max">
+
                     <input id="search-aturan" type="text" placeholder="Cari..."
-                        class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                        class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+
                     <button
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white
+                    border border-slate-300 text-slate-700 hover:bg-slate-50 transition shrink-0"
                         aria-label="Cari">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -29,10 +37,12 @@
                         </svg>
                     </button>
                 </div>
-            </div>
-            <div>
+
+                {{-- Button --}}
                 <a href="{{ route('admin.peminjaman.aturan.create') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
+                    class="w-full md:w-max flex items-center justify-center gap-2
+                bg-blue-600 hover:bg-blue-700 text-white rounded-md
+                px-4 py-2 text-sm shadow transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 5v14" />
@@ -40,17 +50,16 @@
                     </svg>
                     Tambah Aturan
                 </a>
+
             </div>
-
         </div>
-
     </div>
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
                 <h2 class="text-lg font-semibold tracking-wide">{{ count($rules) }} Daftar aturan peminjaman</h2>
             </div>
-            <div class="flex items-center justify-end gap-3">
+            <div class="grid grid-cols-2 lg:flex lg:items-center lg:justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
                     <!-- unchecked icon -->

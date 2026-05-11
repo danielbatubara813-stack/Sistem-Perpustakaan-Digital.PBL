@@ -83,7 +83,7 @@
         </div>
 
         <div class="overflow-x-auto mt-6">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left text-gray-600 text-nowrap">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
                     <tr>
                         <th class="px-6 py-3 w-12">Pilih</th>

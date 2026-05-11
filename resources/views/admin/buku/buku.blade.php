@@ -7,59 +7,67 @@
 @endphp
 @section('content')
     <div class="bg-white rounded-3xl shadow-lg p-6">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
 
+            {{-- Filter Group --}}
+            <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
 
-        <div class="flex items-center justify-between">
-            <div class="">
-                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
-                    <input id="search" type="text" placeholder="Cari anggota..."
-                        class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    <select id="filter-type"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Bahasa</option>
-                        <option>Bahasa Indonesia</option>
-                        <option>Inggris</option>
-                    </select>
-                    <select id="filter-status"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Subjek</option>
-                        <option>Teknologi</option>
-                        <option>Programming</option>
-                        <option>Manajemen</option>
-                        <option>Elektro</option>
-                        <option>Software</option>
-                        <option>Mesin</option>
-                    </select>
-                    <select id="filter-sort"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option>Terbaru</option>
-                        <option>Terpopuler</option>
-                        <option>Terlama</option>
-                    </select>
-                    <button
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
-                        aria-label="Cari">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a href="{{ route('admin.buku.create') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus">
-                        <path d="M12 5v14" />
-                        <path d="M5 12h14" />
+                <input id="search" type="text" placeholder="Cari anggota..."
+                    class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
+                       px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+
+                <select id="filter-type"
+                    class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
+                       outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                    <option>Bahasa</option>
+                    <option>Bahasa Indonesia</option>
+                    <option>Inggris</option>
+                </select>
+
+                <select id="filter-status"
+                    class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
+                       outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                    <option>Subjek</option>
+                    <option>Teknologi</option>
+                    <option>Programming</option>
+                    <option>Manajemen</option>
+                    <option>Elektro</option>
+                    <option>Software</option>
+                    <option>Mesin</option>
+                </select>
+
+                <select id="filter-sort"
+                    class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
+                       outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                    <option>Terbaru</option>
+                    <option>Terpopuler</option>
+                    <option>Terlama</option>
+                </select>
+
+                <button
+                    class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white
+                           border border-slate-300 text-slate-700 hover:bg-slate-50 transition shrink-0"
+                    aria-label="Cari">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
                     </svg>
-                    Tambah Buku
-                </a>
+                </button>
             </div>
+
+            {{-- Tambah Buku --}}
+            <a href="{{ route('admin.buku.create') }}"
+                class="w-full md:w-max flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700
+                   text-white rounded-md px-3 py-2 text-sm shadow-sm transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 5v14" />
+                    <path d="M5 12h14" />
+                </svg>
+                Tambah Buku
+            </a>
+
         </div>
     </div>
     <div class="bg-white rounded-3xl shadow-lg p-6 mt-4">
@@ -67,7 +75,7 @@
             <div>
                 <h2 class="text-lg font-semibold tracking-wide">{{ count($books) }} Daftar buku</h2>
             </div>
-            <div class="flex items-center justify-end gap-3">
+            <div class="grid grid-cols-2 lg:flex lg:items-center lg:justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
                     <!-- unchecked icon -->
@@ -101,7 +109,7 @@
             </div>
         </div>
         <div class="overflow-x-auto mt-6">
-            <table class="min-w-full text-left text-sm text-slate-600">
+            <table class="min-w-full text-left text-sm text-slate-600 text-nowrap">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
                     <tr>
                         <th class="whitespace-nowrap px-4 py-4">Pilih</th>
@@ -122,16 +130,7 @@
                             </td>
                             <td class="px-3 py-3">
                                 <div class="flex items-start gap-3">
-                                    <div
-                                        class="flex h-12 w-12 items-center justify-center rounded-md bg-slate-100 text-slate-400">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                                            <circle cx="8.5" cy="8.5" r="1.5" />
-                                            <path d="M21 15 16 10 5 21" />
-                                        </svg>
-                                    </div>
+                                    <img src="{{ $book['cover'] }}" class="w-12 h-16 object-cover rounded shadow-sm" />
                                     <div class="min-w-0">
                                         <p class="font-semibold text-slate-900 line-clamp-1">{{ $book['judul'] }}</p>
                                         <p class="text-xs text-slate-500 mt-1 truncate">{{ $book['penulis'] }}</p>

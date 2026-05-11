@@ -54,7 +54,7 @@
             </div>
 
             <!-- Instansi & Jenis Kelamin -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="flex items-center gap-2 text-xs font-bold text-black">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -92,7 +92,7 @@
             </div>
 
             <!-- No Telepon & Tanggal Lahir -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="flex items-center gap-2 text-xs font-bold text-black">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -140,7 +140,7 @@
             </div>
 
             <!-- Kata Sandi & Konfirmasi -->
-            <div class="grid grid-cols-2 gap-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div class="space-y-1">
                     <label class="flex items-center gap-2 text-xs font-bold text-black">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"

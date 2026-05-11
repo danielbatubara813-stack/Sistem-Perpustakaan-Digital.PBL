@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
-    @vite(['resources/css/app.css', 'resources/css/font.css'])
+    @vite(['resources/css/app.css'])
 
     <style>
         .slider-thumb {
@@ -39,46 +39,30 @@
     </style>
 </head>
 
-<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins">
+<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins antialiased">
     @include('components.navbar')
     {{-- section hero --}}
     @include('components.hero')
     <section class="profile">
         <div class="relative">
-            <div class="absolute -top-16 left-0 grid grid-cols-4 w-full gap-4 z-20 px-4 sm:px-6 md:px-12 lg:px-24">
+            <div
+                class="absolute -top-16 left-0 grid grid-cols-1 lg:grid-cols-4 w-full gap-0 lg:gap-4 z-20 px-4 sm:px-6 md:px-12 lg:px-24">
                 <div class="bg-white rounded-md shadow-md p-4 w-full mb-8 h-max">
-                    <div class="space-y-4">
-                        <img class="w-full aspect-square rounded-md object-cover object-top"
-                            src="https://i.pinimg.com/736x/76/07/75/760775dfd783a04a3251e384b1a591eb.jpg"
-                            alt="">
-                        <div class="space-y-4">
-                            <div>
-                                <h6>Nama Anggota</h6>
-                                <h6 class="font-bold text-lg">Daniel Anju Adinov Batubara</h6>
-                            </div>
-                            <div>
-                                <h6>ID Anggota</h6>
-                                <h6 class="font-bold text-lg">3312501025</h6>
-                            </div>
-                            <div>
-                                <h6>Jenis Keanggotaan</h6>
-                                <h6 class="font-bold text-lg">Mahasiswa</h6>
-                            </div>
-                            <div>
-                                <h6>Total Peminjaman</h6>
-                                <h6 class="font-bold text-lg">15 Peminjaman</h6>
-                            </div>
-                            <div>
-                                <h6>Total Judul Dipinjam</h6>
-                                <h6 class="font-bold text-lg">9 Judul Buku</h6>
-                            </div>
-                            <div>
-                                <form action="" method="POST">
+                    <div class="flex flex-row lg:flex-col gap-6">
+
+                        {{-- Foto --}}
+                        <div class="flex flex-col gap-2 justify-center lg:block">
+                            <img class="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-xl object-cover object-top shadow-md"
+                                src="https://i.pinimg.com/736x/76/07/75/760775dfd783a04a3251e384b1a591eb.jpg"
+                                alt="">
+                            <div class="block lg:hidden">
+                                <form action="" method="POST" class="w-full">
                                     @csrf
                                     @method('POST')
+
                                     <button
-                                        class="bg-red-600 p-2 w-full rounded-md text-white flex gap-4 items-center justify-center hover:bg-red-700 ease-in-out transition-all duration-300">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                        class="bg-red-600 w-full rounded-md text-white flex gap-3 items-center justify-center px-4 py-3 hover:bg-red-700 transition-all duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round"
                                             class="lucide lucide-log-out-icon lucide-log-out">
@@ -86,7 +70,65 @@
                                             <path d="M21 12H9" />
                                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                         </svg>
-                                        <span class="text-lg">Keluar</span>
+
+                                        <span class="text-sm sm:text-base font-medium">
+                                            Keluar
+                                        </span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        {{-- Informasi --}}
+                        <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
+
+                            <div class="col-span-2 lg:col-span-1">
+                                <h6 class="text-sm text-slate-500">Nama Anggota</h6>
+                                <h6 class="font-bold text-base sm:text-lg">
+                                    Daniel Anju Adinov Batubara
+                                </h6>
+                            </div>
+
+                            <div>
+                                <h6 class="text-sm text-slate-500">ID Anggota</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">3312501025</h6>
+                            </div>
+
+                            <div>
+                                <h6 class="text-sm text-slate-500">Jenis Keanggotaan</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">Mahasiswa</h6>
+                            </div>
+
+                            <div>
+                                <h6 class="text-sm text-slate-500">Total Peminjaman</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">15 Peminjaman</h6>
+                            </div>
+
+                            <div>
+                                <h6 class="text-sm text-slate-500">Total Judul Dipinjam</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">9 Judul Buku</h6>
+                            </div>
+
+                            {{-- Tombol --}}
+                            <div class="hidden col-span-2 lg:col-span-1 lg:flex w-full items-end">
+                                <form action="" method="POST" class="w-full">
+                                    @csrf
+                                    @method('POST')
+
+                                    <button
+                                        class="bg-red-600 w-full rounded-md text-white flex gap-3 items-center justify-center px-4 py-3 hover:bg-red-700 transition-all duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-log-out-icon lucide-log-out">
+                                            <path d="m16 17 5-5-5-5" />
+                                            <path d="M21 12H9" />
+                                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        </svg>
+
+                                        <span class="text-sm sm:text-base font-medium">
+                                            Keluar
+                                        </span>
                                     </button>
                                 </form>
                             </div>

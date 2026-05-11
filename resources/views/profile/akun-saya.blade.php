@@ -7,19 +7,17 @@
             <h2 class="col-span-2 text-lg font-bold">Data Anggota</h2>
 
             <div class="col-span-2 ">
-                <form action="" class="flex items-center gap-2">
+                <form action="" class="flex flex-col lg:flex-row items-center gap-2">
                     <!-- Preview -->
-                    <div class="flex items-center justify-center">
-                        <img id="preview" src="https://via.placeholder.com/150"
-                            class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
-                    </div>
-                    <div>
+                    <img id="preview" src="https://via.placeholder.com/150"
+                        class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
+                    <div class="w-full">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Profile Image
                         </label>
                         <!-- Input File -->
                         <input type="file" id="imageInput" accept="image/*"
-                            class="block w-lg border border-gray-300 rounded-md text-sm px-6 py-2 text-gray-500
+                            class="block w-full border border-gray-300 rounded-md text-sm px-6 py-2 text-gray-500
                file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100
                cursor-pointer" />
                         <p class="text-sm font-bold italic mt-2">Format: JPEG, PNG, JPG. Maks: 10MB</p>

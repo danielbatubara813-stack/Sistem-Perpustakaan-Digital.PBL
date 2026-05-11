@@ -9,7 +9,7 @@
 @section('content')
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <div class="grid grid-cols-2 gap-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
             <div class="bg-white rounded-xl shadow-lg p-6 flex items-start justify-between">
                 <div class=" space-y-4">
                     <h4 class="text-sm font-semibold">Jumlah Buku</h4>
@@ -38,7 +38,7 @@
                     <path d="M8 7h6" />
                 </svg>
             </div>
-            <div class="col-span-2 bg-white rounded-xl shadow-lg p-6">
+            <div class="col-span-1 md:col-span-2 bg-white rounded-xl shadow-lg p-6">
                 <h4 class="text-sm font-bold">Buku Dipinjam</h4>
                 <div class="flex mt-4 gap-2 overflow-scroll scrollbar-hide py-2">
                     @for ($i = 0; $i < 5; $i++)

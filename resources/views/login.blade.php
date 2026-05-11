@@ -6,7 +6,7 @@
             Masuk untuk dapat melakukan peminjaman buku
         </p>
 
-        <form method="POST" action="/login" class="space-y-6 w-3/4">
+        <form method="POST" action="/login" class="space-y-6 w-full md:w-3/4">
             @csrf
 
             <!-- Email / Member ID -->

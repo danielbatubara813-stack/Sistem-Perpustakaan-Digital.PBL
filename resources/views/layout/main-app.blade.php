@@ -8,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
-    @vite(['resources/css/app.css', 'resources/css/font.css'])
+    @vite('resources/css/app.css')
 
     <style>
         .slider-thumb {
@@ -39,7 +39,7 @@
     </style>
 </head>
 
-<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins">
+<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins antialiased">
     @include('components.navbar')
     @if (Route::is('home-page', 'cari-buku-page'))
         @include('components.hero')

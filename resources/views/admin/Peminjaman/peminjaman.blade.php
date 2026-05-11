@@ -8,36 +8,49 @@
 @endphp
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <div class="mb-4 flex items-center justify-between">
-            @include('components.submenu-admin')
+        <div class="flex flex-col gap-4">
 
+            {{-- Submenu --}}
+            <div class="flex items-center justify-between">
+                @include('components.submenu-admin')
+            </div>
 
-        </div>
+            {{-- Filter + Button --}}
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
 
-        <div class="flex items-center justify-between">
-            <div class="">
-                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2">
+                {{-- Filter Group --}}
+                <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
+
                     <input id="search" type="text" placeholder="Cari..."
-                        class="flex-1 min-w-56 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                        class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+
                     <select id="filter-tanggal"
-                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Hari ini</option>
                         <option>7 hari</option>
                         <option>30 hari</option>
                     </select>
+
                     <select id="filter-jatuh"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Jatuh Tempo</option>
                         <option>Sudah Jatuh Tempo</option>
                         <option>Belum Jatuh Tempo</option>
                     </select>
+
                     <select id="filter-sort"
-                        class="min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
+                    px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                         <option>Terbaru</option>
                         <option>Terlama</option>
                     </select>
+
                     <button
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 transition"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white
+                    border border-slate-300 text-slate-700 hover:bg-slate-50 transition shrink-0"
                         aria-label="Cari">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -47,10 +60,12 @@
                         </svg>
                     </button>
                 </div>
-            </div>
-            <div>
+
+                {{-- Button --}}
                 <a href="{{ route('admin.peminjaman.catat-peminjaman') }}"
-                    class="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md px-4 py-2 text-sm shadow transition">
+                    class="w-full md:w-max flex items-center justify-center gap-2
+                bg-blue-600 hover:bg-blue-700 text-white rounded-md
+                px-4 py-2 text-sm shadow transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 5v14" />
@@ -58,6 +73,7 @@
                     </svg>
                     Catat Pinjaman
                 </a>
+
             </div>
         </div>
     </div>
@@ -66,7 +82,7 @@
             <div>
                 <h2 class="text-lg font-semibold tracking-wide">{{ count($loans) }} Daftar peminjaman</h2>
             </div>
-            <div class="flex items-center justify-end gap-3">
+            <div class="grid grid-cols-2 lg:flex lg:items-center lg:justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
                     class="inline-flex items-center gap-2 rounded-md bg-slate-400 px-3 py-2 text-sm font-medium text-white hover:bg-slate-500 transition">
                     <!-- unchecked icon -->
@@ -99,7 +115,7 @@
                 </button>
 
                 <button
-                    class="inline-flex items-center justify-center gap-2 rounded-md bg-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 transition">
+                    class="col-span-2 inline-flex items-center justify-center gap-2 rounded-md bg-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-400 transition">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-text-icon lucide-file-text">
@@ -113,7 +129,7 @@
             </div>
         </div>
         <div class="overflow-x-auto mt-6">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left text-gray-600 text-nowrap">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
                     <tr>
                         <th class="px-6 py-3 w-12">Pilih</th>

@@ -9,10 +9,10 @@
     <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
     {{-- akses tailwind offline yang telah dinstall dan font dari google font --}}
-    @vite(['resources/css/app.css', 'resources/css/font.css'])
+    @vite(['resources/css/app.css'])
 </head>
 
-<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins">
+<body class="bg-gray-200 max-w-480 mx-auto overflow-x-hidden poppins antialiased">
     {{-- component sidebar dari folder (components.sidebar) --}}
     @include('components.sidebar')
     {{-- content utama --}}
@@ -23,6 +23,7 @@
         </div>
     </div>
 </body>
+<script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 {{-- Script buka tutup sidebar --}}
 <script>
     const sidebar = document.getElementById("sidebar");

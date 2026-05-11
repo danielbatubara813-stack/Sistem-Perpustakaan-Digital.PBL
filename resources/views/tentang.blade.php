@@ -14,7 +14,7 @@
         <div class="absolute z-20 h-full flex flex-col justify-center px-6 md:px-16 text-white">
             <p class="text-blue-300 font-semibold tracking-widest mb-2">TENTANG KAMI</p>
 
-            <h1 class="text-4xl md:text-6xl font-extrabold leading-tight uppercase">
+            <h1 class="text-2xl md:text-4xl lg:text-6xl font-extrabold leading-tight uppercase">
                 PERPUSTAKAAN <br>
                 POLITEKNIK NEGERI BATAM
             </h1>
@@ -35,14 +35,14 @@
             <div>
                 <h2 class="font-bold mb-3 text-4xl">TENTANG KAMI</h2>
 
-                <p class="text-gray-700 leading-relaxed mb-3">
+                <p class="text-gray-700 text-justify leading-relaxed mb-3">
                     Perpustakaan kami hadir sebagai pusat informasi dan sumber belajar yang menyediakan koleksi buku yang
                     beragam, mulai dari buku pelajaran, referensi, novel, hingga koleksi umum lainnya.Dengan dukungan sistem
                     digital, pengguna dapat mencari koleksi buku dengan mudah, mengetahui ketersediaan buku secara
                     real-time, serta melakukan peminjaman dan pengembalian dengan lebih cepat dan praktis.
                 </p>
 
-                <p class="text-gray-700 leading-relaxed">
+                <p class="text-gray-700 text-justify leading-relaxed">
                     Kami berkomitmen memberikan layanan yang nyaman, efisien, dan mudah diakses, didukung oleh pengelolaan
                     data yang teratur serta informasi yang selalu diperbarui. Selain itu, perpustakaan kami menjadi tempat
                     yang mendukung kegiatan belajar, menambah wawasan, dan meningkatkan minat baca bagi seluruh pengguna.
@@ -63,7 +63,7 @@
                     <div
                         class="bg-white border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                         <h3 class="font-bold mb-2">VISI</h3>
-                        <p class="text-sm">
+                        <p class="text-sm text-justify">
                             Visi dari Polibatam adalah menjadi politeknik generasi baru yang bermutu, adaptif, inovatif, dan
                             bermitra erat dengan industri dan masyarakat untuk mendukung Indonesia Maju dan Sejahtera 2045.
                         </p>
@@ -73,7 +73,7 @@
                     <div
                         class="bg-white border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                         <h3 class="font-bold mb-2">MISI</h3>
-                        <p class="text-sm">
+                        <p class="text-sm text-justify">
                             Misi dari Polibatam adalah aktif dalam proses kreasi, penyebaran dan penerapan sains dan
                             teknologi
                             melalui layanan pendidikan tinggi vokasi dan penelitian terapan yang bermutu.

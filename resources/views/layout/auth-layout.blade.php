@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login | Perpustakaan Politeknik Negeri Batam</title>
 
-    @vite(['resources/css/app.css', 'resources/css/font.css'])
+    @vite(['resources/css/app.css'])
 </head>
 
 <body class="poppins antialiased overflow-hidden">
@@ -72,7 +72,7 @@
 
                     <!-- Login Card -->
                     <div
-                        class="w-full h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto scrollbar-hide">
+                        class="w-full h-[82vh] md:h-[92vh] bg-white rounded-3xl shadow-2xl px-10 py-12 overflow-y-auto scrollbar-hide">
 
                         @yield('content')
 

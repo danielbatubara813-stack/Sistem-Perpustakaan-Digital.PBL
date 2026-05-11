@@ -1,5 +1,5 @@
 <!-- Tabs Header -->
-<div class="flex border-b border-gray-300">
+<div class="flex flex-nowrap text-nowrap border-b border-gray-300 w-full overflow-x-auto scrollbar-hide">
     <a href="{{ route('profile.reservasi-page') }}"
         class="px-6 py-4 text-sm font-medium border-b-2 
             {{ request()->routeIs('profile.reservasi-page') ? 'border-blue-500 text-blue-500' : 'border-transparent text-gray-500 hover:text-blue-500' }}">
