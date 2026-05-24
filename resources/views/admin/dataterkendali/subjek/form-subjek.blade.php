@@ -1,6 +1,6 @@
 @extends('layout.app-admin')
 
-@section('title', 'Kelola Tipe Koleksi')
+@section('title', 'Kelola Subjek')
 @php
     $title = 'Daftar Subjek';
     $description = 'Kelola Subjek untuk subjek buku perpustakaan';
@@ -18,7 +18,7 @@
             @endphp
         @else
             @php
-                $route = route('admin.data-terkendali.subjek.update', $tipe->id);
+                $route = route('admin.data-terkendali.subjek.update');
                 $method = 'PUT';
             @endphp
         @endif
@@ -30,27 +30,17 @@
             @else
                 @method('POST')
             @endif
+            @if (Route::is('admin.data-terkendali.subjek.edit'))
+                <input name="id_subjek" value="{{ $subjek->id_subjek }}" type="hidden" />
+            @endif
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
                 <label class="sm:col-span-3 text-sm text-slate-700">Nama Subjek*</label>
                 <div class="sm:col-span-9">
-                    <input name="nama_subjek" value="{{ old('nama_subjek') }}" type="text" placeholder="Contoh: Teknologi"
+                    <input name="nama_subjek"
+                        value="{{ Route::is('admin.data-terkendali.subjek.edit') ? old('nama_subjek', $subjek->nama_subjek) : old('nama_subjek') }}"
+                        type="text" placeholder="Contoh: Teknologi"
                         class="w-full max-w-96 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
                     @error('nama_subjek')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
-                    @enderror
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                <label class="sm:col-span-3 text-sm text-slate-700">Tipe Subjek*</label>
-                <div class="sm:col-span-9">
-                    <select name="tipe_subjek" id=""
-                        class="w-full max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                        <option value="">Topik</option>
-                        <option value="">Pekerjaan</option>
-                        <option value="">Aliran</option>
-                        <option value="">Geografis</option>
-                    </select>
-                    @error('tipe_subjek')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>

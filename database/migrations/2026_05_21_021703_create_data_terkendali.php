@@ -40,7 +40,7 @@ return new class extends Migration {
         });
 
         Schema::create('dok_bahasa', function (Blueprint $table) {
-            $table->increments('kode_bahasa');
+            $table->string('kode_bahasa', 2)->primary();
             $table->string('nama_bahasa');
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();

@@ -11,8 +11,8 @@ class DokBahasaSeeder extends Seeder
     public function run(): void
     {
         DB::table('dok_bahasa')->insert([
-            ['nama_bahasa' => 'Indonesia'],
-            ['nama_bahasa' => 'Inggris'],
+            ['kode_bahasa' => 'ID', 'nama_bahasa' => 'Indonesia'],
+            ['kode_bahasa' => 'EN','nama_bahasa' => 'Inggris'],
         ]);
     }
 }

@@ -70,36 +70,46 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
     Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
         Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {
-            Route::get('/', [TipeKoleksiController::class, 'index'])->name('index');
-            Route::get('/create', [TipeKoleksiController::class, 'create'])->name('create');
-            Route::post('/', [TipeKoleksiController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [TipeKoleksiController::class, 'edit'])->name('edit');
+            Route::get('/', [TipeKoleksiController::class, 'indexTipeKoleksi'])->name('index');
+            Route::get('/create', [TipeKoleksiController::class, 'createTipeKoleksi'])->name('create');
+            Route::post('/', [TipeKoleksiController::class, 'storeTipeKoleksi'])->name('store');
+            Route::get('/{id}/edit', [TipeKoleksiController::class, 'editTipeKoleksi'])->name('edit');
+            Route::put('/update', [TipeKoleksiController::class, 'updateTipeKoleksi'])->name('update');
+            Route::delete('/destroy', [TipeKoleksiController::class, 'destroyTipeKoleksi'])->name('destroy');
         });
         Route::prefix('subjek')->name('subjek.')->group(function () {
-            Route::get('/', [SubjekController::class, 'index'])->name('index');
-            Route::get('/create', [SubjekController::class, 'create'])->name('create');
-            Route::post('/', [SubjekController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [SubjekController::class, 'edit'])->name('edit');
+            Route::get('/', [SubjekController::class, 'indexSubjek'])->name('index');
+            Route::get('/create', [SubjekController::class, 'createSubjek'])->name('create');
+            Route::post('/', [SubjekController::class, 'storeSubjek'])->name('store');
+            Route::get('/{id}/edit', [SubjekController::class, 'editSubjek'])->name('edit');
+            Route::put('/update', [SubjekController::class, 'updateSubjek'])->name('update');
+            Route::delete('/destroy', [SubjekController::class, 'destroySubjek'])->name('destroy');
         });
         Route::prefix('dok-bahasa')->name('dok-bahasa.')->group(function () {
-            Route::get('/', [DokBahasaController::class, 'index'])->name('index');
-            Route::get('/create', [DokBahasaController::class, 'create'])->name('create');
-            Route::post('/', [DokBahasaController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [DokBahasaController::class, 'edit'])->name('edit');
+            Route::get('/', [DokBahasaController::class, 'indexBahasa'])->name('index');
+            Route::get('/create', [DokBahasaController::class, 'createBahasa'])->name('create');
+            Route::post('/', [DokBahasaController::class, 'storeBahasa'])->name('store');
+            Route::get('/{id}/edit', [DokBahasaController::class, 'editBahasa'])->name('edit');
+            Route::put('/update', [DokBahasaController::class, 'updateBahasa'])->name('update');
+            Route::delete('/destroy', [DokBahasaController::class, 'destroyBahasa'])->name('destroy');
         });
 
         Route::prefix('penulis')->name('penulis.')->group(function () {
-            Route::get('/', [PenulisController::class, 'index'])->name('index');
-            Route::get('/create', [PenulisController::class, 'create'])->name('create');
-            Route::post('/', [PenulisController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [PenulisController::class, 'edit'])->name('edit');
+            Route::get('/', [PenulisController::class, 'indexPenulis'])->name('index');
+            Route::get('/create', [PenulisController::class, 'createPenulis'])->name('create');
+            Route::post('/', [PenulisController::class, 'storePenulis'])->name('store');
+            Route::get('/{id}/edit', [PenulisController::class, 'editPenulis'])->name('edit');
+            Route::put('/update', [PenulisController::class, 'updatePenulis'])->name('update');
+            Route::delete('/destroy', [PenulisController::class, 'destroyPenulis'])->name('destroy');
         });
 
         Route::prefix('penerbit')->name('penerbit.')->group(function () {
-            Route::get('/', [PenerbitController::class, 'index'])->name('index');
-            Route::get('/create', [PenerbitController::class, 'create'])->name('create');
-            Route::post('/', [PenerbitController::class, 'store'])->name('store');
-            Route::get('/{id}/edit', [PenerbitController::class, 'edit'])->name('edit');
+            Route::get('/', [PenerbitController::class, 'indexPenerbit'])->name('index');
+            Route::get('/create', [PenerbitController::class, 'createPenerbit'])->name('create');
+            Route::post('/', [PenerbitController::class, 'storePenerbit'])->name('store');
+            Route::get('/{id}/edit', [PenerbitController::class, 'editPenerbit'])->name('edit');
+            Route::put('/update', [PenerbitController::class, 'updatePenerbit'])->name('update');
+            Route::delete('/destroy', [PenerbitController::class, 'destroyPenerbit'])->name('destroy');
         });
     });
 });

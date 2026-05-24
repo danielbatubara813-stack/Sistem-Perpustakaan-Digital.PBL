@@ -18,7 +18,7 @@
             @endphp
         @else
             @php
-                $route = route('admin.data-terkendali.tipe-koleksi.update', $tipe->id);
+                $route = route('admin.data-terkendali.tipe-koleksi.update', $tipe_koleksi->id);
                 $method = 'PUT';
             @endphp
         @endif
@@ -30,13 +30,17 @@
             @else
                 @method('POST')
             @endif
+            @if (Route::is('admin.data-terkendali.tipe-koleksi.edit'))
+                <input name="id_tipe" value="{{ $tipe_koleksi->id_tipe }}" type="hidden" />
+            @endif
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
                 <label class="sm:col-span-3 text-sm text-slate-700">Nama Tipe Koleksi*</label>
                 <div class="sm:col-span-9">
-                    <input name="nama_tipe_koleksi" value="{{ old('nama_tipe_koleksi') }}" type="text"
-                        placeholder="Contoh: Fiksi"
+                    <input name="nama_tipe"
+                        value="{{ Route::is('admin.data-terkendali.tipe-koleksi.edit') ? old('nama_tipe', $tipe_koleksi->nama_tipe) : old('nama_tipe') }}"
+                        type="text" placeholder="Contoh: Fiksi"
                         class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    @error('nama_tipe_koleksi')
+                    @error('nama_tipe')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>

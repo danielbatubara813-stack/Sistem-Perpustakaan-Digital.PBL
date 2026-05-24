@@ -13,7 +13,7 @@ return new class extends Migration {
         Schema::create('buku', function (Blueprint $table) {
             $table->increments('id_buku');
             $table->integer('id_tipe')->unsigned();
-            $table->integer('kode_bahasa')->unsigned();
+            $table->string('kode_bahasa', 2);
             $table->integer('id_penerbit')->unsigned();
             $table->string('isbn')->length(13)->unique();
             $table->string('judul_buku');

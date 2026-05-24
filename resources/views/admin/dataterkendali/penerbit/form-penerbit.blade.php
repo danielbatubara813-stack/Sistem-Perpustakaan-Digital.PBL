@@ -1,6 +1,6 @@
 @extends('layout.app-admin')
 
-@section('title', 'Kelola Tipe Koleksi')
+@section('title', 'Kelola penerbit')
 @php
     $title = 'Daftar Penerbit';
     $description = 'Kelola penerbit untuk penerbit buku perpustakaan';
@@ -18,7 +18,7 @@
             @endphp
         @else
             @php
-                $route = route('admin.data-terkendali.penerbit.update', $tipe->id);
+                $route = route('admin.data-terkendali.penerbit.update', $penerbit->id);
                 $method = 'PUT';
             @endphp
         @endif
@@ -30,11 +30,15 @@
             @else
                 @method('POST')
             @endif
+            @if (Route::is('admin.data-terkendali.penerbit.edit'))
+                <input name="id_penerbit" value="{{ $penerbit->id_penerbit }}" type="hidden" />
+            @endif
             <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
                 <label class="sm:col-span-3 text-sm text-slate-700">Nama penerbit*</label>
                 <div class="sm:col-span-9">
-                    <input name="nama_penerbit" value="{{ old('nama_penerbit') }}" type="text"
-                        placeholder="Contoh: Gramedia"
+                    <input name="nama_penerbit"
+                        value="{{ Route::is('admin.data-terkendali.penerbit.edit') ? old('nama_penerbit', $penerbit->nama_penerbit) : old('nama_penerbit') }}"
+                        type="text" placeholder="Contoh: Gramedia"
                         class="w-full max-w-96 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
                     @error('nama_penerbit')
                         <p class="text-sm text-red-600 mt-1">{{ $message }}</p>

@@ -128,7 +128,7 @@ class BukuSeeder extends Seeder
 
                 'id_tipe' => rand(1, 5),
 
-                'kode_bahasa' => rand(1, 2),
+                'kode_bahasa' => ['ID', 'EN'][array_rand(['ID', 'EN'])],
 
                 'id_penerbit' => rand(1, 5),
 
