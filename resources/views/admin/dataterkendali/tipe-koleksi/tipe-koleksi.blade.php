@@ -70,7 +70,8 @@
         </div>
     </div>
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
-        <form action="{{ route('admin.data-terkendali.tipe-koleksi.destroy') }}" method="POST">
+        <form action="{{ route('admin.data-terkendali.tipe-koleksi.destroy') }}" id="multi-delete-form"
+            data-delete-name="id_tipe" method="POST">
             @method('DELETE')
             @csrf
             <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
