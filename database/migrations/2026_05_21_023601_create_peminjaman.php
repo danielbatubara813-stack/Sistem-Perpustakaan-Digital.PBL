@@ -53,8 +53,8 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('peminjaman');
-        Schema::dropIfExists('aturan_peminjaman');
         Schema::dropIfExists('pengembalian');
+        Schema::dropIfExists('aturan_peminjaman');
+        Schema::dropIfExists('peminjaman');
     }
 };

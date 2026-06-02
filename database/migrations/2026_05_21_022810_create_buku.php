@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->integer('id_tipe')->unsigned();
             $table->string('kode_bahasa', 2);
             $table->integer('id_penerbit')->unsigned();
-            $table->string('isbn')->length(13)->unique();
+            $table->string('isbn', 13)->unique();
             $table->string('judul_buku');
             $table->date('tanggal_terbit');
             $table->text('deskripsi');
@@ -63,7 +63,9 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('buku');
         Schema::dropIfExists('item_buku');
+        Schema::dropIfExists('penulis_buku');
+        Schema::dropIfExists('subjek_buku');
+        Schema::dropIfExists('buku');
     }
 };

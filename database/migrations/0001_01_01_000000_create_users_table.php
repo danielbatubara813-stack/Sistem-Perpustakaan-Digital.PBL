@@ -20,17 +20,17 @@ return new class extends Migration {
         Schema::create('anggota', function (Blueprint $table) {
             $table->increments('id_anggota');
             $table->integer('id_jenis')->unsigned();
-            $table->string('nomor_identitas')->length(10)->unique();
+            $table->string('nomor_identitas', 10)->unique();
             $table->enum('jenis_nomor_identitas', ['NIM', 'NIBN']);
             $table->string('email')->unique();
             $table->string('nama');
-            $table->string('no_hp')->length(15)->unique();
+            $table->string('no_hp', 15)->unique();
             $table->enum('status_anggota', ["Aktif", "Tidak Aktif"]);
             $table->enum('jenis_kelamin', ["Laki-Laki", "Perempuan"]);
             $table->date('tanggal_lahir');
-            $table->binary('profile')->nullable();
+            $table->string('profile')->nullable();
             $table->enum('verifikasi_admin', ['Menunggu', "Terverifikasi", "Ditolak"]);
-            $table->binary('foto_ktp')->nullable();
+            $table->string('foto_ktp')->nullable();
             $table->string('password');
             $table->timestamp('tanggal_daftar')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
@@ -40,7 +40,7 @@ return new class extends Migration {
 
         Schema::create('admin', function (Blueprint $table) {
             $table->increments('id_admin');
-            $table->string('username')->length(15)->unique();
+            $table->string('username', 15)->unique();
             $table->string('password');
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
@@ -71,10 +71,10 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_anggota');
-        Schema::dropIfExists('anggota');
-        Schema::dropIfExists('admin');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('admin');
+        Schema::dropIfExists('anggota');
+        Schema::dropIfExists('jenis_keanggotaan');
     }
 };
