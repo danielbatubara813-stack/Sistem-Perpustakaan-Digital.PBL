@@ -140,28 +140,44 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($loans as $loan)
-                        <tr
-                            class="hover:bg-gray-100 transition-all duration-150 ease-in-out odd:bg-white even:bg-slate-100">
-                            <td class="px-6 py-4">
-                                <input type="checkbox"
-                                    class="row-checkbox h-5 w-5 rounded-full border-slate-300 text-blue-600 focus:ring-blue-500" />
-                            </td>
-                            <td class="px-6 py-4 font-medium text-gray-900 flex items-center gap-4">
-                                <img class="rounded-full w-10 h-10"
-                                    src="https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg"
-                                    alt="">
-                                <div>
-                                    <div>{{ $loan['member'] }}</div>
-                                    <div class="text-xs text-slate-500">{{ $loan['identity'] }}</div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">{{ $loan['kode_item'] }}</td>
-                            <td class="px-6 py-4">{{ $loan['tanggal_pinjam'] }}</td>
-                            <td class="px-6 py-4">{{ $loan['jatuh_tempo'] }}</td>
-                        </tr>
-                    @endforeach
-                </tbody>
+    @foreach ($loans as $loan)
+        <tr
+            class="hover:bg-gray-100 transition-all duration-150 ease-in-out odd:bg-white even:bg-slate-100">
+
+            <td class="px-6 py-4">
+                <input type="checkbox"
+                    class="row-checkbox h-5 w-5 rounded-full border-slate-300 text-blue-600 focus:ring-blue-500" />
+            </td>
+
+            <td class="px-6 py-4 font-medium text-gray-900 flex items-center gap-4">
+                <img class="rounded-full w-10 h-10"
+                    src="https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg"
+                    alt="">
+
+                <div>
+                    <div>{{ $loan->anggota->nama }}</div>
+
+                    <div class="text-xs text-slate-500">
+                        {{ $loan->anggota->nomor_identitas }}
+                    </div>
+                </div>
+            </td>
+
+            <td class="px-6 py-4">
+                {{ $loan->id_item }}
+            </td>
+
+            <td class="px-6 py-4">
+                {{ $loan->tanggal_peminjaman }}
+            </td>
+
+            <td class="px-6 py-4">
+                {{ $loan->tanggal_jatuh_tempo }}
+            </td>
+
+        </tr>
+    @endforeach
+</tbody>
             </table>
         </div>
 

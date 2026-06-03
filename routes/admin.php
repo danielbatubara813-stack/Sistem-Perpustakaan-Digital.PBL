@@ -29,23 +29,37 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/list-buku/create', [BukuController::class, 'create'])->name('buku.create');
     // route halaman edit buku
     Route::get('/list-buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
+    // route bulk delete buku (multi-delete)
+    Route::delete('/list-buku/destroy', [BukuController::class, 'destroyMultiple'])->name('buku.destroyMultiple');
+    // route halaman daftar anggota
+    Route::get('/list-buku', [BukuController::class, 'listBuku'])->name('buku');
+    // route halaman daftar buku untuk dikelolah
+    Route::get('/list-buku/create', [BukuController::class, 'create'])->name('buku.create');
+    // route halaman create buku
+    Route::post('/list-buku', [BukuController::class, 'store'])->name('buku.store');
+    // route simpan buku baru
+    Route::get('/list-buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
+    // route halaman edit buku
+    Route::put('/list-buku/{id}', [BukuController::class, 'update'])->name('buku.update');
+    // update buku
+    Route::delete('/list-buku/{id}', [BukuController::class, 'destroy'])
+    ->name('buku.destroy');
+    // hapus buku
 
     Route::prefix('list-anggota')->name('anggota.')->group(function () {
-        Route::get('/',                [AnggotaController::class, 'indexAnggota'])->name('daftar');
-        Route::get('/create',          [AnggotaController::class, 'createAnggota'])->name('create');
-        Route::post('/',               [AnggotaController::class, 'storeAnggota'])->name('store');
-        // bulk-destroy HARUS sebelum /{id} agar tidak salah cocok
-        Route::delete('/bulk-destroy', [AnggotaController::class, 'bulkDestroyAnggota'])->name('bulk-destroy');
-        Route::get('/{id}/edit',       [AnggotaController::class, 'editAnggota'])->name('edit');
-        Route::put('/{id}',            [AnggotaController::class, 'updateAnggota'])->name('update');
-        Route::delete('/{id}',         [AnggotaController::class, 'destroyAnggota'])->name('destroy');
-        Route::get('/jenis',                    [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
-        Route::get('/jenis/create',             [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
-        Route::post('/jenis',                   [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
-        Route::delete('/jenis/bulk-destroy',    [JenisKeanggotaanController::class, 'bulkDestroyJenis'])->name('jenis.bulk-destroy');
-        Route::get('/jenis/{id}/edit',          [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
-        Route::put('/jenis/{id}',               [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
-        Route::delete('/jenis/{id}',            [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
+        Route::get('/', [AnggotaController::class, 'listAnggota'])->name('daftar');
+        // route halaman create anggota
+        Route::get('/create', [AnggotaController::class, 'create'])->name('create');
+        // route untuk menyimpan anggota baru
+        Route::post('', [AnggotaController::class, 'store'])->name('store');
+        // route halaman edit anggota
+        Route::get('/{id}/edit', [AnggotaController::class, 'edit'])->name('edit');
+        // route halaman jenis keanggotaan
+        Route::get('/jenis', [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
+        // route halaman tambah jenis keanggotaan
+        Route::get('/jenis/create', [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
+        // route untuk menyimpan jenis keanggotaan
+        Route::post('/jenis', [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
     });
 
     // Peminjaman

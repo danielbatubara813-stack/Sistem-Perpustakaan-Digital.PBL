@@ -28,7 +28,7 @@ class ReservasiController extends Controller
                 'tanggal_pengajuan' => '16-04-2026',
                 'status_reservasi' => 'Menunggu Konfirmasi',
             ],
-
+            
             [
                 'id' => 2,
                 'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',

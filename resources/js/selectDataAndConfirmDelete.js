@@ -1,4 +1,6 @@
 (function () {
+    // allow single-delete flow from pages (set window.singleDeleteAction = '<url>')
+    window.singleDeleteAction = null;
     const selectAllBtn = document.getElementById('selectAllTopBtn');
     const deleteBtn = document.getElementById('deleteSelected');
     const deleteForm = document.getElementById('multi-delete-form');
@@ -49,6 +51,9 @@
         }, 10);
     }
 
+    // expose open/close so other pages can open the modal for single-delete
+    window.openDeleteModal = openModal;
+
     // Ini berfungsi untuk menutup modal confirm delete
     function closeModal() {
         if (!deleteModal) return;
@@ -63,6 +68,8 @@
             deleteModal.classList.add('hidden');
         }, 300);
     }
+
+    window.closeDeleteModal = closeModal;
 
     // ini berfungsi untuk mentrigger fungsi diatas berupa centang seluruh data pada halaman tersebut
     if (selectAllBtn) {
@@ -152,6 +159,33 @@
     if (confirmDelete) {
         confirmDelete.addEventListener('click', function (event) {
             event.preventDefault();
+            // if a single-delete action was set by a page, prefer that
+            if (window.singleDeleteAction) {
+                const url = window.singleDeleteAction;
+                window.singleDeleteAction = null;
+
+                const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+                const f = document.createElement('form');
+                f.method = 'POST';
+                f.action = url;
+
+                const _csrf = document.createElement('input');
+                _csrf.type = 'hidden';
+                _csrf.name = '_token';
+                _csrf.value = csrf;
+                f.appendChild(_csrf);
+
+                const _m = document.createElement('input');
+                _m.type = 'hidden';
+                _m.name = '_method';
+                _m.value = 'DELETE';
+                f.appendChild(_m);
+
+                document.body.appendChild(f);
+                f.submit();
+                return;
+            }
 
             const checkedRows = rowCheckboxes().filter(checkbox => checkbox.checked);
 

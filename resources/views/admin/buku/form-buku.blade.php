@@ -10,16 +10,36 @@
 
         <h2 class="text-lg font-semibold mb-6">DAFTAR BUKU</h2>
 
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" action="{{ isset($book) ? route('admin.buku.update', $book->id_buku) : route('admin.buku.store') }}" enctype="multipart/form-data">
             @csrf
+            @if(isset($book))
+                @method('PUT')
+            @endif
 
             <div class="space-y-5">
+
+                {{-- Tipe Koleksi --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
+                    <label class="md:col-span-3">Tipe Koleksi*</label>
+
+                    <select name="id_tipe" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                        <option value="">Pilih Tipe Koleksi</option>
+                        @if(isset($tipe))
+                            @foreach($tipe as $t)
+                                <option value="{{ $t->id_tipe }}" {{ old('id_tipe', $book->id_tipe ?? '') == $t->id_tipe ? 'selected' : '' }}>{{ $t->nama_tipe }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
 
                 {{-- Judul --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
                     <label class="md:col-span-3">Judul*</label>
 
-                    <input type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    <input name="judul_buku" value="{{ old('judul_buku', $book->judul_buku ?? '') }}" type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    @error('judul_buku')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Penulis --}}
@@ -130,7 +150,7 @@
                             </div>
                         </div>
 
-                        <input type="text" class="w-full border border-gray-400 rounded px-3 py-2">
+                        <input name="penulis" type="text" value="{{ old('penulis', $book->penulis ?? '') }}" class="w-full border border-gray-400 rounded px-3 py-2">
                     </div>
                 </div>
 
@@ -138,7 +158,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
                     <label class="md:col-span-3">No.Rak*</label>
 
-                    <input type="text" id="no_rak" maxlength="10"
+                    <input name="no_rak" type="text" id="no_rak" maxlength="10" value="{{ old('no_rak', $book->no_rak ?? '') }}"
                         class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
                 </div>
 
@@ -147,10 +167,10 @@
                     <label class="md:col-span-3">No.Panggil*</label>
 
                     <div class="md:col-span-9 flex w-full">
-                        <input max="7" type="text" id="no_panggil_1" readonly
+                        <input max="7" type="text" id="no_panggil_1" name="no_panggil_prefix" readonly value="{{ old('no_panggil_prefix', isset($book) ? substr($book->no_panggil ?? '', 0, 7) : '') }}"
                             class="w-24 border border-gray-400 rounded-l px-3 py-2 bg-gray-200">
 
-                        <input type="text" class="flex-1 border border-gray-400 rounded-r px-3 py-2 min-w-0">
+                        <input name="no_panggil" type="text" class="flex-1 border border-gray-400 rounded-r px-3 py-2 min-w-0" value="{{ old('no_panggil', $book->no_panggil ?? '') }}">
                     </div>
                 </div>
 
@@ -158,7 +178,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
                     <label class="md:col-span-3">Penerbit*</label>
 
-                    <input type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    <div class="md:col-span-9">
+                        @if(isset($penerbit) && $penerbit->count())
+                            <select name="id_penerbit" class="w-full border border-gray-400 rounded px-3 py-2">
+                                <option value="">Pilih Penerbit</option>
+                                @foreach($penerbit as $p)
+                                    <option value="{{ $p->id_penerbit }}" {{ old('id_penerbit', $book->id_penerbit ?? '') == $p->id_penerbit ? 'selected' : '' }}>{{ $p->nama_penerbit }}</option>
+                                @endforeach
+                            </select>
+                        @else
+                            <input name="id_penerbit" type="text" class="w-full border border-gray-400 rounded px-3 py-2" value="{{ old('id_penerbit', $book->id_penerbit ?? '') }}">
+                        @endif
+                    </div>
                 </div>
 
                 {{-- KODE UNIK --}}
@@ -206,10 +237,16 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start">
                     <label class="md:col-span-3">Bahasa*</label>
 
-                    <select class="md:col-span-3 w-full border border-gray-400 rounded px-3 py-2">
-                        <option>Default</option>
-                        <option>Indonesia</option>
-                        <option>English</option>
+                    <select name="kode_bahasa" class="md:col-span-3 w-full border border-gray-400 rounded px-3 py-2">
+                        @if(isset($bahasa) && $bahasa->count())
+                            @foreach($bahasa as $b)
+                                <option value="{{ $b->kode_bahasa }}" {{ old('kode_bahasa', $book->kode_bahasa ?? '') == $b->kode_bahasa ? 'selected' : '' }}>{{ $b->nama_bahasa }}</option>
+                            @endforeach
+                        @else
+                            <option value="">Default</option>
+                            <option value="id">Indonesia</option>
+                            <option value="en">English</option>
+                        @endif
                     </select>
                 </div>
 
@@ -217,14 +254,32 @@
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
                     <label class="md:col-span-3">ISBN/ISSN*</label>
 
-                    <input type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    <input name="isbn" type="text" value="{{ old('isbn', $book->isbn ?? '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    @error('isbn')
+                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Edisi --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
                     <label class="md:col-span-3">Edisi</label>
 
-                    <input type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    <input name="edisi" type="text" value="{{ old('edisi', $book->edisi ?? '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                </div>
+
+                {{-- Tanggal Terbit --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start md:items-center">
+                    <label class="md:col-span-3">Tanggal Terbit</label>
+
+                    <input name="tanggal_terbit" type="date" value="{{ old('tanggal_terbit', isset($book->tanggal_terbit) ?
+                        \Carbon\Carbon::parse($book->tanggal_terbit)->format('Y-m-d') : '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                </div>
+
+                {{-- Deskripsi --}}
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start">
+                    <label class="md:col-span-3">Deskripsi</label>
+
+                    <textarea name="deskripsi" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">{{ old('deskripsi', $book->deskripsi ?? '') }}</textarea>
                 </div>
 
                 {{-- Subjek --}}
@@ -254,8 +309,8 @@
 
                         <div
                             class="w-32 h-40 border border-gray-400 rounded flex items-center justify-center overflow-hidden bg-gray-100 shrink-0">
-                            <img id="preview" class="hidden w-full h-full object-cover">
-                            <span id="placeholder" class="text-gray-400 text-sm">Image</span>
+                            <img id="preview" class="{{ isset($book) && $book->cover_buku ? '' : 'hidden' }} w-full h-full object-cover" src="{{ isset($book) && $book->cover_buku ? asset('storage/covers/'.$book->cover_buku) : '' }}">
+                            <span id="placeholder" class="text-gray-400 text-sm {{ isset($book) && $book->cover_buku ? 'hidden' : '' }}">Image</span>
                         </div>
 
                         <div class="flex flex-col gap-1 w-full">
@@ -264,6 +319,10 @@
                             file:bg-blue-600 file:text-white file:border-0
                             file:px-4 file:py-2 file:pl-10"
                                 name="cover" accept="image/png, image/jpeg">
+
+                            @error('cover')
+                                <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                            @enderror
 
                             <span class="text-xs text-gray-500">
                                 Maksimum 10MB (JPG, PNG)
@@ -280,8 +339,12 @@
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2
                     bg-blue-600 hover:bg-blue-700 text-white rounded-md
                     px-4 py-2 text-sm shadow-sm transition">
-                        Submit
+                        {{ isset($book) ? 'Update' : 'Submit' }}
                     </button>
+
+                    @if(isset($book))
+                        <button type="button" onclick="window.singleDeleteAction='{{ route('admin.buku.destroy', $book->id_buku) }}'; if(window.openDeleteModal){ window.openDeleteModal(); } else { alert('Konfirmasi hapus tidak tersedia.'); }" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">Hapus</button>
+                    @endif
 
                     <a href="{{ route('admin.buku') }}"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2

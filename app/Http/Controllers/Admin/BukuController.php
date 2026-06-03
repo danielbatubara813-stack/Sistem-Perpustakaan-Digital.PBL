@@ -3,106 +3,152 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Buku;
 use Illuminate\Http\Request;
+use App\Models\TipeKoleksi;
+use App\Models\DokBahasa;
+use App\Models\Penerbit;
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
-    public function ambilDataBuku()
-    {
-        $koleksi_baru = [
-            [
-                'judul' => 'Laut Bercerita',
-                'penulis' => 'Leila S. Chudori',
-                'cover' => 'https://imgv2-1-f.scribdassets.com/img/document/443499450/original/75e0895939/1?v=1',
-                'isbn' => '9786024246945',
-                'last_update' => '2026-04-02',
-                'jumlah_copy' => 2,
-            ],
-            [
-                'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',
-                'penulis' => 'Yuniar Supardi',
-                'cover' => 'https://cdn.gramedia.com/uploads/items/9786230010460_Cov_Semua_Bisa_Menjadi_Programmer_Laravel_Basic.jpg',
-                'isbn' => '9786230010460',
-                'last_update' => '2026-04-12',
-                'jumlah_copy' => 2,
-            ],
-            [
-                'judul' => 'The Next.js Handbook: A Complete Resource for Developers',
-                'penulis' => 'Brandon Kim',
-                'cover' => 'https://m.media-amazon.com/images/I/518LETZYITL._AC_UF1000,1000_QL80_.jpg',
-                'isbn' => '9781803235929',
-                'last_update' => '2026-04-15',
-                'jumlah_copy' => 2,
-            ],
-            [
-                'judul' => 'Akuntansi Dasar Untuk Bisnis: Teori dan Praktik',
-                'penulis' => 'Ely Suhayati',
-                'cover' => 'https://palcomtech.ac.id/wp-content/uploads/2023/08/lr7ddjapfkqm3e6qut3rnk.jpg',
-                'isbn' => '9786232287655',
-                'last_update' => '2026-04-01',
-                'jumlah_copy' => 1,
-            ],
-            [
-                'judul' => 'Buku Internet of Things (IoT) dan Aplikasinya',
-                'penulis' => 'Adhan Efendi',
-                'cover' => 'https://deepublishstore.com/wp-content/uploads/2024/06/Internet-Of-Things-IoT-dan-Aplikasinya_Adhan-Efendi-rev-1.0-depan-scaled.jpg',
-                'isbn' => '9786230269370',
-                'last_update' => '2026-04-01',
-                'jumlah_copy' => 1,
-            ],
-            [
-                'judul' => 'Blockchain: Dari Konsep hingga Implementasi',
-                'penulis' => 'Achmad Fitro, S. Kom., M.Kom, dkk.',
-                'cover' => 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/product-metas/l0c-7t4hx1.jpg',
-                'isbn' => '9786230225475',
-                'last_update' => '2026-04-18',
-                'jumlah_copy' => 2,
-            ],
-            [
-                'judul' => 'Rich Dad Poor Dad',
-                'penulis' => 'Robert T. Kiyosaki',
-                'cover' => 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9786020333175_rich-dad-poor-dad-_edisi-revisi_.jpg',
-                'isbn' => '9786020333175',
-                'last_update' => '2026-04-11',
-                'jumlah_copy' => 2,
-            ],
-            [
-                'judul' => 'Clean Code',
-                'penulis' => 'Robert C. Martin',
-                'cover' => 'https://m.media-amazon.com/images/I/41xShlnTZTL.jpg',
-                'isbn' => '9780132350884',
-                'last_update' => '2026-04-01',
-                'jumlah_copy' => 1,
-            ],
-            [
-                'judul' => 'Atomic Habits',
-                'penulis' => 'James Clear',
-                'cover' => 'https://m.media-amazon.com/images/I/91bYsX41DVL.jpg',
-                'isbn' => '9780735211292',
-                'last_update' => '2026-04-01',
-                'jumlah_copy' => 1,
-            ],
-            [
-                'judul' => 'Database System Concepts',
-                'penulis' => 'Abraham Silberschatz',
-                'cover' => 'https://m.media-amazon.com/images/I/51mFoFmu0EL.jpg',
-                'isbn' => '9780078022159',
-                'last_update' => '2026-04-09',
-                'jumlah_copy' => 2,
-            ],
-        ];
-
-        return $koleksi_baru;
-    }
     public function listBuku()
     {
-        $books = $this->ambilDataBuku();
+        $books = Buku::all();
 
         return view('admin.buku.buku', compact('books'));
     }
 
     public function create()
     {
-        return view('admin.buku.form-buku');
+        $tipe = TipeKoleksi::all();
+        $bahasa = DokBahasa::all();
+        $penerbit = Penerbit::all();
+
+        return view('admin.buku.form-buku', compact('tipe', 'bahasa', 'penerbit'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'judul_buku' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:100|unique:buku,isbn',
+            'tanggal_terbit' => 'nullable|date',
+            'deskripsi' => 'nullable|string',
+            'edisi' => 'nullable|string|max:100',
+            'no_panggil' => 'nullable|string|max:255',
+            'no_rak' => 'nullable|string|max:255',
+            'id_tipe' => 'nullable|exists:tipe_koleksi,id_tipe',
+            'kode_bahasa' => 'nullable|exists:dok_bahasa,kode_bahasa',
+            'id_penerbit' => 'nullable|exists:penerbit,id_penerbit',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+        ]);
+
+        $data = $request->only([
+            'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
+            'tanggal_terbit', 'deskripsi', 'edisi', 'no_panggil', 'no_rak'
+        ]);
+
+        if ($request->hasFile('cover')) {
+            $file = $request->file('cover');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
+            $file->storeAs('covers', $filename, 'public');
+            $data['cover_buku'] = $filename;
+        }
+
+        Buku::create($data);
+
+        return redirect()->route('admin.buku')->with('success', 'Data buku berhasil disimpan');
+    }
+
+    public function edit($id)
+    {
+        $book = Buku::findOrFail($id);
+
+        $tipe = TipeKoleksi::all();
+        $bahasa = DokBahasa::all();
+        $penerbit = Penerbit::all();
+
+        return view('admin.buku.form-buku', compact('book', 'tipe', 'bahasa', 'penerbit'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $book = Buku::findOrFail($id);
+
+        $request->validate([
+            'judul_buku' => 'required|string|max:255',
+            'isbn' => 'nullable|string|max:100|unique:buku,isbn,' . $book->id_buku . ',id_buku',
+            'tanggal_terbit' => 'nullable|date',
+            'deskripsi' => 'nullable|string',
+            'edisi' => 'nullable|string|max:100',
+            'no_panggil' => 'nullable|string|max:255',
+            'no_rak' => 'nullable|string|max:255',
+            'id_tipe' => 'nullable|exists:tipe_koleksi,id_tipe',
+            'kode_bahasa' => 'nullable|exists:dok_bahasa,kode_bahasa',
+            'id_penerbit' => 'nullable|exists:penerbit,id_penerbit',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+        ]);
+
+        $data = $request->only([
+            'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
+            'tanggal_terbit', 'deskripsi', 'edisi', 'no_panggil', 'no_rak'
+        ]);
+
+        if ($request->hasFile('cover')) {
+            // delete old cover if exists
+            if ($book->cover_buku) {
+                Storage::disk('public')->delete('covers/' . $book->cover_buku);
+            }
+
+            $file = $request->file('cover');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9_.-]/', '_', $file->getClientOriginalName());
+            $file->storeAs('covers', $filename, 'public');
+            $data['cover_buku'] = $filename;
+        }
+
+        $book->update($data);
+
+        return redirect()->route('admin.buku')->with('success', 'Data buku berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $book = Buku::findOrFail($id);
+
+        // delete cover file if exists
+        if ($book->cover_buku) {
+            Storage::disk('public')->delete('covers/' . $book->cover_buku);
+        }
+
+        $book->delete();
+
+        return redirect()->route('admin.buku')->with('success', 'Data buku berhasil dihapus');
+    }
+
+    /**
+     * Destroy multiple buku selected from listing
+     */
+    public function destroyMultiple(Request $request)
+    {
+        $ids = $request->input('id_buku', []);
+
+        if (!is_array($ids) || !count($ids)) {
+            return redirect()->route('admin.buku')->with('warning', 'Pilih minimal satu data');
+        }
+
+        foreach ($ids as $id) {
+            $book = Buku::find($id);
+            if (!$book) continue;
+
+            if ($book->cover_buku) {
+                Storage::disk('public')->delete('covers/' . $book->cover_buku);
+            }
+
+            $book->delete();
+        }
+
+        return redirect()->route('admin.buku')->with('success', 'Data buku berhasil dihapus');
     }
 }
+    

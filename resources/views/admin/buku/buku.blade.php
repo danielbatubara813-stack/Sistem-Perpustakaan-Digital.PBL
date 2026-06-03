@@ -109,7 +109,10 @@
             </div>
         </div>
         <div class="overflow-x-auto mt-6">
-            <table class="min-w-full text-left text-sm text-slate-600 text-nowrap">
+            <form action="{{ route('admin.buku.destroyMultiple') }}" id="multi-delete-form" data-delete-name="id_buku" method="POST">
+                @method('DELETE')
+                @csrf
+                <table class="min-w-full text-left text-sm text-slate-600 text-nowrap">
                 <thead class="text-xs text-gray-600 uppercase bg-gray-300">
                     <tr>
                         <th class="whitespace-nowrap px-4 py-4">Pilih</th>
@@ -122,41 +125,119 @@
                 </thead>
                 <tbody class="divide-y divide-slate-200">
 
-                    @foreach ($books as $book)
-                        <tr class="odd:bg-white even:bg-slate-100 hover:bg-slate-50 transition-all duration-150">
-                            <td class="px-3 py-3 align-center text-center">
-                                <input type="checkbox"
-                                    class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
-                            </td>
-                            <td class="px-3 py-3">
-                                <div class="flex items-start gap-3">
-                                    <img src="{{ $book['cover'] }}" class="w-12 h-16 object-cover rounded shadow-sm" />
-                                    <div class="min-w-0">
-                                        <p class="font-semibold text-slate-900 line-clamp-1">{{ $book['judul'] }}</p>
-                                        <p class="text-xs text-slate-500 mt-1 truncate">{{ $book['penulis'] }}</p>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-3 py-3 text-slate-700">{{ $book['isbn'] }}</td>
-                            <td class="px-3 py-3 text-slate-700 whitespace-nowrap">{{ $book['last_update'] }}</td>
-                            <td class="px-3 py-3 text-slate-700 text-center">{{ $book['jumlah_copy'] }}</td>
-                            <td class="px-3 py-3 text-right">
-                                <div class="inline-flex items-center gap-2 justify-end">
-                                    <a href="{{ route('admin.buku.create') }}"
-                                        class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-yellow-300 text-black hover:bg-yellow-400 transition"
-                                        aria-label="Edit">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-edit-2">
-                                            <path d="m17 3 4 4L7 21H3v-4L17 3z" />
-                                        </svg>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    @foreach ($books as $book)
+        <tr class="odd:bg-white even:bg-slate-100 hover:bg-slate-50 transition-all duration-150">
+
+            <td class="px-3 py-3 align-center text-center">
+                <input type="checkbox" name="id_buku[]" value="{{ $book->id_buku }}"
+                    class="row-checkbox h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" />
+            </td>
+
+            <td class="px-3 py-3">
+                <div class="flex items-start gap-3">
+
+                    @php
+                        $coverSrc = 'https://placehold.co/80x120';
+                        if ($book->cover_buku) {
+                            $value = $book->cover_buku;
+                            // external URL
+                            if (preg_match('/^https?:\/\//i', $value)) {
+                                $coverSrc = $value;
+                            } else {
+                                try {
+                                    $disk = \Illuminate\Support\Facades\Storage::disk('public');
+                                    if ($disk->exists('covers/' . $value)) {
+                                        // if public symlink exists, serve via asset; otherwise read file and return data URI
+                                        if (file_exists(public_path('storage/covers/' . $value))) {
+                                            $coverSrc = asset('storage/covers/' . $value);
+                                        } else {
+                                            try {
+                                                $contents = $disk->get('covers/' . $value);
+                                                $ext = strtolower(pathinfo($value, PATHINFO_EXTENSION));
+                                                $mime = 'image/jpeg';
+                                                if (in_array($ext, ['png'])) $mime = 'image/png';
+                                                elseif (in_array($ext, ['gif'])) $mime = 'image/gif';
+                                                elseif (in_array($ext, ['webp'])) $mime = 'image/webp';
+                                                elseif (in_array($ext, ['jpg','jpeg'])) $mime = 'image/jpeg';
+                                                $coverSrc = 'data:' . $mime . ';base64,' . base64_encode($contents);
+                                            } catch (\Exception $e) {
+                                                $coverSrc = 'https://placehold.co/80x120';
+                                            }
+                                        }
+                                    } else {
+                                        // detect binary blob: contains non-printable chars or unusually long
+                                        if (preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', $value) || strlen($value) > 255) {
+                                            $mime = 'image/jpeg';
+                                            $coverSrc = 'data:' . $mime . ';base64,' . base64_encode($value);
+                                        } else {
+                                            $coverSrc = 'https://placehold.co/80x120';
+                                        }
+                                    }
+                                } catch (\Exception $e) {
+                                    $coverSrc = 'https://placehold.co/80x120';
+                                }
+                            }
+                        }
+                    @endphp
+
+                    <img src="{{ $coverSrc }}" class="w-12 h-16 object-cover rounded shadow-sm" />
+
+                    <div class="min-w-0">
+                        <p class="font-semibold text-slate-900 line-clamp-1">
+                            {{ $book->judul_buku }}
+                        </p>
+
+                        <p class="text-xs text-slate-500 mt-1 truncate">
+                            {{ $book->edisi }}
+                        </p>
+                    </div>
+
+                </div>
+            </td>
+
+            <td class="px-3 py-3 text-slate-700">
+                {{ $book->isbn }}
+            </td>
+
+            <td class="px-3 py-3 text-slate-700 whitespace-nowrap">
+                {{ $book->tanggal_diubah ? \Carbon\Carbon::parse($book->tanggal_diubah)->setTimezone(config('app.timezone'))->format('d-m-Y H:i:s') : '-' }}
+            </td>
+
+            <td class="px-3 py-3 text-slate-700 text-center">
+                {{ $book->items_count }}
+            </td>
+
+            <td class="px-3 py-3 text-right">
+                <div class="inline-flex items-center gap-2 justify-end">
+
+                    <a href="{{ route('admin.buku.edit', $book->id_buku) }}"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-yellow-300 text-black hover:bg-yellow-400 transition">
+
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <path d="m17 3 4 4L7 21H3v-4L17 3z" />
+
+                        </svg>
+
+                    </a>
+
+                </div>
+            </td>
+
+        </tr>
+    @endforeach
+
+</tbody>
+                </table>
+            </form>
         </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
