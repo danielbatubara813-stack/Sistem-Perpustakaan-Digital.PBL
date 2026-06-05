@@ -75,32 +75,7 @@ class JenisKeanggotaanController extends Controller
             ->with('success', 'Jenis keanggotaan berhasil diperbarui');
     }
 
-    public function jenisDestroy($id)
-    {
-        try {
-            $type = JenisKeanggotaan::findOrFail($id);
-
-            // Cek apakah masih ada anggota dengan jenis ini
-            if ($type->anggota()->count() > 0) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Jenis keanggotaan tidak dapat dihapus karena masih digunakan oleh anggota');
-            }
-
-            $type->delete();
-
-            return redirect()
-                ->back()
-                ->with('success', 'Jenis keanggotaan berhasil dihapus');
-
-        } catch (\Exception $e) {
-            return redirect()
-                ->back()
-                ->with('error', 'Jenis keanggotaan gagal dihapus');
-        }
-    }
-
-    public function bulkDestroyJenis(Request $request)
+    public function destroyJenis(Request $request)
     {
         try {
             $ids = $request->ids ?? [];

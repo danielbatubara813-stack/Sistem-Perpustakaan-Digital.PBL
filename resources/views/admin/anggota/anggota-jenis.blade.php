@@ -37,7 +37,7 @@
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
                         <select name="sort"
-                            class="flex-1 sm:flex-none rounded-md border border-slate-300
+                            class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="terbaru" {{ request('sort', 'terbaru') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                             <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
@@ -96,7 +96,7 @@
                 </button>
 
                 {{-- Form untuk bulk delete --}}
-                <form id="multi-delete-form" method="POST" action="{{ route('admin.anggota.jenis.bulk-destroy') }}" data-delete-name="ids">
+                <form id="multi-delete-form" method="POST" action="{{ route('admin.anggota.jenis.destroy') }}" data-delete-name="ids">
                     @csrf
                     @method('DELETE')
                     <div id="bulkIds"></div>

@@ -31,7 +31,7 @@
                             type="text"
                             name="search"
                             value="{{ request('search') }}"
-                            placeholder="Cari anggota..."
+                            placeholder="Cari Anggota..."
                             class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
@@ -54,8 +54,8 @@
                             <option value="Tidak Aktif" {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                         </select>
 
-                        <select name="sort"
-                            class="flex-1 sm:flex-none rounded-md border border-slate-300
+                        <select id="sort"
+                            class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="terbaru" {{ request('sort', 'terbaru') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
                             <option value="terlama" {{ request('sort') == 'terlama' ? 'selected' : '' }}>Terlama</option>
@@ -112,8 +112,8 @@
                     Seleksi Semua Data
                 </button>
 
-                {{-- Form hapus massal — action ke route bulk-destroy (DELETE /) --}}
-                <form id="multi-delete-form" method="POST" action="{{ route('admin.anggota.bulk-destroy') }}" data-delete-name="ids">
+                {{-- Form hapus massal — action ke route destroyAnggota (DELETE /) --}}
+                <form id="multi-delete-form" method="POST" action="{{ route('admin.anggota.destroy') }}" data-delete-name="ids">
                     @csrf
                     @method('DELETE')
                     <div id="bulkIds"></div>

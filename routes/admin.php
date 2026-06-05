@@ -50,15 +50,13 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/',                [AnggotaController::class, 'indexAnggota'])->name('daftar');
         Route::get('/create',          [AnggotaController::class, 'createAnggota'])->name('create');
         Route::post('/',               [AnggotaController::class, 'storeAnggota'])->name('store');
-        // bulk-destroy HARUS sebelum /{id} agar tidak salah cocok
-        Route::delete('/bulk-destroy', [AnggotaController::class, 'bulkDestroyAnggota'])->name('bulk-destroy');
+        Route::delete('/destroy',      [AnggotaController::class, 'destroyAnggota'])->name('destroy');
         Route::get('/{id}/edit',       [AnggotaController::class, 'editAnggota'])->name('edit');
         Route::put('/{id}',            [AnggotaController::class, 'updateAnggota'])->name('update');
-        Route::delete('/{id}',         [AnggotaController::class, 'destroyAnggota'])->name('destroy');
         Route::get('/jenis',                    [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
         Route::get('/jenis/create',             [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
         Route::post('/jenis',                   [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
-        Route::delete('/jenis/bulk-destroy',    [JenisKeanggotaanController::class, 'bulkDestroyJenis'])->name('jenis.bulk-destroy');
+        Route::delete('/jenis/destroy',         [JenisKeanggotaanController::class, 'destroyJenis'])->name('jenis.destroy');
         Route::get('/jenis/{id}/edit',          [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
         Route::put('/jenis/{id}',               [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
         Route::delete('/jenis/{id}',            [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');

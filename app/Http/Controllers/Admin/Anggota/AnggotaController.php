@@ -192,7 +192,7 @@ class AnggotaController extends Controller
             ->with('success', 'Data anggota berhasil diperbarui');
     }
 
-    public function bulkDestroyAnggota(Request $request)
+    public function destroyAnggota(Request $request)
     {
         // Fungsi atau method untuk menghapus banyak data anggota sekaligus
         try {
@@ -214,33 +214,6 @@ class AnggotaController extends Controller
             return redirect()
                 ->back()
                 ->with('error', 'Data anggota gagal dihapus');
-        }
-    }
-
-    public function destroyAnggota($id)
-    {
-        // Fungsi atau method untuk menghapus data anggota
-        try {
-
-            $anggota = Anggota::findOrFail($id);
-
-            $anggota->delete();
-
-            return redirect()
-                ->back()
-                ->with(
-                    'success',
-                    'Data anggota berhasil dihapus'
-                );
-
-        } catch (\Exception $e) {
-
-            return redirect()
-                ->back()
-                ->with(
-                    'error',
-                    'Data anggota gagal dihapus'
-                );
         }
     }
 }
