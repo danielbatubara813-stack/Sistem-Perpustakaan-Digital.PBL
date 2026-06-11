@@ -9,10 +9,27 @@ use Illuminate\Validation\Rule;
 
 class TipeKoleksiController extends Controller
 {
-    public function indexTipeKoleksi()
+    public function indexTipeKoleksi(Request $request)
     {
         // Fungsi atau method untuk menampilkan daftar data tipe koleksi
-        $tipe_koleksi = TipeKoleksi::paginate(10);
+        $query = TipeKoleksi::query();
+
+        // Search
+        if ($request->filled('search')) {
+            $query->where('nama_tipe', 'like', '%' . $request->search . '%');
+        }
+
+        // Sort
+        if ($request->sort == 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $tipe_koleksi = $query
+            ->paginate(10)
+            ->withQueryString();
+
 
         return view('admin.dataterkendali.tipe-koleksi.tipe-koleksi', compact('tipe_koleksi'));
     }

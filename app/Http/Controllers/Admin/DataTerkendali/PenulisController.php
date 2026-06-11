@@ -8,10 +8,27 @@ use Illuminate\Http\Request;
 
 class PenulisController extends Controller
 {
-    public function indexPenulis()
+    public function indexPenulis(Request $request)
     {
         // Fungsi atau method untuk menampilkan daftar data penulis
-        $penulis = Penulis::paginate(10);
+        $query = Penulis::query();
+        // Search
+        if ($request->filled('search')) {
+            $query->where('nama_penulis', 'like', '%' . $request->search . '%');
+        }
+        if ($request->tipe_penulis) {
+            $query->orWhere('tipe_penulis', '=', $request->tipe_penulis);
+        }
+        // Sort
+        if ($request->sort == 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $penulis = $query
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.dataterkendali.penulis.penulis', compact('penulis'));
     }

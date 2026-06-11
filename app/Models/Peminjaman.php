@@ -30,4 +30,8 @@ class Peminjaman extends Model
     {
         return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota');
     }
+    public function itemBuku()
+    {
+        return $this->belongsTo(ItemBuku::class, 'id_item', 'id_item');
+    }
 }

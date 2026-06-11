@@ -24,4 +24,14 @@ class Penulis extends Model
     // Custom timestamp column
     const CREATED_AT = 'tanggal_dibuat';
     const UPDATED_AT = 'tanggal_diubah';
+
+    public function buku()
+    {
+        return $this->belongsToMany(
+            Buku::class,
+            'penulis_buku',
+            'id_penulis',
+            'id_buku'
+        );
+    }
 }

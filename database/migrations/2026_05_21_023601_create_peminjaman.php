@@ -41,6 +41,7 @@ return new class extends Migration {
             $table->increments('id_pengembalian');
             $table->string('kode_peminjaman', 8);
             $table->date('tanggal_pengembalian');
+            $table->integer('total_denda');
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 

@@ -103,8 +103,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('admin.pengembalian') }}"
-                        class="{{ request()->routeIs('admin.pengembalian*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
+                    <a href="{{ route('admin.pengembalian.index') }}"
+                        class="{{ request()->routeIs('admin.pengembalian.*') ? 'bg-blue-800 text-white font-semibold' : 'text-gray-700' }} flex gap-3 items-center rounded-lg px-3 py-2.5 relative group overflow-hidden hover:text-white transition-all duration-300">
                         <span
                             class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18" height="18"

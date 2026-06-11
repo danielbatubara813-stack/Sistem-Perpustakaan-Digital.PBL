@@ -8,10 +8,25 @@ use Illuminate\Http\Request;
 
 class SubjekController extends Controller
 {
-    public function indexSubjek()
+    public function indexSubjek(Request $request)
     {
         // Fungsi atau method untuk menampilkan daftar data subjek
-        $subjek = Subjek::paginate(10);
+        $query = Subjek::query();
+        // Search
+        if ($request->filled('search')) {
+            $query->where('nama_subjek', 'like', '%' . $request->search . '%');
+        }
+
+        // Sort
+        if ($request->sort == 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $subjek = $query
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.dataterkendali.subjek.subjek', compact('subjek'));
     }

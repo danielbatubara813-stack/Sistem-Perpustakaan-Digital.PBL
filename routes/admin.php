@@ -43,23 +43,23 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::put('/list-buku/{id}', [BukuController::class, 'update'])->name('buku.update');
     // update buku
     Route::delete('/list-buku/{id}', [BukuController::class, 'destroy'])
-    ->name('buku.destroy');
+        ->name('buku.destroy');
     // hapus buku
 
     Route::prefix('list-anggota')->name('anggota.')->group(function () {
-        Route::get('/',                [AnggotaController::class, 'indexAnggota'])->name('daftar');
-        Route::get('/create',          [AnggotaController::class, 'createAnggota'])->name('create');
-        Route::post('/',               [AnggotaController::class, 'storeAnggota'])->name('store');
-        Route::delete('/destroy',      [AnggotaController::class, 'destroyAnggota'])->name('destroy');
-        Route::get('/{id}/edit',       [AnggotaController::class, 'editAnggota'])->name('edit');
-        Route::put('/{id}',            [AnggotaController::class, 'updateAnggota'])->name('update');
-        Route::get('/jenis',                    [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
-        Route::get('/jenis/create',             [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
-        Route::post('/jenis',                   [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
-        Route::delete('/jenis/destroy',         [JenisKeanggotaanController::class, 'destroyJenis'])->name('jenis.destroy');
-        Route::get('/jenis/{id}/edit',          [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
-        Route::put('/jenis/{id}',               [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
-        Route::delete('/jenis/{id}',            [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
+        Route::get('/', [AnggotaController::class, 'indexAnggota'])->name('daftar');
+        Route::get('/create', [AnggotaController::class, 'createAnggota'])->name('create');
+        Route::post('/', [AnggotaController::class, 'storeAnggota'])->name('store');
+        Route::delete('/destroy', [AnggotaController::class, 'destroyAnggota'])->name('destroy');
+        Route::get('/{id}/edit', [AnggotaController::class, 'editAnggota'])->name('edit');
+        Route::put('/{id}', [AnggotaController::class, 'updateAnggota'])->name('update');
+        Route::get('/jenis', [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
+        Route::get('/jenis/create', [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
+        Route::post('/jenis', [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
+        Route::delete('/jenis/destroy', [JenisKeanggotaanController::class, 'destroyJenis'])->name('jenis.destroy');
+        Route::get('/jenis/{id}/edit', [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
+        Route::put('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
+        Route::delete('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
     });
 
     // Peminjaman
@@ -75,13 +75,18 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
 
     // Pengembalian
-    Route::get('/pengembalian', [PengembalianController::class, 'index'])
-        ->name('pengembalian');
-    Route::get('/pengembalian/cepat', [PengembalianCepatController::class, 'index'])
-        ->name('pengembalian.cepat');
-    Route::get('/pengembalian/buku', [PengembalianBukuController::class, 'index'])
-        ->name('pengembalian.buku');
-
+    Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+        Route::get('/', [PengembalianController::class, 'index'])
+            ->name('index');
+        Route::get('/cepat', [PengembalianCepatController::class, 'index'])
+            ->name('cepat');
+        Route::post('/cepat', [PengembalianCepatController::class, 'pengembalianCepat'])
+            ->name('cepat-process');
+        Route::get('/buku', [PengembalianBukuController::class, 'index'])
+            ->name('buku');
+        Route::post('/buku', [PengembalianBukuController::class, 'kembalikanBuku'])
+            ->name('kembalikan');
+    });
 
     Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
         Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {

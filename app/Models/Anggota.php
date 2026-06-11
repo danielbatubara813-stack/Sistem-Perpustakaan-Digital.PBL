@@ -39,4 +39,9 @@ class Anggota extends Model
             'id_jenis'
         );
     }
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class, 'id_anggota', 'id_anggota');
+    }
 }
