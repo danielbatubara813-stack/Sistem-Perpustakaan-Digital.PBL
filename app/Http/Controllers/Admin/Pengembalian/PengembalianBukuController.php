@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Pengembalian;
 
 use App\Http\Controllers\Controller;
 use App\Models\Anggota;
+use App\Models\ItemBuku;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use Exception;
@@ -52,6 +53,10 @@ class PengembalianBukuController extends Controller
             $peminjaman->status = "Dikembalikan";
             $peminjaman->save();
 
+            $itemBuku = ItemBuku::find($peminjaman->id_item);
+            $itemBuku->status_item = "Tersedia";
+            $itemBuku->save();
+
             $pengembalian = Pengembalian::create([
                 'kode_peminjaman' => $request->kode_peminjaman,
                 'tanggal_pengembalian' => now(),
@@ -59,7 +64,7 @@ class PengembalianBukuController extends Controller
             ]);
 
             return redirect()
-                ->route('admin.pengembalian.index')
+                ->back()
                 ->with('success', 'Pengembalian buku berhasil, terima kasih telah meminjam buku disini');
         } catch (Exception $e) {
             return redirect()

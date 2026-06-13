@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Admin\Pengembalian;
 
 use App\Http\Controllers\Controller;
+use App\Mail\PengembalianBukuMail;
+use App\Models\ItemBuku;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Exception;
 
 class PengembalianCepatController extends Controller
@@ -56,11 +59,17 @@ class PengembalianCepatController extends Controller
             $peminjaman->status = "Dikembalikan";
             $peminjaman->save();
 
+            $itemBuku = ItemBuku::find($peminjaman->id_item);
+            $itemBuku->status_item = "Tersedia";
+            $itemBuku->save();
+
             $pengembalian = Pengembalian::create([
                 'kode_peminjaman' => $peminjaman->kode_peminjaman,
                 'tanggal_pengembalian' => now(),
                 'total_denda' => $total_denda,
             ]);
+
+            $this->kirimEmailPengembalian($pengembalian);
 
             return redirect()
                 ->route('admin.pengembalian.cepat')
@@ -79,5 +88,18 @@ class PengembalianCepatController extends Controller
                 ->back()
                 ->with('error', 'Pengembalian buku gagal');
         }
+    }
+
+    public function kirimEmailPengembalian($pengembalian)
+    {
+        $pengembalian->load([
+            'peminjaman.anggota',
+            'peminjaman.itemBuku.buku'
+        ]);
+
+        // Mail::to($pengembalian->peminjaman->anggota->email)
+        //     ->send(new PengembalianBukuMail($pengembalian));
+        Mail::to('franklinchang0129@gmail.com')
+            ->send(new PengembalianBukuMail($pengembalian));
     }
 }

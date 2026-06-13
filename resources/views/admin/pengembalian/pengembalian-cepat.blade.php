@@ -10,7 +10,6 @@
         {{-- Tabs --}}
         @include('components.submenu-admin')
 
-
         <h3 class="font-bold text-lg mt-4 mb-4">CATAT PENGEMBALIAN CEPAT</h3>
 
         {{-- Input --}}
@@ -37,9 +36,9 @@
                         <tr>
                             <th class="px-4 sm:px-6 py-3">Judul</th>
                             <th class="px-4 sm:px-6 py-3">Kode Item</th>
-                            <th class="px-4 sm:px-6 py-3">Tanggal Pinjam</th>
-                            <th class="px-4 sm:px-6 py-3">Jatuh Tempo</th>
+                            <th class="px-4 sm:px-6 py-3">Masa Peminjaman</th>
                             <th class="px-4 sm:px-6 py-3">Tanggal Kembali</th>
+                            <th class="px-4 sm:px-6 py-3">Total Denda</th>
                         </tr>
                     </thead>
 
@@ -75,16 +74,33 @@
                                 {{ $peminjaman->itemBuku->id_item }}
                             </td>
 
-                            {{-- Tanggal --}}
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                {{ $peminjaman->tanggal_peminjaman }}
-                            </td>
-
                             {{-- Jatuh Tempo --}}
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                {{ $peminjaman->tanggal_jatuh_tempo }}
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap flex flex-col">
+                                <span>
+                                    Tanggal Pinjam: {{ $peminjaman->tanggal_peminjaman }}
+                                </span>
+                                <span>
+                                    Tanggal Jatuh Tempo: {{ $peminjaman->tanggal_jatuh_tempo }}
+                                </span>
                             </td>
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                {{ now()->format('Y-m-d') }}
+                            </td>
+                            @php
+                                $jatuhTempo = strtotime($peminjaman->tanggal_jatuh_tempo);
+                                $sekarang = strtotime(date('Y-m-d'));
 
+                                $jumlahHariKeterlambatan = floor(($sekarang - $jatuhTempo) / (60 * 60 * 24));
+
+                                if ($jumlahHariKeterlambatan < 0) {
+                                    $jumlahHariKeterlambatan = 0;
+                                }
+
+                                $total_denda = $jumlahHariKeterlambatan * 1000;
+                            @endphp
+                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                Rp {{ number_format($total_denda, 0, ',', '.') }}
+                            </td>
                         </tr>
                     </tbody>
 
