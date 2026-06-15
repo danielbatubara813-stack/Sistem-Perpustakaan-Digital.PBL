@@ -20,7 +20,8 @@
                 <div class="w-full grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-16">
                     <div class="space-y-4">
                         <h1 class="font-bold text-xl">Kirim Pesan Anda</h1>
-                        <p class="w-full lg:w-96">Punya Pertanyaan? Punya masalah? atau butuh bantuan silahkan hubungi kami</p>
+                        <p class="w-full lg:w-96">Punya Pertanyaan? Punya masalah? atau butuh bantuan silahkan hubungi kami
+                        </p>
                         <div class="space-y-4">
                             <div class="flex items-center gap-4 p-2 rounded-md">
                                 <div class="p-2 rounded-md border">
@@ -129,7 +130,7 @@
                         <h1 class="font-bold text-xl">Form Kirim Pesan</h1>
                         <form id="contactForm" action="{{ route('kirim-pesan') }}" class="space-y-5" method="POST">
                             @csrf
-                            @method("POST")
+                            @method('POST')
                             <div class="flex flex-col">
                                 <label for="nama-input">Nama</label>
                                 <input type="text" id="nama-input" name="nama"

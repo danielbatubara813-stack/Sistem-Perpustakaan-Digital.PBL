@@ -51,8 +51,18 @@ class Buku extends Model
         );
     }
 
+    public function penulis()
+    {
+        return $this->belongsToMany(
+            Penulis::class,
+            'penulis_buku',
+            'id_buku',
+            'id_penulis'
+        );
+    }
+
     public function items()
     {
-    return $this->hasMany(ItemBuku::class, 'id_buku', 'id_buku');
+        return $this->hasMany(ItemBuku::class, 'id_buku', 'id_buku');
     }
 }

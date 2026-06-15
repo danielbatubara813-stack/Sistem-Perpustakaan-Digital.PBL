@@ -8,10 +8,25 @@ use Illuminate\Http\Request;
 
 class PenerbitController extends Controller
 {
-    public function indexPenerbit()
+    public function indexPenerbit(Request $request)
     {
         // Fungsi atau method untuk menampilkan daftar data penerbit
-        $penerbit = Penerbit::paginate(10);
+        $query = Penerbit::query();
+        // Search
+        if ($request->filled('search')) {
+            $query->where('nama_penerbit', 'like', '%' . $request->search . '%');
+        }
+
+        // Sort
+        if ($request->sort == 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $penerbit = $query
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.dataterkendali.penerbit.penerbit', compact('penerbit'));
     }

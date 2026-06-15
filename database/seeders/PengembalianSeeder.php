@@ -21,6 +21,7 @@ class PengembalianSeeder extends Seeder
                     '0',
                     STR_PAD_LEFT
                 ),
+                'total_denda' => 0,
 
                 'tanggal_pengembalian' => Carbon::now()
                     ->subDays(rand(1, 10)),

@@ -8,10 +8,24 @@ use Illuminate\Http\Request;
 
 class DokBahasaController extends Controller
 {
-    public function indexBahasa()
+    public function indexBahasa(Request $request)
     {
         // Fungsi atau method untuk menampilkan daftar data Bahasa
-        $bahasa = DokBahasa::paginate(10);
+        $query = DokBahasa::query();
+        // Search
+        if ($request->filled('search')) {
+            $query->where('nama_bahasa', 'like', '%' . $request->search . '%')->orWhere('kode_bahasa', 'like', '%' . $request->search . '%');
+        }
+        // Sort
+        if ($request->sort == 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $bahasa = $query
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.dataterkendali.dokumen-bahasa.dokumen-bahasa', compact('bahasa'));
     }

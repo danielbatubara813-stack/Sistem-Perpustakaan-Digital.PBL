@@ -10,173 +10,179 @@
         {{-- Tabs --}}
         @include('components.submenu-admin')
 
-        @php
-            if (!isset($member)) {
-                $member = [
-                    'name' => 'NICOLAS',
-                    'id' => '314265',
-                    'jenis' => 'Mahasiswa',
-                    'phone' => '08123456789',
-                    'email' => 'nicolas@gmail.com',
-                ];
-            }
-
-            if (!isset($memberLoans)) {
-                $memberLoans = [
-                    [
-                        'judul' => 'Laut Bercerita',
-                        'penulis' => 'Leila S. Chudori',
-                        'cover' =>
-                            'https://imgv2-1-f.scribdassets.com/img/document/443499450/original/75e0895939/1?v=1',
-                        'kode_item' => 'E0040150C90DB6E8',
-                        'tanggal_pinjam' => '02-04-2026 10:02:22',
-                        'jatuh_tempo' => '02-04-2026 10:02:22',
-                    ],
-                    [
-                        'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',
-                        'penulis' => 'Yuniar Supardi',
-                        'cover' =>
-                            'https://cdn.gramedia.com/uploads/items/9786230010460_Cov_Semua_Bisa_Menjadi_Programmer_Laravel_Basic.jpg',
-                        'kode_item' => 'E0040150C90DF610',
-                        'tanggal_pinjam' => '02-04-2026 10:02:22',
-                        'jatuh_tempo' => '02-04-2026 10:02:22',
-                    ],
-                ];
-            }
-        @endphp
-
         <h3 class="font-bold text-lg mt-4 mb-4">CATAT PENGEMBALIAN</h3>
 
-        {{-- Input ID --}}
-        <div class="mb-4">
-            <label class="block text-sm text-slate-600 mb-2">ID Anggota</label>
+        <form action="" method="GET">
+            @method('GET')
+            @csrf
+            {{-- Input ID --}}
+            <div class="mb-4">
+                <label class="block text-sm text-slate-600 mb-2">ID Anggota</label>
 
-            <input type="text" placeholder="Contoh: 3312501012"
-                class="w-full rounded-md border border-slate-300 px-4 py-3 text-sm
-            outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-        </div>
-
-        {{-- Member Info --}}
-        <div class="mb-6 border border-slate-200 rounded-md p-4 shadow-sm bg-slate-50">
-
-            <div class="flex flex-col lg:flex-row gap-6 lg:items-center">
-
-                {{-- Avatar --}}
-                <div class="w-28 h-28 bg-white rounded-md flex items-center justify-center border shrink-0 mx-auto lg:mx-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" />
-                        <path d="M8 14s1.5-2 4-2 4 2 4 2" />
-                        <path d="M8 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                    </svg>
-                </div>
-
-                {{-- Detail --}}
-                <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
-                    <div>
-                        <div class="text-xs text-slate-500">Nama Anggota</div>
-                        <div class="font-bold wrap-break-word">{{ $member['name'] }}</div>
-
-                        <div class="text-xs text-slate-500 mt-2">ID Anggota</div>
-                        <div class="font-bold wrap-break-word">{{ $member['id'] }}</div>
-                    </div>
-
-                    <div>
-                        <div class="text-xs text-slate-500">Jenis Anggota</div>
-                        <div class="font-bold wrap-break-word">{{ $member['jenis'] }}</div>
-
-                        <div class="text-xs text-slate-500 mt-2">Alamat Email</div>
-                        <div class="font-bold wrap-break-word">{{ $member['email'] }}</div>
-                    </div>
-
-                    <div>
-                        <div class="text-xs text-slate-500">No Handphone</div>
-                        <div class="font-bold wrap-break-word">{{ $member['phone'] }}</div>
-                    </div>
-
+                <div class="flex gap-4">
+                    <input type="text" name="nomor_identitas" value="{{ request('nomor_identitas') }}"
+                        placeholder="Contoh: 3312501012"
+                        class="w-full rounded-md border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                    <button type="submit" class="px-4 py-3 bg-blue-600 text-white rounded-md">
+                        Cari
+                    </button>
                 </div>
             </div>
-        </div>
+        </form>
 
-        {{-- Input Buku --}}
-        <div class="mb-4">
-            <label class="block text-sm text-slate-600 mb-2">
-                Kode Item Buku (Harus Tersedia)
-            </label>
+        {{-- peminjaman Info --}}
+        @if ($anggota)
+            <div class="mb-6 border border-slate-200 rounded-md p-4 shadow-sm bg-slate-50">
 
-            <input type="text" placeholder="Contoh: E0040150C90DB6E8"
-                class="w-full rounded-md border border-slate-300 px-4 py-3 text-sm
-            outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-        </div>
+                <div class="flex flex-col lg:flex-row gap-6 lg:items-center">
+
+                    {{-- Avatar --}}
+                    <div
+                        class="w-28 h-28 bg-white rounded-md flex items-center justify-center border shrink-0 mx-auto lg:mx-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" />
+                            <path d="M8 14s1.5-2 4-2 4 2 4 2" />
+                            <path d="M8 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
+                        </svg>
+                    </div>
+
+                    {{-- Detail --}}
+                    <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+                        <div>
+                            <div class="text-xs text-slate-500">Nama Anggota</div>
+                            <div class="font-bold wrap-break-word">{{ $anggota->nama }}</div>
+
+                            <div class="text-xs text-slate-500 mt-2">ID Anggota</div>
+                            <div class="font-bold wrap-break-word">{{ $anggota->nomor_identitas }}</div>
+                        </div>
+
+                        <div>
+                            <div class="text-xs text-slate-500">Jenis Anggota</div>
+                            <div class="font-bold wrap-break-word">{{ $anggota->jenisKeanggotaan->nama_jenis }}</div>
+
+                            <div class="text-xs text-slate-500 mt-2">Alamat Email</div>
+                            <div class="font-bold wrap-break-word">{{ $anggota->email }}</div>
+                        </div>
+
+                        <div>
+                            <div class="text-xs text-slate-500">No Handphone</div>
+                            <div class="font-bold wrap-break-word">{{ $anggota->no_hp }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
 
         {{-- Table --}}
-        <div class="overflow-x-auto mt-6">
+        @if ($anggota)
+            <div class="overflow-x-auto mt-6">
+                @if (request()->filled('nomor_identitas'))
 
-            <table class="min-w-237.5 w-full text-sm text-left text-gray-600">
+                    @if ($peminjamanLoans->count())
+                        <table class="min-w-237.5 w-full text-sm text-left text-gray-600">
 
-                <thead class="text-xs text-gray-600 uppercase bg-gray-300">
-                    <tr>
-                        <th class="px-4 sm:px-6 py-3 w-32">Pilih</th>
-                        <th class="px-4 sm:px-6 py-3">Judul</th>
-                        <th class="px-4 sm:px-6 py-3">Kode Item</th>
-                        <th class="px-4 sm:px-6 py-3">Tanggal Pinjam</th>
-                        <th class="px-4 sm:px-6 py-3">Jatuh Tempo</th>
-                    </tr>
-                </thead>
+                            <thead class="text-xs text-gray-600 uppercase bg-gray-300">
+                                <tr>
+                                    <th class="px-4 sm:px-6 py-3 w-32">Pilih</th>
+                                    <th class="px-4 sm:px-6 py-3">Judul</th>
+                                    <th class="px-4 sm:px-6 py-3">Kode Item</th>
+                                    <th class="px-4 sm:px-6 py-3">Tanggal Pinjam</th>
+                                    <th class="px-4 sm:px-6 py-3">Jatuh Tempo</th>
+                                    <th class="px-4 sm:px-6 py-3">Total Denda</th>
+                                </tr>
+                            </thead>
 
-                <tbody>
-                    @foreach ($memberLoans as $loan)
-                        <tr class="odd:bg-white even:bg-slate-100">
+                            <tbody>
+                                @foreach ($peminjamanLoans as $loan)
+                                    <tr class="odd:bg-white even:bg-slate-100">
 
-                            {{-- Button --}}
-                            <td class="px-4 sm:px-6 py-4 align-top">
-                                <button
-                                    class="px-3 py-1 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition whitespace-nowrap">
-                                    Kembalikan
-                                </button>
-                            </td>
+                                        {{-- Button --}}
+                                        <td class="px-4 sm:px-6 py-4 align-top">
+                                            <form action="{{ route('admin.pengembalian.kembalikan') }}" method="POST">
+                                                @method('POST')
+                                                @csrf
+                                                <input type="hidden" name="kode_peminjaman"
+                                                    value="{{ $loan->kode_peminjaman }}">
+                                                <button type="submit"
+                                                    class="px-3 py-1 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition whitespace-nowrap">
+                                                    Kembalikan
+                                                </button>
+                                            </form>
+                                        </td>
 
-                            {{-- Judul --}}
-                            <td class="px-4 sm:px-6 py-4 font-medium text-gray-900">
+                                        {{-- Judul --}}
+                                        <td class="px-4 sm:px-6 py-4 font-medium text-gray-900">
 
-                                <div class="flex items-start gap-4 min-w-70">
+                                            <div class="flex items-start gap-4 min-w-70">
 
-                                    <div class="flex items-center gap-4 min-w-70">
+                                                <div class="flex items-center gap-4 min-w-70">
 
-                                        <img src="{{ $loan['cover'] }}" class="w-12 h-16 object-cover rounded shadow-sm" />
+                                                    <img src="{{ $loan->itemBuku->buku->cover_buku }}"
+                                                        class="w-12 h-16 object-cover rounded shadow-sm" />
 
-                                        <div>
-                                            <h4 class="max-w-xs line-clamp-2 leading-5 font-bold">{{ $loan['judul'] }}</h4>
-                                            <p>{{ $loan['penulis'] }}</p>
-                                        </div>
+                                                    <div>
+                                                        <h4 class="max-w-xs line-clamp-2 leading-5 font-bold">
+                                                            {{ $loan->itemBuku->buku->judul_buku }}
+                                                        </h4>
+                                                        @foreach ($loan->itemBuku->buku->penulis as $item)
+                                                            <span>{{ $item->nama_penulis }}</span>
+                                                        @endforeach
+                                                    </div>
 
-                                    </div>
-                                </div>
+                                                </div>
+                                            </div>
 
-                            </td>
+                                        </td>
 
-                            {{-- Kode --}}
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                {{ $loan['kode_item'] }}
-                            </td>
+                                        {{-- Kode --}}
+                                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                            {{ $loan->itemBuku->id_item }}
+                                        </td>
 
-                            {{-- Tanggal --}}
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                {{ $loan['tanggal_pinjam'] }}
-                            </td>
+                                        {{-- Tanggal --}}
+                                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                            {{ $loan->tanggal_peminjaman }}
+                                        </td>
 
-                            {{-- Jatuh Tempo --}}
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
-                                {{ $loan['jatuh_tempo'] }}
-                            </td>
+                                        {{-- Jatuh Tempo --}}
+                                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                            {{ $loan->tanggal_jatuh_tempo }}
+                                        </td>
+                                        @php
+                                            $jatuhTempo = strtotime($peminjaman->tanggal_jatuh_tempo);
+                                            $sekarang = strtotime(date('Y-m-d'));
 
-                        </tr>
-                    @endforeach
-                </tbody>
+                                            $jumlahHariKeterlambatan = floor(
+                                                ($sekarang - $jatuhTempo) / (60 * 60 * 24),
+                                            );
 
-            </table>
+                                            if ($jumlahHariKeterlambatan < 0) {
+                                                $jumlahHariKeterlambatan = 0;
+                                            }
 
-        </div>
+                                            $total_denda = $jumlahHariKeterlambatan * 1000;
+                                        @endphp
+                                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                            Rp {{ number_format($total_denda, 0, ',', '.') }}
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
+                    @else
+                        <div class="p-4 bg-yellow-100 rounded">
+                            Tidak ada data peminjaman ditemukan.
+                        </div>
+                    @endif
+
+                @endif
+            </div>
+        @endif
+
     </div>
 @endsection

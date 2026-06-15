@@ -13,7 +13,8 @@ use App\Http\Controllers\TentangController;
 
 use App\Http\Controllers\Profile\PeminjamanController;
 use App\Http\Controllers\Profile\ProfileAnggotaController;
-
+use App\Models\Pengembalian;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 // halaman beranda untuk pengunjung
@@ -35,6 +36,11 @@ Route::prefix('profile')->name('profile.')->group(function () {
     Route::get('/akun-saya', [ProfileAnggotaController::class, 'akunSayaPage'])->name('akun-saya-page');
     Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi-page');
     Route::get('/daftar-reservasi', [ReservasiController::class, 'daftarReservasi'])->name('daftar-reservasi-page');
+});
+
+Route::get('/test-mail', function () {
+    $pengembalian = Pengembalian::where('kode_peminjaman', '=', 'PJ9CPUL5')->first();
+    return view('emails.pengembalian-buku', compact('pengembalian'));
 });
 
 // Routing halaman login

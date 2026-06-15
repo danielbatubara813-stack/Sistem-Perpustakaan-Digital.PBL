@@ -38,9 +38,10 @@ class DatabaseSeeder extends Seeder
             AturanPeminjamanSeeder::class,
             PeminjamanSeeder::class,
             PengembalianSeeder::class,
-
-                // Reservasi
+            
+            // Reservasi
             ReservasiSeeder::class,
+            PeminjamanSeederTambahan::class,
         ]);
     }
 }

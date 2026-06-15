@@ -54,8 +54,8 @@
 @if (Route::is(['admin.pengembalian', 'admin.pengembalian.*']))
     <div class="w-full lg:w-max overflow-x-auto scrollbar-hide">
         <div class="bg-slate-100 rounded-md px-2 py-1 flex items-center gap-2 w-max min-w-full">
-            <a href="{{ route('admin.pengembalian') }}"
-                class="text-nowrap px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">
+            <a href="{{ route('admin.pengembalian.index') }}"
+                class="text-nowrap px-4 py-2 text-sm {{ request()->routeIs('admin.pengembalian.index') ? 'text-white bg-blue-600 shadow rounded' : 'text-slate-600' }}">
                 Daftar Pengembalian
             </a>
 
