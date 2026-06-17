@@ -61,8 +61,22 @@ class Buku extends Model
         );
     }
 
+    public function subjek()
+    {
+        return $this->belongsToMany(
+            Subjek::class,
+            'subjek_buku',
+            'id_buku',
+            'id_subjek'
+        );
+    }
+
     public function items()
     {
-        return $this->hasMany(ItemBuku::class, 'id_buku', 'id_buku');
+        return $this->hasMany(
+            ItemBuku::class,
+            'id_buku',
+            'id_buku'
+        );
     }
 }

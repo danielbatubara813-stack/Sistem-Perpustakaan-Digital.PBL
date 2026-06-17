@@ -10,9 +10,9 @@
 
         <h2 class="text-lg font-semibold mb-6">DAFTAR BUKU</h2>
 
-        <form method="POST" action="{{ isset($book) ? route('admin.buku.update', $book->id_buku) : route('admin.buku.store') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ (isset($book) && $book->exists) ? route('admin.buku.update', $book->id_buku) : route('admin.buku.store') }}" enctype="multipart/form-data">
             @csrf
-            @if(isset($book))
+            @if(isset($book) && $book->exists)
                 @method('PUT')
             @endif
 
@@ -47,7 +47,7 @@
                     <label class="md:col-span-3">Penulis*</label>
 
                     <div class="md:col-span-9 space-y-2">
-                        {{-- BUTTON OPEN MODAL --}}
+                        {{-- TOMBOL BUKA MODAL --}}
                         <button type="button" data-modal-target="modal-penulis" data-modal-toggle="modal-penulis"
                             class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all duration-300">
                             Tambah Data Penulis
@@ -59,7 +59,7 @@
 
                             <div class="relative p-4 w-full max-w-2xl max-h-full">
 
-                                {{-- CONTENT --}}
+                                    {{-- ISI MODAL --}}
                                 <div class="relative bg-white rounded-lg shadow-sm">
 
                                     {{-- HEADER --}}
@@ -83,10 +83,10 @@
                                         </button>
                                     </div>
 
-                                    {{-- BODY --}}
+                                    {{-- ISI --}}
                                     <div class="p-4 md:p-5 space-y-6">
 
-                                        {{-- NAMA PENULIS --}}
+                                        {{-- NAMA PENULIS (pilih dari data terkendali) --}}
                                         <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
 
                                             <label class="sm:col-span-3 text-sm text-slate-700">
@@ -95,11 +95,16 @@
 
                                             <div class="sm:col-span-9">
 
-                                                <input name="nama_penulis" value="{{ old('nama_penulis') }}" type="text"
-                                                    placeholder="Contoh: Tere Liye"
-                                                    class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                                                    <select id="penulis_select" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                                                    <option value="">Pilih Nama Penulis</option>
+                                                    @if(isset($penulis) && $penulis->count())
+                                                        @foreach($penulis as $p)
+                                                            <option value="{{ $p->id_penulis }}" data-tipe="{{ $p->tipe_penulis }}">{{ $p->nama_penulis }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
 
-                                                @error('nama_penulis')
+                                                @error('id_penulis')
                                                     <p class="text-sm text-red-600 mt-1">
                                                         {{ $message }}
                                                     </p>
@@ -107,21 +112,53 @@
                                             </div>
                                         </div>
 
-                                        {{-- TIPE PENULIS --}}
-                                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+                                            <div class="text-center text-sm text-gray-400">atau</div>
+
+                                            {{-- NAMA PENULIS MANUAL --}}
+                                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+                                                <label class="sm:col-span-3 text-sm text-slate-700">Ketikan Nama Baru</label>
+                                                <div class="sm:col-span-9">
+                                                    <input id="manual_nama_penulis" name="manual_nama_penulis" type="text" placeholder="Contoh: Tere Liye" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                                                </div>
+                                            </div>
+
+                                            {{-- TIPE PENULIS (untuk nama baru) --}}
+                                            <div id="tipe_manual_group" class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
+                                                <label class="sm:col-span-3 text-sm text-slate-700">Tipe Penulis (untuk nama baru)</label>
+                                                <div class="sm:col-span-9">
+                                                    <select id="manual_tipe_penulis" name="manual_tipe_penulis" class="w-full sm:max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                                                        @if(isset($tipe_penulis) && count($tipe_penulis))
+                                                            @foreach($tipe_penulis as $tp)
+                                                                <option value="{{ $tp }}">{{ $tp }}</option>
+                                                            @endforeach
+                                                        @else
+                                                            <option value="Nama Orang">Nama Orang</option>
+                                                            <option value="Badan Organisasi">Badan Organisasi</option>
+                                                            <option value="Konferensi">Konferensi</option>
+                                                        @endif
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        {{-- TIPE PENULIS (otomatis, ditampilkan saat memilih penulis yang ada) --}}
+                                        <div id="tipe_auto_group" class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start hidden">
 
                                             <label class="sm:col-span-3 text-sm text-slate-700">
-                                                Tipe Penulis*
+                                                Tipe Penulis (otomatis)
                                             </label>
 
                                             <div class="sm:col-span-9">
 
-                                                <select name="tipe_penulis"
-                                                    class="w-full sm:max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-
-                                                    <option value="Nama Orang">Nama Orang</option>
-                                                    <option value="Organisasi">Organisasi</option>
-                                                    <option value="Konferensi">Konferensi</option>
+                                                <select id="tipe_penulis_select" class="w-full sm:max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" disabled>
+                                                    @if(isset($tipe_penulis) && count($tipe_penulis))
+                                                        @foreach($tipe_penulis as $tp)
+                                                            <option value="{{ $tp }}">{{ $tp }}</option>
+                                                        @endforeach
+                                                    @else
+                                                        <option value="Nama Orang">Nama Orang</option>
+                                                        <option value="Badan Organisasi">Badan Organisasi</option>
+                                                        <option value="Konferensi">Konferensi</option>
+                                                    @endif
                                                 </select>
 
                                                 @error('tipe_penulis')
@@ -141,16 +178,43 @@
                                             Batal
                                         </button>
 
-                                        <button type="submit"
+                                        <button type="button" id="addPenulisBtn"
                                             class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                            Simpan
+                                            Tambah
                                         </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <input name="penulis" type="text" value="{{ old('penulis', $book->penulis ?? '') }}" class="w-full border border-gray-400 rounded px-3 py-2">
+                        {{-- Penulis yang dipilih akan muncul di sini; input tersembunyi membawa nilai id_penulis[] --}}
+                        <div id="selected-authors" class="w-full border border-gray-200 rounded px-3 py-2 min-h-[46px]">
+                            {{-- isi awal penulis terpilih saat mengedit atau setelah kesalahan validasi --}}
+                            @if(old('id_penulis'))
+                                @foreach(old('id_penulis') as $pid)
+                                    @php
+                                        $pobj = \App\Models\Penulis::find($pid);
+                                    @endphp
+                                    @if($pobj)
+                                        <div class="author-chip flex items-center justify-between gap-2 my-1" data-id="{{ $pobj->id_penulis }}">
+                                            <input type="hidden" name="id_penulis[]" value="{{ $pobj->id_penulis }}">
+                                            <span class="text-sm">{{ $pobj->nama_penulis }} <small class="text-xs text-gray-500">({{ $pobj->tipe_penulis }})</small></span>
+                                            <button type="button" class="text-red-600 ml-2 remove-author">Hapus</button>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @elseif(isset($book) && $book->penulis && $book->penulis->count())
+                                @foreach($book->penulis as $p)
+                                    <div class="author-chip flex items-center justify-between gap-2 my-1" data-id="{{ $p->id_penulis }}">
+                                        <input type="hidden" name="id_penulis[]" value="{{ $p->id_penulis }}">
+                                        <span class="text-sm">{{ $p->nama_penulis }} <small class="text-xs text-gray-500">({{ $p->tipe_penulis }})</small></span>
+                                        <button type="button" class="text-red-600 ml-2 remove-author">Hapus</button>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-sm text-gray-500">Belum ada penulis dipilih.</p>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -167,7 +231,7 @@
                     <label class="md:col-span-3">No.Panggil*</label>
 
                     <div class="md:col-span-9 flex w-full">
-                        <input max="7" type="text" id="no_panggil_1" name="no_panggil_prefix" readonly value="{{ old('no_panggil_prefix', isset($book) ? substr($book->no_panggil ?? '', 0, 7) : '') }}"
+                        <input max="7" type="text" id="no_panggil_1" name="no_panggil_prefix" readonly value="{{ old('no_panggil_prefix', isset($book) ? substr($book->no_rak ?? '', 0, 7) : '') }}"
                             class="w-24 border border-gray-400 rounded-l px-3 py-2 bg-gray-200">
 
                         <input name="no_panggil" type="text" class="flex-1 border border-gray-400 rounded-r px-3 py-2 min-w-0" value="{{ old('no_panggil', $book->no_panggil ?? '') }}">
@@ -198,22 +262,18 @@
 
                     <div class="md:col-span-9">
 
-                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full">
 
                             {{-- Kode 1 --}}
-                            <input type="text" id="kode_1" maxlength="4"
+                            <input type="text" id="kode_1" name="kode_1" maxlength="4" value="{{ old('kode_1', $kode1Item ?? '') }}"
                                 class="border border-gray-400 rounded px-3 py-2 uppercase">
 
                             {{-- Kode 2 --}}
-                            <input type="text" id="kode_2" maxlength="4"
+                            <input type="text" id="kode_2" name="kode_2" maxlength="4" value="{{ old('kode_2', $kode2Item ?? '') }}"
                                 class="border border-gray-400 rounded px-3 py-2 uppercase">
 
-                            {{-- Kode 3 --}}
-                            <input type="text" id="kode_3" readonly
-                                class="border border-gray-400 rounded px-3 py-2 bg-gray-100">
-
                             {{-- Jumlah Buku --}}
-                            <input type="number" id="jumlah_buku" min="1" value="1"
+                            <input type="number" id="jumlah_buku" name="jumlah_buku" min="1" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
                                 class="border border-gray-400 rounded px-3 py-2">
                         </div>
 
@@ -226,7 +286,7 @@
                             </button>
 
                             <p class="text-xs text-gray-500">
-                                Kode 1 & 2 bisa manual (4 karakter). Kode 3 otomatis dari jumlah buku.
+                                Kode item dibuat berurutan: Kode 1-Kode 2-0001, 0002, dan seterusnya.
                             </p>
 
                         </div>
@@ -284,21 +344,21 @@
 
                 {{-- Subjek --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start">
-                    <label class="md:col-span-3">Subjek</label>
+                    <label class="md:col-span-3">Subjek*</label>
 
-                    <select class="md:col-span-3 w-full border border-gray-400 rounded px-3 py-2">
-                        <option value="">Pilih Subjek</option>
-                        <option value="teknologi">Teknologi</option>
-                        <option value="sains">Sains</option>
-                        <option value="matematika">Matematika</option>
-                        <option value="sejarah">Sejarah</option>
-                        <option value="bahasa">Bahasa</option>
-                        <option value="sastra">Sastra</option>
-                        <option value="ekonomi">Ekonomi</option>
-                        <option value="pendidikan">Pendidikan</option>
-                        <option value="agama">Agama</option>
-                        <option value="seni">Seni & Desain</option>
-                    </select>
+                    <div class="md:col-span-9">
+                        <select name="id_subjek" class="w-full sm:max-w-xs border border-gray-400 rounded px-3 py-2">
+                            <option value="">Pilih Subjek</option>
+                            @if(isset($subjek))
+                                @foreach($subjek as $s)
+                                    <option value="{{ $s->id_subjek }}" {{ old('id_subjek', isset($book) ? ($book->subjek->first()->id_subjek ?? '') : '') == $s->id_subjek ? 'selected' : '' }}>{{ $s->nama_subjek }}</option>
+                                @endforeach
+                            @endif
+                        </select>
+                        @error('id_subjek')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 {{-- Gambar Sampul --}}
@@ -309,8 +369,35 @@
 
                         <div
                             class="w-32 h-40 border border-gray-400 rounded flex items-center justify-center overflow-hidden bg-gray-100 shrink-0">
-                            <img id="preview" class="{{ isset($book) && $book->cover_buku ? '' : 'hidden' }} w-full h-full object-cover" src="{{ isset($book) && $book->cover_buku ? asset('storage/covers/'.$book->cover_buku) : '' }}">
-                            <span id="placeholder" class="text-gray-400 text-sm {{ isset($book) && $book->cover_buku ? 'hidden' : '' }}">Image</span>
+                            @php
+                                $coverSrc = '';
+                                if (isset($book) && $book->cover_buku) {
+                                    try {
+                                        $val = $book->cover_buku;
+                                        if (\Illuminate\Support\Facades\Storage::disk('public')->exists('covers/'.$val)) {
+                                            $coverSrc = asset('storage/covers/'.$val);
+                                        } else {
+                                            // jika nilai sudah berupa data URI
+                                            if (is_string($val) && str_starts_with($val, 'data:image/')) {
+                                                $coverSrc = $val;
+                                            } else {
+                                                // deteksi konten mirip biner: terdapat karakter yang tidak dapat dicetak
+                                                if (is_string($val) && preg_match('/[\x00-\x08\x0B\x0C\x0E-\x1F]/', $val)) {
+                                                    $coverSrc = 'data:image/jpeg;base64,' . base64_encode($val);
+                                                } else {
+                                                    // fallback: perlakukan sebagai nama file/path (mungkin tidak ada)
+                                                    $coverSrc = asset('storage/covers/'.$val);
+                                                }
+                                            }
+                                        }
+                                    } catch (\Throwable $e) {
+                                        $coverSrc = '';
+                                    }
+                                }
+                            @endphp
+
+                            <img id="preview" class="w-full h-full object-cover {{ $coverSrc ? '' : 'hidden' }}" src="{{ $coverSrc }}" alt="Cover" onerror="this.classList.add('hidden'); document.getElementById('placeholder').classList.remove('hidden');">
+                            <span id="placeholder" class="text-gray-400 text-sm {{ $coverSrc ? 'hidden' : '' }}">Image</span>
                         </div>
 
                         <div class="flex flex-col gap-1 w-full">
@@ -339,10 +426,10 @@
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-2
                     bg-blue-600 hover:bg-blue-700 text-white rounded-md
                     px-4 py-2 text-sm shadow-sm transition">
-                        {{ isset($book) ? 'Update' : 'Submit' }}
+                        {{ (isset($book) && $book->exists) ? 'Update' : 'Submit' }}
                     </button>
 
-                    @if(isset($book))
+                    @if(isset($book) && $book->exists)
                         <button type="button" onclick="window.singleDeleteAction='{{ route('admin.buku.destroy', $book->id_buku) }}'; if(window.openDeleteModal){ window.openDeleteModal(); } else { alert('Konfirmasi hapus tidak tersedia.'); }" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">Hapus</button>
                     @endif
 
@@ -359,90 +446,6 @@
         </form>
     </div>
 
-    {{-- SCRIPT --}}
-    <script>
-        const kode1 = document.getElementById('kode_1');
-        const kode2 = document.getElementById('kode_2');
-        const kode3 = document.getElementById('kode_3');
-        const jumlah = document.getElementById('jumlah_buku');
-
-        // 🔹 No Rak → No Panggil
-        document.getElementById('no_rak').addEventListener('input', function() {
-            document.getElementById('no_panggil_1').value = this.value;
-        });
-
-        // 🔹 Random 4 karakter
-        function randomCode() {
-            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-            let result = '';
-            for (let i = 0; i < 4; i++) {
-                result += chars[Math.floor(Math.random() * chars.length)];
-            }
-            return result;
-        }
-
-        // 🔹 Format 0001
-        function formatNumber(n) {
-            return n.toString().padStart(4, '0');
-        }
-
-        // 🔹 Generate kode 1 & 2
-        function generateKode12() {
-            kode1.value = randomCode();
-            kode2.value = randomCode();
-        }
-
-        // 🔹 Update kode 3
-        function updateKode3() {
-            kode3.value = formatNumber(parseInt(jumlah.value) || 1);
-        }
-
-        // 🔹 Uppercase + limit 4
-        function enforce(el) {
-            el.addEventListener('input', function() {
-                this.value = this.value.toUpperCase().slice(0, 4);
-            });
-        }
-
-        enforce(kode1);
-        enforce(kode2);
-
-        // 🔹 Event
-        jumlah.addEventListener('input', updateKode3);
-        document.getElementById('regenBtn').addEventListener('click', generateKode12);
-
-        // 🔹 Preview gambar
-        document.getElementById('coverInput').addEventListener('change', function() {
-            const file = this.files[0];
-            const preview = document.getElementById('preview');
-            const placeholder = document.getElementById('placeholder');
-
-            if (!file) return;
-
-            if (file.size > 10 * 1024 * 1024) {
-                alert('File terlalu besar (maks 10MB)');
-                this.value = '';
-                return;
-            }
-
-            if (!['image/jpeg', 'image/png'].includes(file.type)) {
-                alert('Format harus JPG atau PNG');
-                this.value = '';
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-        });
-
-        // 🔹 Init
-        generateKode12();
-        updateKode3();
-    </script>
+    @vite('resources/js/formbuku.js')
 
 @endsection
