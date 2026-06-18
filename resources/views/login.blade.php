@@ -6,7 +6,8 @@
             Masuk untuk dapat melakukan peminjaman buku
         </p>
 
-        <form method="POST" action="/login" class="space-y-6 w-full md:w-3/4">
+        <form method="POST"action="{{ Route::is('admin.login-page') ? route('admin.login.proses') : route('login.proses') }}"
+        class="space-y-6 w-full md:w-3/4">
             @csrf
 
             <!-- Email / Member ID -->
@@ -23,9 +24,15 @@
                         Email / Member ID
                     @endif
                 </label>
+                @if (Route::is('admin.login-page'))
+                <input type="text" name="username"
+                    class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                    required>
+                    @else
                 <input type="text" name="login_id"
                     class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
                     required>
+                @endif
             </div>
             <!-- End Email -->
 

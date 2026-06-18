@@ -7,19 +7,22 @@
             <h2 class="col-span-2 text-lg font-bold">Data Anggota</h2>
 
             <div class="col-span-2 ">
-                <form action="" class="flex flex-col lg:flex-row items-center gap-2">
+                <form action="{{ route('profile.akun-saya.update') }}" method="POST" enctype="multipart/form-data"
+                    class="flex flex-col lg:flex-row items-center gap-2">
+                    @csrf
                     <!-- Preview -->
-                    <img id="preview" src="https://via.placeholder.com/150"
+                    <img id="preview"
+                        src="{{ $user->profile ? asset('storage/' . $user->profile) : ($user->foto_ktp ? asset('storage/' . $user->foto_ktp) : 'https://via.placeholder.com/150') }}"
                         class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
                     <div class="w-full">
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Profile Image
                         </label>
                         <!-- Input File -->
-                        <input type="file" id="imageInput" accept="image/*"
+                        <input type="file" id="imageInput" name="profile_image" accept="image/*"
                             class="block w-full border border-gray-300 rounded-md text-sm px-6 py-2 text-gray-500
-               file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100
-               cursor-pointer" />
+                            file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-600 hover:file:bg-blue-100
+                            cursor-pointer" />
                         <p class="text-sm font-bold italic mt-2">Format: JPEG, PNG, JPG. Maks: 10MB</p>
                     </div>
                     <button type="submit"
@@ -39,45 +42,49 @@
             <!-- Nama Anggota -->
             <div class="flex flex-col gap-4">
                 <label for="nama_anggota">Nama Anggota</label>
-                <input id="nama_anggota" type="text" value="Daniel Anju Adinov Batubara" readonly
+                <input id="nama_anggota" type="text" value="{{ $user->nama ?? '-' }}" readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
 
             <!-- ID Anggota -->
             <div class="flex flex-col gap-4">
                 <label for="id_anggota">ID Anggota</label>
-                <input id="id_anggota" type="text" value="3312501025" readonly
+                <input id="id_anggota" type="text" value="{{ $user->nomor_identitas ?? '-' }}" readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
 
             <!-- Email -->
             <div class="flex flex-col gap-4">
                 <label for="email">Email</label>
-                <input id="email" type="email" value="franklin@email.com" readonly
+                <input id="email" type="email" value="{{ $user->email ?? '-' }}" readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
 
             <!-- Tipe Keanggotaan -->
             <div class="flex flex-col gap-4">
                 <label for="tipe_keanggotaan">Tipe Keanggotaan</label>
-                <input id="tipe_keanggotaan" type="text" value="Mahasiswa" readonly
+                <input id="tipe_keanggotaan" type="text"
+                    value="{{ optional($user->jenisKeanggotaan)->nama_jenis ?? '-' }}" readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
 
             <!-- Tanggal Registrasi -->
             <div class="flex flex-col gap-4">
                 <label for="tanggal_registrasi">Tanggal Registrasi</label>
-                <input id="tanggal_registrasi" type="date" value="2026-04-16" readonly
+                <input id="tanggal_registrasi" type="date"
+                    value="{{ isset($user->tanggal_daftar) ? \Carbon\Carbon::parse($user->tanggal_daftar)->format('Y-m-d') : '' }}"
+                    readonly
                     class="w-full rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-sm text-slate-700 cursor-not-allowed" />
             </div>
         </div>
-        <form action="" class="grid grid-cols-2 gap-4">
+        <form action="{{ route('profile.akun-saya.change-password') }}" method="POST" class="grid grid-cols-2 gap-4">
+            @csrf
             <h2 class="col-span-2 text-lg font-bold">Ganti Kata Sandi</h2>
             <!-- Kata Sandi -->
             <div class="flex flex-col gap-2">
                 <label for="kata_sandi">Kata Sandi</label>
                 <div class="relative">
-                    <input id="kata_sandi" type="password" placeholder="Kata Sandi..."
+                    <input id="kata_sandi" name="current_password" type="password" placeholder="Kata Sandi..."
                         class="w-full rounded-md border border-slate-300 px-4 py-3 pr-10 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
                     <button type="button" onmousedown="showPassword('kata_sandi', this)"
@@ -112,7 +119,8 @@
             <div class="flex flex-col gap-2">
                 <label for="konfirm_kata_sandi">Konfirmasi Kata Sandi</label>
                 <div class="relative">
-                    <input id="konfirm_kata_sandi" type="password" placeholder="Konfirmasi Kata Sandi..."
+                    <input id="konfirm_kata_sandi" name="password_confirmation" type="password"
+                        placeholder="Konfirmasi Kata Sandi..."
                         class="w-full rounded-md border border-slate-300 px-4 py-3 pr-10 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
                     <button type="button" onmousedown="showPassword('konfirm_kata_sandi', this)"

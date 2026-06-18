@@ -6,7 +6,10 @@
             Daftarkan akun anda dan nikmati berbagai koleksi buku kami!
         </p>
 
-        <form method="POST" action="/register" enctype="multipart/form-data" class="space-y-4 w-full lg:w-3/4">
+        {{-- autocomplete="off" mencegah browser isi otomatis --}}
+        <form method="POST" action="/register" enctype="multipart/form-data"
+            autocomplete="off"
+            class="space-y-4 w-full lg:w-3/4">
             @csrf
 
             <!-- Email -->
@@ -20,7 +23,12 @@
                     Email
                 </label>
                 <input type="email" name="email" placeholder="Email"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                    autocomplete="off"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                    @error('email') border-red-500 @enderror">
+                @error('email')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- NIK / NIDN -->
@@ -29,14 +37,17 @@
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <rect x="3" y="4" width="18" height="16" rx="2" />
-                        <path d="M7 8h6" />
-                        <path d="M7 12h4" />
-                        <path d="M7 16h2" />
+                        <path d="M7 8h6" /><path d="M7 12h4" /><path d="M7 16h2" />
                     </svg>
-                    Nomor Identitas (NIK / NIDN)
+                    Nomor Identitas
                 </label>
-                <input type="text" name="nik" placeholder="NIK / NIDN"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                <input type="text" name="nik" placeholder="Nomor Identitas"
+                    autocomplete="off"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                    @error('nik') border-red-500 @enderror">
+                @error('nik')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Nama Lengkap -->
@@ -50,45 +61,37 @@
                     Nama Lengkap
                 </label>
                 <input type="text" name="name" placeholder="Nama Lengkap"
-                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                    autocomplete="off"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                    @error('name') border-red-500 @enderror">
+                @error('name')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
-            <!-- Instansi & Jenis Kelamin -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="space-y-1">
-                    <label class="flex items-center gap-2 text-xs font-bold text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <rect x="3" y="5" width="18" height="14" rx="2" />
-                            <path d="M8 9h8" />
-                            <path d="M8 13h6" />
-                        </svg>
-                        Instansi
-                    </label>
-                    <input type="text" name="instansi" placeholder="Instansi"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
-                </div>
-
-                <div class="space-y-1">
-                    <label class="flex items-center gap-2 text-xs font-bold text-black">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                        Jenis Kelamin
-                    </label>
-                    <select name="gender"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
-                        <option value="" disabled selected>Pilih Jenis Kelamin</option>
-                        <option value="Laki-laki">Laki-laki</option>
-                        <option value="Perempuan">Perempuan</option>
-                    </select>
-                </div>
+            <!-- Jenis Kelamin -->
+            <div class="space-y-1">
+                <label class="flex items-center gap-2 text-xs font-bold text-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg>
+                    Jenis Kelamin
+                </label>
+                <select name="gender"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] bg-white focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                    @error('gender') border-red-500 @enderror">
+                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                    <option value="Laki-laki">Laki-laki</option>
+                    <option value="Perempuan">Perempuan</option>
+                </select>
+                @error('gender')
+                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- No Telepon & Tanggal Lahir -->
@@ -98,13 +101,17 @@
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <path
-                                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127 1.04.306 2.07.54 3.07a2 2 0 0 1-.45 1.96L7.91 8.52a16 16 0 0 0 6.07 6.07l1.77-1.77a2 2 0 0 1 1.96-.45c1 .235 2.03.414 3.07.54A2 2 0 0 1 22 16.92z" />
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127 1.04.306 2.07.54 3.07a2 2 0 0 1-.45 1.96L7.91 8.52a16 16 0 0 0 6.07 6.07l1.77-1.77a2 2 0 0 1 1.96-.45c1 .235 2.03.414 3.07.54A2 2 0 0 1 22 16.92z" />
                         </svg>
                         No Telepon
                     </label>
                     <input type="text" name="no_handphone" placeholder="No Telepon"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                        autocomplete="off"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                        @error('no_handphone') border-red-500 @enderror">
+                    @error('no_handphone')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="space-y-1">
@@ -113,18 +120,20 @@
                             fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                             stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="2" />
-                            <path d="M16 2v4" />
-                            <path d="M8 2v4" />
-                            <path d="M3 10h18" />
+                            <path d="M16 2v4" /><path d="M8 2v4" /><path d="M3 10h18" />
                         </svg>
                         Tanggal Lahir
                     </label>
                     <input type="date" name="tanggal_lahir"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                        @error('tanggal_lahir') border-red-500 @enderror">
+                    @error('tanggal_lahir')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 
-            <!-- Photo KTP (full width) -->
+            <!-- Photo KTP -->
             <div class="space-y-1">
                 <label class="flex items-center gap-2 text-xs font-bold text-black">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
@@ -152,7 +161,12 @@
                         Kata Sandi
                     </label>
                     <input type="password" name="password" placeholder="Kata Sandi"
-                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
+                        autocomplete="new-password"
+                        class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all
+                        @error('password') border-red-500 @enderror">
+                    @error('password')
+                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div class="space-y-1">
@@ -166,6 +180,7 @@
                         Konfirmasi Kata Sandi
                     </label>
                     <input type="password" name="password_confirmation" placeholder="Konfirmasi"
+                        autocomplete="new-password"
                         class="w-full px-4 py-2.5 border border-gray-300 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
                 </div>
             </div>
@@ -190,7 +205,7 @@
 
             <div class="text-center mt-4 text-xs font-bold text-black">
                 Sudah punya akun?
-                <a href="{{ route('login-page') ?? '/login' }}"
+                <a href="{{ route('login-page') }}"
                     class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">Masuk</a>
             </div>
 

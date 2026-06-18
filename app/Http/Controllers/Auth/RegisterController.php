@@ -3,56 +3,71 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\User;
+use App\Models\Anggota;
+use App\Models\JenisKeanggotaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-
     public function register()
     {
+        session()->forget('_old_input');
         return view('register');
     }
 
     public function prosesRegister(Request $request)
     {
         $request->validate([
-            'nik' => 'required|unique:users,nik',
-            'email' => 'required|email|unique:users,email',
-            'name' => 'required',
-            'no_handphone' => 'required',
-            'password' => 'required|confirmed|min:6',
+            'email'          => 'required|email|unique:anggota,email',
+            'nik'            => 'required|unique:anggota,nomor_identitas',
+            'name'           => 'required',
+            'no_handphone'   => 'required|unique:anggota,no_hp',
+            'gender'         => 'required|in:Laki-laki,Perempuan',
+            'tanggal_lahir'  => 'required|date',
+            'password'       => 'required|confirmed|min:6',
         ], [
-            'nik.required' => 'NIK wajib diisi.',
-            'nik.unique' => 'NIK sudah terdaftar sebelumnya.',
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar sebelumnya.',
-            'name.required' => 'Nama lengkap wajib diisi.',
-            'no_handphone.required' => 'Nomor handphone wajib diisi.',
-            'password.required' => 'Kata sandi wajib diisi.',
-            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
-            'password.min' => 'Kata sandi minimal 6 karakter.',
+            'email.required'               => 'Email wajib diisi.',
+            'email.email'                  => 'Format email tidak valid.',
+            'email.unique'                 => 'Email sudah terdaftar.',
+            'nik.required'                 => 'Nomor identitas wajib diisi.',
+            'nik.unique'                   => 'Nomor identitas sudah terdaftar.',
+            'name.required'                => 'Nama lengkap wajib diisi.',
+            'no_handphone.required'        => 'Nomor handphone wajib diisi.',
+            'no_handphone.unique'          => 'Nomor handphone sudah terdaftar.',
+            'gender.required'              => 'Jenis kelamin wajib dipilih.',
+            'tanggal_lahir.required'       => 'Tanggal lahir wajib diisi.',
+            'password.required'            => 'Kata sandi wajib diisi.',
+            'password.confirmed'           => 'Konfirmasi kata sandi tidak cocok.',
+            'password.min'                 => 'Kata sandi minimal 6 karakter.',
         ]);
 
-        do {
-            $memberId = str_pad(mt_rand(1, 9999999999), 10, '0', STR_PAD_LEFT);
-        } while (User::where('member_id', $memberId)->exists());
+        $fotoKtp = null;
+        if ($request->hasFile('photo_ktp')) {
+            $fotoKtp = $request->file('photo_ktp')->store('foto_ktp', 'public');
+        }
 
-        $user = User::create([
-            'nik' => $request->nik,
-            'email' => $request->email,
-            'name' => $request->name,
-            'phone' => $request->no_handphone,
-            'member_id' => $memberId,
-            'password' => Hash::make($request->password),
+        $defaultJenis = JenisKeanggotaan::firstOrCreate([
+            'nama_jenis' => 'Mahasiswa',
         ]);
 
-        Auth::login($user);
-        $request->session()->regenerate();
+        Anggota::create([
+            'id_jenis'              => $defaultJenis->id_jenis,
+            'nomor_identitas'       => $request->nik,
+            'jenis_nomor_identitas' => 'NIM',
+            'email'                 => $request->email,
+            'nama'                  => $request->name,
+            'no_hp'                 => $request->no_handphone,
+            'status_anggota'        => 'Aktif',
+            'jenis_kelamin'         => $request->gender,
+            'tanggal_lahir'         => $request->tanggal_lahir,
+            'verifikasi_admin'      => 'Menunggu',
+            'foto_ktp'              => $fotoKtp,
+            'password'              => Hash::make($request->password),
+        ]);
 
-        return redirect('/admin/dashboard')->with('success', 'Akun berhasil dibuat! Member ID Anda: ' . $memberId);
+        return redirect()->route('login-page')
+            ->with('success', 'Akun berhasil dibuat! Silakan login untuk mengakses Profil.');
     }
 }

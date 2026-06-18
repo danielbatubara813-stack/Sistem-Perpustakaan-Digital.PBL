@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Anggota extends Model
+class Anggota extends Authenticatable
 {
+    use Notifiable;
+
     protected $table = 'anggota';
 
     protected $primaryKey = 'id_anggota';
@@ -22,7 +25,6 @@ class Anggota extends Model
         'status_anggota',
         'jenis_kelamin',
         'tanggal_lahir',
-        'instansi',
         'profile',
         'tanggal_daftar',
         'verifikasi_admin',
@@ -30,6 +32,8 @@ class Anggota extends Model
         'tanggal_diubah',
         'password',
     ];
+
+    protected $hidden = ['password'];
 
     public function jenisKeanggotaan()
     {
@@ -40,8 +44,4 @@ class Anggota extends Model
         );
     }
 
-    public function peminjaman()
-    {
-        return $this->hasMany(Peminjaman::class, 'id_anggota', 'id_anggota');
-    }
 }

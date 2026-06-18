@@ -56,7 +56,7 @@
                                 src="https://i.pinimg.com/736x/76/07/75/760775dfd783a04a3251e384b1a591eb.jpg"
                                 alt="">
                             <div class="block lg:hidden">
-                                <form action="" method="POST" class="w-full">
+                                <form action="{{ route('logout') }}" method="POST" class="w-full">
                                     @csrf
                                     @method('POST')
 
@@ -85,18 +85,22 @@
                             <div class="col-span-2 lg:col-span-1">
                                 <h6 class="text-sm text-slate-500">Nama Anggota</h6>
                                 <h6 class="font-bold text-base sm:text-lg">
-                                    Daniel Anju Adinov Batubara
+                                    {{ Auth::user()->nama }}
                                 </h6>
                             </div>
 
                             <div>
                                 <h6 class="text-sm text-slate-500">ID Anggota</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">3312501025</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">
+                                    {{ auth()->user()->nomor_identitas }}
+                                </h6>
                             </div>
 
                             <div>
                                 <h6 class="text-sm text-slate-500">Jenis Keanggotaan</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">Mahasiswa</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">
+                                    {{ Auth::user()->jenisKeanggotaan->nama_jenis }}
+                                </h6>
                             </div>
 
                             <div>
@@ -111,7 +115,7 @@
 
                             {{-- Tombol --}}
                             <div class="hidden col-span-2 lg:col-span-1 lg:flex w-full items-end">
-                                <form action="" method="POST" class="w-full">
+                                <form action="{{ route('logout') }}" method="POST" class="w-full">
                                     @csrf
                                     @method('POST')
 

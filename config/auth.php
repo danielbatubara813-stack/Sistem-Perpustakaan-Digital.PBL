@@ -36,11 +36,15 @@ return [
     | Supported: "session"
     |
     */
-
-    'guards' => [
+   'guards' => [
         'web' => [
-            'driver' => 'session',
-            'provider' => 'users',
+            'driver'   => 'session',
+            'provider' => 'anggota',
+        ],
+
+        'admin' => [
+            'driver'   => 'session',
+            'provider' => 'admin',
         ],
     ],
 
@@ -61,16 +65,16 @@ return [
     |
     */
 
-    'providers' => [
-        'users' => [
+     'providers' => [
+        'anggota' => [
             'driver' => 'eloquent',
-            'model' => env('AUTH_MODEL', User::class),
+            'model'  => App\Models\Anggota::class,
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'admin' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\Admin::class,
+        ],
     ],
 
     /*
@@ -92,9 +96,9 @@ return [
     |
     */
 
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
+   'passwords' => [
+        'anggota' => [
+            'provider' => 'anggota',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,
