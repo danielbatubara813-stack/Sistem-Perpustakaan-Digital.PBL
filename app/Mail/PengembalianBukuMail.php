@@ -21,7 +21,7 @@ class PengembalianBukuMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Konfirmasi Pengembalian Buku',
+            subject: 'Konfirmasi Pengembalian Buku - ' . $this->pengembalian->peminjaman->anggota->nama,
         );
     }
 

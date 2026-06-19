@@ -123,10 +123,10 @@
                             <th class="px-6 py-3 w-12">Pilih</th>
                             <th class="px-6 py-3">Anggota</th>
                             <th class="px-6 py-3">Kode Item</th>
-                            <th class="px-6 py-3">Tanggal Pinjam</th>
-                            <th class="px-6 py-3">Jatuh Tempo</th>
+                            <th class="px-6 py-3">Masa Peminjaman</th>
                             <th class="px-6 py-3">Tanggal Kembali</th>
                             <th class="px-6 py-3">Denda</th>
+                            <th class="px-6 py-3">Status</th>
                             <th class="px-6 py-3">Aksi</th>
                         </tr>
                     </thead>
@@ -155,12 +155,19 @@
                                     </div>
                                     <div class="text-sm">{{ $item->peminjaman->id_item }}</div>
                                 </td>
-                                <td class="px-6 py-4">{{ $item->peminjaman->tanggal_peminjaman }}</td>
-                                <td class="px-6 py-4">{{ $item->peminjaman->tanggal_jatuh_tempo }}</td>
+                                <td class="px-4 sm:px-6 py-4">
+                                    <div>
+                                        Tanggal Pinjam: {{ $item->peminjaman->tanggal_peminjaman }}
+                                    </div>
+                                    <div>
+                                        Tanggal Jatuh Tempo: {{ $item->peminjaman->tanggal_jatuh_tempo }}
+                                    </div>
+                                </td>
                                 <td class="px-6 py-4">{{ $item->tanggal_pengembalian ?? '-' }}</td>
                                 <td class="px-6 py-4">
                                     Rp {{ number_format($item->total_denda, 0, ',', '.') }}
                                 </td>
+                                <td class="px-6 py-4">{{ $item->peminjaman->status }}</td>
                                 <td class="px-6 py-4">
                                     <button
                                         class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-yellow-300 text-black hover:bg-yellow-400 transition"

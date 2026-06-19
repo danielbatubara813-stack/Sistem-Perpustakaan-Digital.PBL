@@ -113,7 +113,7 @@
             );
 
             title.innerText =
-                'Berhasil!!!';
+                'Berhasil!';
 
             iconPath.setAttribute(
                 'd',
@@ -140,7 +140,7 @@
             );
 
             title.innerText =
-                'Gagal!!!';
+                'Gagal!';
 
             iconPath.setAttribute(
                 'd',
@@ -167,7 +167,7 @@
             );
 
             title.innerText =
-                'Peringatan!!!';
+                'Peringatan!';
 
             iconPath.setAttribute(
                 'd',

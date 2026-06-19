@@ -123,6 +123,7 @@
         .status-bar {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
             background: #eff6ff;
             border: 1.5px solid #bfdbfe;
@@ -430,31 +431,6 @@
             margin: 24px 0;
         }
 
-        /* ── CTA ── */
-        .cta-wrap {
-            text-align: center;
-            padding: 8px 0 4px;
-        }
-
-        .cta-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
-            color: #fff;
-            text-decoration: none;
-            padding: 14px 40px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.4);
-        }
-
-        .cta-sub {
-            font-size: 11px;
-            color: #94a3b8;
-            margin-top: 10px;
-        }
-
         /* ── FOOTER ── */
         .footer {
             background: #f8fafc;
@@ -518,7 +494,16 @@
     <div class="wrapper">
         <!-- Header -->
         <div class="header">
-            <div class="header-icon">📚</div>
+            <div class="header-icon">
+                <svg style="color: #f1f5f9" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" class="lucide lucide-library-big-icon lucide-library-big">
+                    <rect width="8" height="18" x="3" y="3" rx="1" />
+                    <path d="M7 3v18" />
+                    <path
+                        d="M20.4 18.9c.2.5-.1 1.1-.6 1.3l-1.9.7c-.5.2-1.1-.1-1.3-.6L11.1 5.1c-.2-.5.1-1.1.6-1.3l1.9-.7c.5-.2 1.1.1 1.3.6Z" />
+                </svg>
+            </div>
             <h1>Pengembalian Buku Berhasil</h1>
             @if ($pengembalian->total_denda > 0)
                 <p>Buku dikembalikan terlambat {{ $jumlahHariKeterlambatan }} hari — denda Rp
@@ -550,8 +535,14 @@
             <div class="book-card">
                 <div class="book-card-inner">
                     <div class="book-cover">
-                        <img src="{{ asset('storage/' . $pengembalian->peminjaman->itemBuku->buku->cover_buku) }}"
-                            alt="Cover Buku" onerror="this.parentElement.innerHTML='📖'">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" class="lucide lucide-book-text-icon lucide-book-text">
+                            <path
+                                d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H19a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H6.5a1 1 0 0 1 0-5H20" />
+                            <path d="M8 11h8" />
+                            <path d="M8 7h6" />
+                        </svg>
                     </div>
                     <div class="book-info">
                         <div class="book-title">{{ $pengembalian->peminjaman->itemBuku->buku->judul_buku }}</div>
@@ -575,7 +566,7 @@
                     </div>
                     <div class="date-item">
                         <div class="date-label">✅ Dikembalikan</div>
-                        <div class="date-value blue">{{ $pengembalian->tanggal_pengembalian->format('Y-m-d') }}</div>
+                        <div class="date-value blue">{{ $pengembalian->tanggal_pengembalian }}</div>
                     </div>
                 </div>
 
@@ -611,12 +602,6 @@
             @endif
 
             <hr class="divider">
-
-            <!-- CTA -->
-            <div class="cta-wrap">
-                <a href="" class="cta-btn">🔖 Pinjam Buku Baru</a>
-                <div class="cta-sub">Akses ribuan koleksi buku di perpustakaan kami</div>
-            </div>
 
         </div>
 

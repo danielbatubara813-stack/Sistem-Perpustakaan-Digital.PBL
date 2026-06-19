@@ -81,7 +81,7 @@
             <div class="overflow-x-auto mt-6">
                 @if (request()->filled('nomor_identitas'))
 
-                    @if ($peminjamanLoans->count())
+                    @if ($peminjaman->count())
                         <table class="min-w-237.5 w-full text-sm text-left text-gray-600">
 
                             <thead class="text-xs text-gray-600 uppercase bg-gray-300">
@@ -96,7 +96,7 @@
                             </thead>
 
                             <tbody>
-                                @foreach ($peminjamanLoans as $loan)
+                                @foreach ($peminjaman as $loan)
                                     <tr class="odd:bg-white even:bg-slate-100">
 
                                         {{-- Button --}}
@@ -152,7 +152,7 @@
                                             {{ $loan->tanggal_jatuh_tempo }}
                                         </td>
                                         @php
-                                            $jatuhTempo = strtotime($peminjaman->tanggal_jatuh_tempo);
+                                            $jatuhTempo = strtotime($loan->tanggal_jatuh_tempo);
                                             $sekarang = strtotime(date('Y-m-d'));
 
                                             $jumlahHariKeterlambatan = floor(

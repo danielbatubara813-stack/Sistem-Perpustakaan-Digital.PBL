@@ -18,7 +18,7 @@
                     <path d="m6 6 12 12" />
                 </svg>
             </div>
-            <h4 class="font-bold text-2xl uppercase">Hapus Data !!!</h4>
+            <h4 class="font-bold text-2xl capitalize">Hapus Data!</h4>
             <p class="w-3/4 text-sm text-center">Anda akan menghapus data ini, Apakah anda yakin untuk menghapus data
                 ini?</p>
 

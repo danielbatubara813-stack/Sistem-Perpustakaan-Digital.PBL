@@ -51,7 +51,6 @@ class PengembalianController extends Controller
         $pengembalian = $query
             ->paginate(10)
             ->withQueryString();
-
         return view(
             'admin.pengembalian.pengembalian',
             compact('pengembalian')
