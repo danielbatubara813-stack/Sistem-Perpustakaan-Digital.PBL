@@ -47,148 +47,23 @@
                     <label class="md:col-span-3">Penulis*</label>
 
                     <div class="md:col-span-9 space-y-2">
-                        {{-- TOMBOL BUKA MODAL --}}
-                        <button type="button" data-modal-target="modal-penulis" data-modal-toggle="modal-penulis"
-                            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-all duration-300">
+                        @php
+                            $tipePenulisOptions = collect(['Nama Orang', 'Badan Organisasi', 'Konferensi'])
+                                ->merge($tipe_penulis ?? [])
+                                ->filter()
+                                ->unique()
+                                ->values();
+                            $oldPenulisBaruTipe = old('penulis_baru_tipe', []);
+                        @endphp
+
+                        <button type="button" id="penulis_modal_open"
+                            class="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-blue-700">
                             Tambah Data Penulis
                         </button>
 
-                        {{-- MODAL --}}
-                        <div id="modal-penulis" tabindex="-1" aria-hidden="true"
-                            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-
-                            <div class="relative p-4 w-full max-w-2xl max-h-full">
-
-                                    {{-- ISI MODAL --}}
-                                <div class="relative bg-white rounded-lg shadow-sm">
-
-                                    {{-- HEADER --}}
-                                    <div class="flex items-center justify-between p-4 border-b rounded-t">
-
-                                        <h3 class="text-lg font-semibold text-gray-900">
-                                            Tambah Data Penulis
-                                        </h3>
-
-                                        <button type="button"
-                                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center"
-                                            data-modal-hide="modal-penulis">
-
-                                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                                fill="none" viewBox="0 0 14 14">
-                                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                                    stroke-width="2" d="m1 1 12 12M13 1 1 13" />
-                                            </svg>
-
-                                            <span class="sr-only">Close modal</span>
-                                        </button>
-                                    </div>
-
-                                    {{-- ISI --}}
-                                    <div class="p-4 md:p-5 space-y-6">
-
-                                        {{-- NAMA PENULIS (pilih dari data terkendali) --}}
-                                        <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-
-                                            <label class="sm:col-span-3 text-sm text-slate-700">
-                                                Nama Penulis*
-                                            </label>
-
-                                            <div class="sm:col-span-9">
-
-                                                    <select id="penulis_select" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                                                    <option value="">Pilih Nama Penulis</option>
-                                                    @if(isset($penulis) && $penulis->count())
-                                                        @foreach($penulis as $p)
-                                                            <option value="{{ $p->id_penulis }}" data-tipe="{{ $p->tipe_penulis }}">{{ $p->nama_penulis }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-
-                                                @error('id_penulis')
-                                                    <p class="text-sm text-red-600 mt-1">
-                                                        {{ $message }}
-                                                    </p>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                            <div class="text-center text-sm text-gray-400">atau</div>
-
-                                            {{-- NAMA PENULIS MANUAL --}}
-                                            <div class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                                                <label class="sm:col-span-3 text-sm text-slate-700">Ketikan Nama Baru</label>
-                                                <div class="sm:col-span-9">
-                                                    <input id="manual_nama_penulis" name="manual_nama_penulis" type="text" placeholder="Contoh: Tere Liye" class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                                                </div>
-                                            </div>
-
-                                            {{-- TIPE PENULIS (untuk nama baru) --}}
-                                            <div id="tipe_manual_group" class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start">
-                                                <label class="sm:col-span-3 text-sm text-slate-700">Tipe Penulis (untuk nama baru)</label>
-                                                <div class="sm:col-span-9">
-                                                    <select id="manual_tipe_penulis" name="manual_tipe_penulis" class="w-full sm:max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                                                        @if(isset($tipe_penulis) && count($tipe_penulis))
-                                                            @foreach($tipe_penulis as $tp)
-                                                                <option value="{{ $tp }}">{{ $tp }}</option>
-                                                            @endforeach
-                                                        @else
-                                                            <option value="Nama Orang">Nama Orang</option>
-                                                            <option value="Badan Organisasi">Badan Organisasi</option>
-                                                            <option value="Konferensi">Konferensi</option>
-                                                        @endif
-                                                    </select>
-                                                </div>
-                                            </div>
-
-                                        {{-- TIPE PENULIS (otomatis, ditampilkan saat memilih penulis yang ada) --}}
-                                        <div id="tipe_auto_group" class="grid grid-cols-1 sm:grid-cols-12 gap-4 items-start hidden">
-
-                                            <label class="sm:col-span-3 text-sm text-slate-700">
-                                                Tipe Penulis (otomatis)
-                                            </label>
-
-                                            <div class="sm:col-span-9">
-
-                                                <select id="tipe_penulis_select" class="w-full sm:max-w-48 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" disabled>
-                                                    @if(isset($tipe_penulis) && count($tipe_penulis))
-                                                        @foreach($tipe_penulis as $tp)
-                                                            <option value="{{ $tp }}">{{ $tp }}</option>
-                                                        @endforeach
-                                                    @else
-                                                        <option value="Nama Orang">Nama Orang</option>
-                                                        <option value="Badan Organisasi">Badan Organisasi</option>
-                                                        <option value="Konferensi">Konferensi</option>
-                                                    @endif
-                                                </select>
-
-                                                @error('tipe_penulis')
-                                                    <p class="text-sm text-red-600 mt-1">
-                                                        {{ $message }}
-                                                    </p>
-                                                @enderror
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {{-- FOOTER --}}
-                                    <div class="flex items-center justify-end gap-2 p-4 border-t border-gray-200 rounded-b">
-
-                                        <button data-modal-hide="modal-penulis" type="button"
-                                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition">
-                                            Batal
-                                        </button>
-
-                                        <button type="button" id="addPenulisBtn"
-                                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 transition">
-                                            Tambah
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         {{-- Penulis yang dipilih akan muncul di sini; input tersembunyi membawa nilai id_penulis[] --}}
-                        <div id="selected-authors" class="w-full border border-gray-200 rounded px-3 py-2 min-h-[46px]">
+                        <div id="selected-authors"
+                            class="min-h-[56px] w-full overflow-hidden rounded-md border border-gray-200 bg-white">
                             {{-- isi awal penulis terpilih saat mengedit atau setelah kesalahan validasi --}}
                             @if(old('id_penulis'))
                                 @foreach(old('id_penulis') as $pid)
@@ -196,24 +71,121 @@
                                         $pobj = \App\Models\Penulis::find($pid);
                                     @endphp
                                     @if($pobj)
-                                        <div class="author-chip flex items-center justify-between gap-2 my-1" data-id="{{ $pobj->id_penulis }}">
+                                        <div class="author-chip flex items-center justify-between gap-3 px-3 py-3" data-id="{{ $pobj->id_penulis }}">
                                             <input type="hidden" name="id_penulis[]" value="{{ $pobj->id_penulis }}">
-                                            <span class="text-sm">{{ $pobj->nama_penulis }} <small class="text-xs text-gray-500">({{ $pobj->tipe_penulis }})</small></span>
-                                            <button type="button" class="text-red-600 ml-2 remove-author">Hapus</button>
+                                            <span class="min-w-0 text-sm text-slate-900">{{ $pobj->nama_penulis }} <small class="text-slate-500">({{ $pobj->tipe_penulis }})</small></span>
+                                            <button type="button" class="remove-author shrink-0 text-sm font-medium text-red-600 hover:text-red-700" aria-label="Hapus penulis">Hapus</button>
                                         </div>
                                     @endif
                                 @endforeach
                             @elseif(isset($book) && $book->penulis && $book->penulis->count())
                                 @foreach($book->penulis as $p)
-                                    <div class="author-chip flex items-center justify-between gap-2 my-1" data-id="{{ $p->id_penulis }}">
+                                    <div class="author-chip flex items-center justify-between gap-3 px-3 py-3" data-id="{{ $p->id_penulis }}">
                                         <input type="hidden" name="id_penulis[]" value="{{ $p->id_penulis }}">
-                                        <span class="text-sm">{{ $p->nama_penulis }} <small class="text-xs text-gray-500">({{ $p->tipe_penulis }})</small></span>
-                                        <button type="button" class="text-red-600 ml-2 remove-author">Hapus</button>
+                                        <span class="min-w-0 text-sm text-slate-900">{{ $p->nama_penulis }} <small class="text-slate-500">({{ $p->tipe_penulis }})</small></span>
+                                        <button type="button" class="remove-author shrink-0 text-sm font-medium text-red-600 hover:text-red-700" aria-label="Hapus penulis">Hapus</button>
                                     </div>
                                 @endforeach
-                            @else
-                                <p class="text-sm text-gray-500">Belum ada penulis dipilih.</p>
                             @endif
+
+                            @if(old('penulis_baru'))
+                                @foreach(old('penulis_baru') as $indexPenulisBaru => $namaPenulisBaru)
+                                    @if(trim($namaPenulisBaru) !== '')
+                                        @php
+                                            $tipeBaru = $oldPenulisBaruTipe[$indexPenulisBaru] ?? 'Nama Orang';
+                                        @endphp
+                                        <div class="author-chip flex items-center justify-between gap-3 px-3 py-3" data-name="{{ strtolower(trim($namaPenulisBaru)) }}">
+                                            <input type="hidden" name="penulis_baru[]" value="{{ trim($namaPenulisBaru) }}">
+                                            <input type="hidden" name="penulis_baru_tipe[]" value="{{ $tipeBaru }}">
+                                            <span class="min-w-0 text-sm text-slate-900">{{ trim($namaPenulisBaru) }} <small class="text-slate-500">({{ $tipeBaru }})</small></span>
+                                            <button type="button" class="remove-author shrink-0 text-sm font-medium text-red-600 hover:text-red-700" aria-label="Hapus penulis">Hapus</button>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @endif
+
+                            @if(!old('id_penulis') && !old('penulis_baru') && !(isset($book) && $book->penulis && $book->penulis->count()))
+                                <p class="px-3 py-3 text-sm text-gray-500">Belum ada penulis dipilih.</p>
+                            @endif
+                        </div>
+
+                        @error('penulis_input')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('id_penulis')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('penulis_baru')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+                        @error('penulis_baru_tipe')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
+
+                        <div id="penulis_modal" class="fixed inset-0 z-[60] hidden bg-slate-900/70 px-4 py-6">
+                            <div class="flex min-h-full items-center justify-center">
+                                <div class="w-full max-w-2xl overflow-visible rounded-2xl bg-white shadow-xl">
+                                    <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                                        <h3 class="text-lg font-semibold text-slate-900">Tambah Data Penulis</h3>
+                                        <button type="button" id="penulis_modal_close"
+                                            class="rounded-md p-1 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
+                                            aria-label="Tutup modal penulis">
+                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+                                    <div class="space-y-5 px-5 py-5">
+                                        <div class="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-start sm:gap-4">
+                                            <label for="penulis_input" class="text-sm text-slate-700 sm:col-span-3 sm:pt-2">Nama Penulis*</label>
+
+                                            <div class="relative sm:col-span-9">
+                                                <input id="penulis_input" name="penulis_input" type="text"
+                                                    placeholder="Pilih atau ketik nama penulis"
+                                                    class="w-full rounded-md border border-slate-300 px-3 py-2 pr-10 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200"
+                                                    autocomplete="off"
+                                                    role="combobox"
+                                                    aria-autocomplete="list"
+                                                    aria-expanded="false"
+                                                    aria-controls="penulis_suggestions" />
+
+                                                <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                                </svg>
+
+                                                <div id="penulis_suggestions"
+                                                    class="absolute left-0 right-0 top-full z-[70] mt-1 hidden max-h-64 overflow-auto rounded-md border border-gray-400 bg-white py-1 shadow-lg"
+                                                    role="listbox"></div>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 gap-2 sm:grid-cols-12 sm:items-start sm:gap-4">
+                                            <label for="penulis_tipe_input" class="text-sm text-slate-700 sm:col-span-3 sm:pt-2">Tipe Penulis</label>
+
+                                            <div class="sm:col-span-9">
+                                                <select id="penulis_tipe_input"
+                                                    class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 sm:max-w-56">
+                                                    @foreach($tipePenulisOptions as $tipePenulisOption)
+                                                        <option value="{{ $tipePenulisOption }}">{{ $tipePenulisOption }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-end gap-2 border-t border-gray-200 px-5 py-4">
+                                        <button type="button" id="penulis_modal_cancel"
+                                            class="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-gray-200">
+                                            Batal
+                                        </button>
+                                        <button type="button" id="addPenulisBtn"
+                                            class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+                                            Tambah
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,24 +238,26 @@
 
                             {{-- Kode 1 --}}
                             <input type="text" id="kode_1" name="kode_1" maxlength="4" value="{{ old('kode_1', $kode1Item ?? '') }}"
-                                class="border border-gray-400 rounded px-3 py-2 uppercase">
+                                class="border border-gray-400 rounded px-3 py-2 uppercase" {{ (isset($book) && $book->exists) ? 'readonly' : '' }}>
 
                             {{-- Kode 2 --}}
                             <input type="text" id="kode_2" name="kode_2" maxlength="4" value="{{ old('kode_2', $kode2Item ?? '') }}"
-                                class="border border-gray-400 rounded px-3 py-2 uppercase">
+                                class="border border-gray-400 rounded px-3 py-2 uppercase" {{ (isset($book) && $book->exists) ? 'readonly' : '' }}>
 
                             {{-- Jumlah Buku --}}
-                            <input type="number" id="jumlah_buku" name="jumlah_buku" min="1" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
+                            <input type="number" id="jumlah_buku" name="jumlah_buku" min="{{ (isset($book) && $book->exists) ? $book->items->count() : 1 }}" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
                                 class="border border-gray-400 rounded px-3 py-2">
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-2 sm:items-center mt-2">
 
-                            {{-- tombol regenerate --}}
-                            <button type="button" id="regenBtn"
-                                class="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition w-full sm:w-max">
-                                Regenerate Kode 1 & 2
-                            </button>
+                            {{-- tombol regenerate (only on create) --}}
+                            @if(!(isset($book) && $book->exists))
+                                <button type="button" id="regenBtn"
+                                    class="bg-blue-600 text-white px-3 py-2 rounded text-sm hover:bg-blue-700 transition w-full sm:w-max">
+                                    Regenerate Kode 1 & 2
+                                </button>
+                            @endif
 
                             <p class="text-xs text-gray-500">
                                 Kode item dibuat berurutan: Kode 1-Kode 2-0001, 0002, dan seterusnya.
@@ -347,17 +321,66 @@
                     <label class="md:col-span-3">Subjek*</label>
 
                     <div class="md:col-span-9">
-                        <select name="id_subjek" class="w-full sm:max-w-xs border border-gray-400 rounded px-3 py-2">
-                            <option value="">Pilih Subjek</option>
-                            @if(isset($subjek))
-                                @foreach($subjek as $s)
-                                    <option value="{{ $s->id_subjek }}" {{ old('id_subjek', isset($book) ? ($book->subjek->first()->id_subjek ?? '') : '') == $s->id_subjek ? 'selected' : '' }}>{{ $s->nama_subjek }}</option>
-                                @endforeach
-                            @endif
-                        </select>
+                        @php
+                            $selectedSubjek = old('id_subjek', isset($book) ? $book->subjek->pluck('id_subjek')->toArray() : []);
+                        @endphp
+                        {{-- Dropdown multi-select subjek --}}
+                        <div class="relative inline-block text-left w-full sm:max-w-sm">
+                            <div>
+                                <button id="subjek_dropdown_btn" type="button"
+                                    class="flex w-full items-center justify-between rounded-md border border-blue-600 bg-white px-3 py-2 text-left text-sm text-slate-900 outline-none transition focus:ring-2 focus:ring-blue-200"
+                                    aria-expanded="false">
+                                    <span id="subjek_dropdown_label" class="min-w-0 truncate">Pilih Subjek</span>
+                                    <svg class="h-4 w-4 shrink-0 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+                                </button>
+                            </div>
+
+                            <div id="subjek_dropdown_menu" class="absolute left-0 top-full z-50 hidden max-h-72 w-full overflow-auto border border-slate-700 bg-white shadow-lg">
+                                <div class="py-1" role="listbox" aria-multiselectable="true">
+                                    <button type="button" id="subjek_clear_option"
+                                        class="flex w-full items-center px-3 py-2 text-left text-sm text-slate-900 transition hover:bg-blue-600 hover:text-white">
+                                        Pilih Subjek
+                                    </button>
+                                    @if(isset($subjek))
+                                        @foreach($subjek as $s)
+                                            <label class="subjek-option flex cursor-pointer items-center px-3 py-2 text-sm transition hover:bg-blue-600 hover:text-white {{ in_array($s->id_subjek, (array) $selectedSubjek) ? 'bg-blue-600 text-white' : 'bg-white text-slate-900' }}" data-id="{{ $s->id_subjek }}" role="option" aria-selected="{{ in_array($s->id_subjek, (array) $selectedSubjek) ? 'true' : 'false' }}">
+                                                <input type="checkbox" class="subjek-checkbox sr-only" value="{{ $s->id_subjek }}" {{ in_array($s->id_subjek, (array) $selectedSubjek) ? 'checked' : '' }} />
+                                                <span class="min-w-0 flex-1 truncate">{{ $s->nama_subjek }}</span>
+                                            </label>
+                                        @endforeach
+                                    @endif
+                                </div>
+                            </div>
+
+                            {{-- Hidden inputs to submit selected subjek values --}}
+                            <div id="subjek_hidden_inputs">
+                                @if($selectedSubjek && count($selectedSubjek))
+                                    @foreach($selectedSubjek as $sid)
+                                        <input type="hidden" name="id_subjek[]" value="{{ $sid }}" />
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
                         @error('id_subjek')
                             <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
                         @enderror
+
+                        {{-- kotak yang menampilkan subjek terpilih (visual) --}}
+                        <div id="selected-subjek" class="w-full border border-gray-200 rounded px-3 py-2 min-h-[46px] mt-2">
+                            @if($selectedSubjek && count($selectedSubjek))
+                                @foreach($selectedSubjek as $sid)
+                                    @php $sobj = \App\Models\Subjek::find($sid); @endphp
+                                    @if($sobj)
+                                        <div class="subjek-chip flex items-center justify-between gap-2 my-1" data-id="{{ $sobj->id_subjek }}">
+                                            <span class="text-sm">{{ $sobj->nama_subjek }}</span>
+                                            <button type="button" class="text-red-600 ml-2 remove-subjek">Hapus</button>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            @else
+                                <p class="text-sm text-gray-500">Belum ada subjek dipilih.</p>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -446,6 +469,9 @@
         </form>
     </div>
 
+    <script>
+        window.PENULIS_DATA = @json(isset($penulis) ? $penulis->map(function($p){ return ['id' => $p->id_penulis, 'nama' => $p->nama_penulis, 'tipe' => $p->tipe_penulis]; }) : []);
+    </script>
     @vite('resources/js/formbuku.js')
 
 @endsection

@@ -57,6 +57,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::put('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
         });
 
+        Route::prefix('list-anggota')->name('anggota.')->group(function () {
+            Route::get('/', [AnggotaController::class, 'indexAnggota'])->name('daftar');
+            Route::get('/create', [AnggotaController::class, 'createAnggota'])->name('create');
+            Route::post('/', [AnggotaController::class, 'storeAnggota'])->name('store');
+            Route::delete('/destroy', [AnggotaController::class, 'destroyAnggota'])->name('destroy');
+            Route::get('/{id}/edit', [AnggotaController::class, 'editAnggota'])->name('edit');
+            Route::put('/{id}', [AnggotaController::class, 'updateAnggota'])->name('update');
+            Route::get('/jenis', [JenisKeanggotaanController::class, 'jenis'])->name('jenis');
+            Route::get('/jenis/create', [JenisKeanggotaanController::class, 'jenisCreate'])->name('jenis.create');
+            Route::post('/jenis', [JenisKeanggotaanController::class, 'jenisStore'])->name('jenis.store');
+            Route::delete('/jenis/destroy', [JenisKeanggotaanController::class, 'destroyJenis'])->name('jenis.destroy');
+            Route::get('/jenis/{id}/edit', [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
+            Route::put('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
+            Route::delete('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
+        });
+
         // Peminjaman
         Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
 
@@ -64,8 +80,20 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('peminjaman.aturan');
         Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
             ->name('peminjaman.aturan.create');
+        Route::post('/peminjaman/aturan', [PeminjamanController::class, 'aturanStore'])
+            ->name('peminjaman.aturan.store');
+        Route::delete('/peminjaman/aturan/destroy', [PeminjamanController::class, 'aturanDestroyMultiple'])
+            ->name('peminjaman.aturan.destroyMultiple');
+        Route::get('/peminjaman/aturan/{id}/edit', [PeminjamanController::class, 'aturanEdit'])
+            ->name('peminjaman.aturan.edit');
+        Route::put('/peminjaman/aturan/{id}', [PeminjamanController::class, 'aturanUpdate'])
+            ->name('peminjaman.aturan.update');
+        Route::delete('/peminjaman/aturan/{id}', [PeminjamanController::class, 'aturanDestroy'])
+            ->name('peminjaman.aturan.destroy');
         Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
             ->name('peminjaman.catat-peminjaman');
+        Route::post('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'store'])
+            ->name('peminjaman.store');
 
         Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
         Route::put('/peminjaman/reservasi/Disetujui', [ReservasiController::class, 'reservasiDisetujui'])->name('peminjaman.reservasi.disetujui');
@@ -85,7 +113,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 ->name('kembalikan');
         });
 
-        // Data Terkendali
         Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
             Route::prefix('tipe-koleksi')->name('tipe-koleksi.')->group(function () {
                 Route::get('/', [TipeKoleksiController::class, 'indexTipeKoleksi'])->name('index');
@@ -111,6 +138,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::put('/update', [DokBahasaController::class, 'updateBahasa'])->name('update');
                 Route::delete('/destroy', [DokBahasaController::class, 'destroyBahasa'])->name('destroy');
             });
+
             Route::prefix('penulis')->name('penulis.')->group(function () {
                 Route::get('/', [PenulisController::class, 'indexPenulis'])->name('index');
                 Route::get('/create', [PenulisController::class, 'createPenulis'])->name('create');
@@ -119,6 +147,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::put('/update', [PenulisController::class, 'updatePenulis'])->name('update');
                 Route::delete('/destroy', [PenulisController::class, 'destroyPenulis'])->name('destroy');
             });
+
             Route::prefix('penerbit')->name('penerbit.')->group(function () {
                 Route::get('/', [PenerbitController::class, 'indexPenerbit'])->name('index');
                 Route::get('/create', [PenerbitController::class, 'createPenerbit'])->name('create');
@@ -128,7 +157,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::delete('/destroy', [PenerbitController::class, 'destroyPenerbit'])->name('destroy');
             });
         });
-
     });
-
 });
