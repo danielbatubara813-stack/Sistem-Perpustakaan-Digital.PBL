@@ -1,6 +1,6 @@
 @extends('layout.main-app')
 
-@section('title', 'Detail Buku ' . $buku['judul'])
+@section('title', 'Detail Buku ' . $buku->judul_buku)
 
 @section('content')
     <div class="relative h-96">
@@ -13,7 +13,7 @@
         class="px-4 sm:px-6 md:px-12 lg:18 xl:px-24 py-12 w-full grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 space-y-4 lg:space-y-0 gap-0 md:gap-4">
         <div
             class="bg-white h-max p-6 rounded-md border border-gray-300 shadow-md space-y-4 flex flex-col justify-center items-center">
-            <img src="{{ $buku['cover'] }}"
+            <img src="{{ $buku->cover_buku }}"
                 class="aspect-[1/1.6] w-3/5 lg:w-full rounded-md object-fit border shadow-md border-gray-300" alt="">
             <button onclick="copyLink()"
                 class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
@@ -26,24 +26,34 @@
                 </svg>
                 <span>Bagikan</span>
             </button>
+            <form action="{{ route('reservasi-create') }}" class="w-full" method="POST">
+                @csrf
+                @method('POST')
+                <input type="hidden" name="id_buku" value="{{ $buku->id_buku }}">
+                <button class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
+                    <span>Reservasi</span>
+                </button>
+            </form>
             <div class="w-full space-y-4">
                 <div class="w-full">
                     <h6 class="text-sm lg:text-base">Total Peminjaman</h6>
-                    <h2 class="text-lg lg:text-xl font-bold">15 Peminjaman</h2>
+                    <h2 class="text-lg lg:text-xl font-bold">{{ $total_dipinjam }} Peminjaman</h2>
                 </div>
                 <div class="w-full">
                     <h6 class="text-sm lg:text-base">Jumlah Item Buku</h6>
-                    <h2 class="text-lg lg:text-xl font-bold">2 Item Buku</h2>
+                    <h2 class="text-lg lg:text-xl font-bold">{{ $buku->items->count() }} Item Buku</h2>
                 </div>
             </div>
         </div>
         <div
             class="bg-white col-span-1 md:col-span-2 lg:col-span-3 xl:col-span-4 p-6 rounded-md border border-gray-300 shadow-md">
             <div class="space-y-4">
-                <h2 class="text-3xl lg:text-4xl font-bold w-3/4">{{ $buku['judul'] }}</h2>
+                <h2 class="text-3xl lg:text-4xl font-bold w-3/4">{{ $buku->judul_buku }}</h2>
                 <div class="flex flex-wrap">
-                    <h2 class="text-sm md:text-lg lg:text-xl py-2 px-6 rounded-full border border-black">
-                        {{ $buku['penulis'] }}</h2>
+                    @foreach ($buku->penulis as $data_penulis)
+                        <h2 class="text-sm md:text-lg lg:text-xl py-2 px-6 rounded-full border border-black">
+                            {{ $data_penulis->nama_penulis }}</h2>
+                    @endforeach
                 </div>
                 <h2 class="font-bold text-xl lg:text-2xl">Informasi Detail</h2>
                 <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
@@ -74,7 +84,7 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-2">
                         <h4 class="font-bold text-black">No. Panggil</h4>
-                        <p class="col-span-4">{{ $buku['no_panggil'] }}</p>
+                        <p class="col-span-4">{{ $buku->no_panggil }}</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-5 gap-2">
@@ -85,9 +95,7 @@
                     <div class="col-span-2 lg:col-span-1 grid grid-cols-1 lg:grid-cols-5 gap-2 items-start">
                         <h4 class="font-bold text-black">Deskripsi</h4>
                         <p class="col-span-4 leading-relaxed text-gray-700">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil corporis laborum
-                            dolore voluptates atque aliquid tempore voluptas blanditiis beatae vitae unde nulla,
-                            necessitatibus aut ea sunt inventore quis porro veniam?
+                            {{ $buku->deskripsi }}
                         </p>
                     </div>
                 </div>
@@ -105,24 +113,24 @@
                         </thead>
                         <tbody class="divide-y divide-slate-200">
 
-                            @foreach ($buku['copy'] as $item)
+                            @foreach ($buku->items as $item)
                                 <tr class="odd:bg-white even:bg-slate-100 hover:bg-slate-50 transition-all duration-150">
-                                    <td class="px-3 py-3 text-nowrap">{{ $item['lokasi'] }}</td>
+                                    <td class="px-3 py-3 text-nowrap">{{ $buku->no_rak }}</td>
                                     <td class="px-3 py-3 text-nowrap text-slate-700 text-center align-center">
-                                        {{ $item['nomor_panggil'] }}
+                                        {{ $buku->no_panggil }}
                                     </td>
                                     <td class="px-3 py-3 text-nowrap text-slate-700 text-center align-center">
-                                        {{ $item['nomor_item'] }}
+                                        {{ $item->id_item }}
                                     </td>
 
                                     <td
-                                        class="px-3 py-3 text-nowrap font-medium text-center align-center {{ $item['status'] == 'Tersedia' ? 'text-green-600' : 'text-red-600' }}">
+                                        class="px-3 py-3 text-nowrap font-medium text-center align-center {{ $item->status_item == 'Tersedia' ? 'text-green-600' : 'text-red-600' }}">
 
-                                        {{ $item['status'] }}
+                                        {{ $item->status_item }}
 
-                                        @if ($item['status'] == 'Sedang Dipinjam')
+                                        @if ($item->status_item == 'Sedang Dipinjam')
                                             <div class="text-xs text-slate-500 mt-1">
-                                                Jatuh Tempo: {{ $item['tanggal_pinjam'] }}
+                                                Jatuh Tempo: {{ $item->peminjaman->tanggal_peminjaman }}
                                             </div>
                                         @endif
                                     </td>

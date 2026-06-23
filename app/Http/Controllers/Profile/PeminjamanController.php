@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pengembalian;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -59,10 +61,34 @@ class PeminjamanController extends Controller
         return view('profile.peminjaman-sekarang', compact('koleksi_baru'));
     }
 
-    public function sejarahPeminjamanPage()
+    public function sejarahPeminjamanPage(Request $request)
     {
-        $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.sejarah-peminjaman', compact('koleksi_baru'));
+        $user = Auth::guard('web')->user();
+        $query = Pengembalian::with([
+            'peminjaman.anggota',
+            'peminjaman.itemBuku.buku',
+            'peminjaman.itemBuku.buku.penulis'
+        ])->whereHas('peminjaman.anggota', function ($q) use ($user) {
+            $q->where('id_anggota', '=', $user->id_anggota);
+        });
+
+        // Search
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->whereHas('peminjaman.anggota', function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")->orWhere('nomor_identitas', 'like', "%{$search}%");
+            })->orWhereHas('peminjaman.itemBuku.buku', function ($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%");
+            });
+        }
+
+        $pengembalian = $query
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('profile.sejarah-peminjaman', compact('pengembalian'));
     }
 
 }

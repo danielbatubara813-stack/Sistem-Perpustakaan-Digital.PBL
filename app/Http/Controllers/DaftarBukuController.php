@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Buku;
+use App\Models\Peminjaman;
 use Illuminate\Http\Request;
 
 class DaftarBukuController extends Controller
@@ -312,9 +314,12 @@ class DaftarBukuController extends Controller
     public function detailBukuPage($id_buku)
     {
 
-        $koleksi_baru = $this->ambilDataBuku();
+        $buku = Buku::with(['penulis', 'penerbit', 'bahasa', 'subjek', 'items', 'items.peminjaman', 'tipe'])
+            ->where('id_buku', $id_buku)->firstOrFail();
+        $total_dipinjam = Peminjaman::whereHas('itemBuku.buku', function ($q) use ($id_buku) {
+            $q->where('id_buku', $id_buku);
+        })->count();
 
-        $buku = collect($koleksi_baru)->firstWhere('id', $id_buku);
-        return view('detail-buku', compact('buku'));
+        return view('detail-buku', compact('buku', 'total_dipinjam'));
     }
 }
