@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('id_item', 19);
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_jatuh_tempo');
-            $table->enum('status', ['Dipinjam', 'Dikembalikan', 'Terlambat']);
+            $table->enum('status', ['Dipinjam', 'Dikembalikan']);
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 
@@ -26,10 +26,10 @@ return new class extends Migration {
 
         Schema::create('aturan_peminjaman', function (Blueprint $table) {
             $table->increments('id_aturan');
-            $table->integer('id_jenis')->unsigned();
+            $table->integer('id_jenis')->unsigned()->nullable();
             $table->integer('id_tipe')->unsigned()->nullable();
             $table->unsignedTinyInteger('periode_peminjaman')->default(7);
-            $table->unsignedTinyInteger('batas_peminjaman')->default(5);
+            $table->unsignedTinyInteger('batas_peminjaman')->default(2);
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 

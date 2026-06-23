@@ -18,11 +18,45 @@ use Throwable;
 
 class BukuController extends Controller
 {
-    public function listBuku()
+    public function listBuku(Request $request)
     {
-        $books = Buku::withCount('items')->get();
+        $query = Buku::with(['bahasa', 'subjek'])
+            ->withCount('items');
 
-        return view('admin.buku.buku', compact('books'));
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+
+            $query->where(function ($query) use ($search) {
+                $query
+                    ->where('judul_buku', 'like', '%' . $search . '%')
+                    ->orWhere('isbn', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('bahasa')) {
+            $query->where('kode_bahasa', $request->input('bahasa'));
+        }
+
+        if ($request->filled('subjek')) {
+            $query->whereHas('subjek', function ($query) use ($request) {
+                $query->where('subjek.id_subjek', $request->input('subjek'));
+            });
+        }
+
+        if ($request->input('sort') === 'terlama') {
+            $query->orderBy('tanggal_dibuat', 'asc');
+        } else {
+            $query->orderBy('tanggal_dibuat', 'desc');
+        }
+
+        $books = $query
+            ->paginate(10)
+            ->withQueryString();
+
+        $bahasaOptions = DokBahasa::orderBy('nama_bahasa')->get();
+        $subjekOptions = Subjek::orderBy('nama_subjek')->get();
+
+        return view('admin.buku.buku', compact('books', 'bahasaOptions', 'subjekOptions'));
     }
 
     public function create()
@@ -56,13 +90,27 @@ class BukuController extends Controller
             'kode_bahasa' => 'required|exists:dok_bahasa,kode_bahasa',
             'id_penerbit' => 'required|exists:penerbit,id_penerbit',
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
-            'id_subjek' => 'required|exists:subjek,id_subjek',
+            'id_subjek' => 'required|array',
+            'id_subjek.*' => 'integer|exists:subjek,id_subjek',
             'kode_1' => 'required|string|size:4',
             'kode_2' => 'required|string|size:4',
             'jumlah_buku' => 'required|integer|min:1',
             'id_penulis' => 'nullable|array',
             'id_penulis.*' => 'integer|exists:penulis,id_penulis',
+            'penulis_baru' => 'nullable|array',
+            'penulis_baru.*' => 'string|max:255',
+            'penulis_baru_tipe' => 'nullable|array',
+            'penulis_baru_tipe.*' => 'in:Nama Orang,Badan Organisasi,Konferensi',
         ]);
+
+        if (!$this->requestMemilikiPenulis($request)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'penulis_input' => 'Pilih penulis dari daftar atau tambahkan penulis baru.',
+                ]);
+        }
 
         $data = $request->only([
             'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
@@ -92,7 +140,7 @@ class BukuController extends Controller
             $book = Buku::create($data);
 
             $book->subjek()->sync($request->id_subjek);
-            $book->penulis()->sync($request->id_penulis ?? []);
+            $book->penulis()->sync($this->ambilIdPenulisUntukSync($request));
 
             foreach ($itemIds as $idItem) {
                 $itemBuku = ItemBuku::create([
@@ -135,15 +183,30 @@ class BukuController extends Controller
             'no_rak' => 'required|string|max:255',
             'id_tipe' => 'required|exists:tipe_koleksi,id_tipe',
             'kode_bahasa' => 'required|exists:dok_bahasa,kode_bahasa',
-            'kode_1' => 'required|string|size:4',
-            'kode_2' => 'required|string|size:4',
+            // kode_1 / kode_2 are immutable on edit; we'll derive them from existing items
+            'kode_1' => 'nullable|string|size:4',
+            'kode_2' => 'nullable|string|size:4',
             'jumlah_buku' => 'required|integer|min:1',
             'id_penerbit' => 'required|exists:penerbit,id_penerbit',
             'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
-            'id_subjek' => 'required|exists:subjek,id_subjek',
+            'id_subjek' => 'required|array',
+            'id_subjek.*' => 'integer|exists:subjek,id_subjek',
             'id_penulis' => 'nullable|array',
             'id_penulis.*' => 'integer|exists:penulis,id_penulis',
+            'penulis_baru' => 'nullable|array',
+            'penulis_baru.*' => 'string|max:255',
+            'penulis_baru_tipe' => 'nullable|array',
+            'penulis_baru_tipe.*' => 'in:Nama Orang,Badan Organisasi,Konferensi',
         ]);
+
+        if (!$this->requestMemilikiPenulis($request)) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->withErrors([
+                    'penulis_input' => 'Pilih penulis dari daftar atau tambahkan penulis baru.',
+                ]);
+        }
 
         $data = $request->only([
             'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
@@ -151,12 +214,20 @@ class BukuController extends Controller
         ]);
 
         $newCount = (int) $request->input('jumlah_buku', $book->items()->count());
-        $kode1 = $this->normalizeItemCodePart($request->kode_1);
-        $kode2 = $this->normalizeItemCodePart($request->kode_2);
+
+        // Determine kode parts from existing items to prevent changes
+        [$kode1, $kode2] = $this->extractItemCodeParts($book->items()->orderBy('tanggal_dibuat')->value('id_item'));
+        // fallback to request (edge cases)
+        if (!$kode1) $kode1 = $this->normalizeItemCodePart($request->input('kode_1', ''));
+        if (!$kode2) $kode2 = $this->normalizeItemCodePart($request->input('kode_2', ''));
 
         $oldCount = $book->items()->count();
         $newItemIds = [];
-        $removable = collect();
+
+        // Disallow decreasing jumlah on edit — only allow adding
+        if ($newCount < $oldCount) {
+            return redirect()->back()->withInput()->with('error', 'Jumlah buku hanya dapat ditambah saat edit, tidak dapat dikurangi.');
+        }
 
         if ($newCount > $oldCount) {
             for ($i = $oldCount + 1; $i <= $newCount; $i++) {
@@ -164,18 +235,7 @@ class BukuController extends Controller
             }
 
             if (ItemBuku::whereIn('id_item', $newItemIds)->exists()) {
-                return redirect()->back()->withInput()->with('error', 'Kode item buku sudah digunakan. Silakan regenerate Kode 1 dan 2.');
-            }
-        } elseif ($newCount < $oldCount) {
-            $toRemove = $oldCount - $newCount;
-            $removable = ItemBuku::where('id_buku', $book->id_buku)
-                ->where('status_item', 'Tersedia')
-                ->orderByDesc('tanggal_dibuat')
-                ->limit($toRemove)
-                ->get();
-
-            if ($removable->count() < $toRemove) {
-                return redirect()->back()->withInput()->with('error', 'Tidak dapat mengurangi jumlah karena beberapa item sedang dipinjam atau tidak tersedia.');
+                return redirect()->back()->withInput()->with('error', 'Kode item buku sudah digunakan. Hubungi administrator.');
             }
         }
 
@@ -188,7 +248,7 @@ class BukuController extends Controller
             $data['cover_buku'] = $filename;
         }
 
-        DB::transaction(function () use ($book, $data, $request, $newItemIds, $removable) {
+        DB::transaction(function () use ($book, $data, $request, $newItemIds) {
             $book->update($data);
 
             foreach ($newItemIds as $idItem) {
@@ -198,13 +258,8 @@ class BukuController extends Controller
                     'status_item' => 'Tersedia',
                 ]);
             }
-
-            foreach ($removable as $item) {
-                $item->delete();
-            }
-
             $book->subjek()->sync($request->id_subjek);
-            $book->penulis()->sync($request->id_penulis ?? []);
+            $book->penulis()->sync($this->ambilIdPenulisUntukSync($request));
         });
 
         return redirect()->route('admin.buku')->with('success', 'Data buku berhasil diperbarui');
@@ -319,5 +374,66 @@ class BukuController extends Controller
         $parts = explode('-', $idItem);
 
         return [$parts[0] ?? null, $parts[1] ?? null];
+    }
+
+    protected function requestMemilikiPenulis(Request $request)
+    {
+        $penulisLama = collect($request->input('id_penulis', []))
+            ->filter(fn($id) => filled($id));
+
+        $penulisBaru = collect($request->input('penulis_baru', []))
+            ->map(fn($nama) => trim((string) $nama))
+            ->filter();
+
+        return $penulisLama->isNotEmpty() || $penulisBaru->isNotEmpty();
+    }
+
+    protected function ambilIdPenulisUntukSync(Request $request)
+    {
+        $penulisIds = collect($request->input('id_penulis', []))
+            ->filter(fn($id) => filled($id))
+            ->map(fn($id) => (int) $id);
+
+        $tipePenulisBaru = $request->input('penulis_baru_tipe', []);
+        $namaPenulisBaru = collect($request->input('penulis_baru', []))
+            ->map(function ($nama, $index) use ($tipePenulisBaru) {
+                return [
+                    'nama' => trim((string) $nama),
+                    'tipe' => $this->normalisasiTipePenulis($tipePenulisBaru[$index] ?? 'Nama Orang'),
+                ];
+            })
+            ->filter(fn($penulis) => $penulis['nama'] !== '')
+            ->unique(fn($penulis) => strtolower($penulis['nama']));
+
+        foreach ($namaPenulisBaru as $dataPenulisBaru) {
+            $namaPenulis = $dataPenulisBaru['nama'];
+            $penulis = Penulis::whereRaw(
+                'LOWER(nama_penulis) = ?',
+                [strtolower($namaPenulis)]
+            )->first();
+
+            if (!$penulis) {
+                $penulis = Penulis::create([
+                    'nama_penulis' => $namaPenulis,
+                    'tipe_penulis' => $dataPenulisBaru['tipe'],
+                ]);
+            }
+
+            $penulisIds->push((int) $penulis->id_penulis);
+        }
+
+        return $penulisIds
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    protected function normalisasiTipePenulis($tipePenulis)
+    {
+        $opsiTipePenulis = ['Nama Orang', 'Badan Organisasi', 'Konferensi'];
+
+        return in_array($tipePenulis, $opsiTipePenulis, true)
+            ? $tipePenulis
+            : 'Nama Orang';
     }
 }

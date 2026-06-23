@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin\Anggota;
 
 use App\Http\Controllers\Controller;
+use App\Models\AturanPeminjaman;
 use App\Models\JenisKeanggotaan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class JenisKeanggotaanController extends Controller
 {
@@ -42,9 +44,18 @@ class JenisKeanggotaanController extends Controller
             'name' => 'required|string|max:255|unique:jenis_keanggotaan,nama_jenis',
         ]);
 
-        JenisKeanggotaan::create([
-            'nama_jenis' => $request->name,
-        ]);
+        DB::transaction(function () use ($request) {
+            $jenisKeanggotaan = JenisKeanggotaan::create([
+                'nama_jenis' => $request->name,
+            ]);
+
+            AturanPeminjaman::create([
+                'id_jenis' => $jenisKeanggotaan->id_jenis,
+                'id_tipe' => null,
+                'batas_peminjaman' => 2,
+                'periode_peminjaman' => 7,
+            ]);
+        });
 
         return redirect()
             ->route('admin.anggota.jenis')
@@ -98,6 +109,7 @@ class JenisKeanggotaanController extends Controller
                     ->with('error', $inUse->count() . ' jenis keanggotaan tidak dapat dihapus karena masih digunakan oleh anggota');
             }
 
+            AturanPeminjaman::whereIn('id_jenis', $ids)->delete();
             JenisKeanggotaan::whereIn('id_jenis', $ids)->delete();
 
             return redirect()

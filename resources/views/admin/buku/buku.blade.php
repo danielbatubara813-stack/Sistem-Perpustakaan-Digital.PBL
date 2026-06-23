@@ -10,41 +10,51 @@
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
 
             {{-- Filter Group --}}
-            <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
+            <form method="GET" action="{{ route('admin.buku') }}"
+                class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
 
-                <input id="search" type="text" placeholder="Cari anggota..."
+                <input id="search" name="search" value="{{ request('search') }}" type="text"
+                    placeholder="Cari judul / ISBN..."
+                    data-auto-submit-search
                     class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
                        px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
-                <select id="filter-type"
+                <select id="filter-type" name="bahasa" onchange="this.form.submit()"
                     class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
                        outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                    <option>Bahasa</option>
-                    <option>Bahasa Indonesia</option>
-                    <option>Inggris</option>
+                    <option value="">Semua Bahasa</option>
+                    @foreach ($bahasaOptions as $bahasa)
+                        <option value="{{ $bahasa->kode_bahasa }}"
+                            {{ request('bahasa') === $bahasa->kode_bahasa ? 'selected' : '' }}>
+                            {{ $bahasa->nama_bahasa }}
+                        </option>
+                    @endforeach
                 </select>
 
-                <select id="filter-status"
+                <select id="filter-status" name="subjek" onchange="this.form.submit()"
                     class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
                        outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                    <option>Subjek</option>
-                    <option>Teknologi</option>
-                    <option>Programming</option>
-                    <option>Manajemen</option>
-                    <option>Elektro</option>
-                    <option>Software</option>
-                    <option>Mesin</option>
+                    <option value="">Semua Subjek</option>
+                    @foreach ($subjekOptions as $subjek)
+                        <option value="{{ $subjek->id_subjek }}"
+                            {{ (string) request('subjek') === (string) $subjek->id_subjek ? 'selected' : '' }}>
+                            {{ $subjek->nama_subjek }}
+                        </option>
+                    @endforeach
                 </select>
 
-                <select id="filter-sort"
+                <select id="filter-sort" name="sort" onchange="this.form.submit()"
                     class="flex-1 sm:flex-none rounded-md border border-slate-300 px-3 py-2 text-sm
                        outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
-                    <option>Terbaru</option>
-                    <option>Terpopuler</option>
-                    <option>Terlama</option>
+                    <option value="terbaru" {{ request('sort', 'terbaru') === 'terbaru' ? 'selected' : '' }}>
+                        Terbaru
+                    </option>
+                    <option value="terlama" {{ request('sort') === 'terlama' ? 'selected' : '' }}>
+                        Terlama
+                    </option>
                 </select>
 
-                <button
+                <button type="submit"
                     class="inline-flex h-9 w-9 items-center justify-center rounded-md bg-white
                            border border-slate-300 text-slate-700 hover:bg-slate-50 transition shrink-0"
                     aria-label="Cari">
@@ -54,7 +64,7 @@
                         <path d="m21 21-4.3-4.3" />
                     </svg>
                 </button>
-            </div>
+            </form>
 
             {{-- Tambah Buku --}}
             <a href="{{ route('admin.buku.create') }}"
@@ -73,7 +83,7 @@
     <div class="bg-white rounded-3xl shadow-lg p-6 mt-4">
         <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h2 class="text-lg font-semibold tracking-wide">{{ count($books) }} Daftar buku</h2>
+                <h2 class="text-lg font-semibold tracking-wide">{{ $books->total() }} Daftar buku</h2>
             </div>
             <div class="grid grid-cols-2 lg:flex lg:items-center lg:justify-end gap-3">
                 <button id="selectAllTopBtn" type="button"
@@ -125,7 +135,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-200">
 
-    @foreach ($books as $book)
+    @forelse ($books as $book)
         <tr class="odd:bg-white even:bg-slate-100 hover:bg-slate-50 transition-all duration-150">
 
             <td class="px-3 py-3 align-center text-center">
@@ -233,7 +243,13 @@
             </td>
 
         </tr>
-    @endforeach
+    @empty
+        <tr>
+            <td colspan="6" class="px-6 py-6 text-center text-slate-500">
+                Tidak ada data buku.
+            </td>
+        </tr>
+    @endforelse
 
 </tbody>
                 </table>
@@ -241,20 +257,98 @@
         </div>
 
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p class="text-sm text-slate-500">Menampilkan 1 hingga 10 dari 12 data</p>
-            <div class="inline-flex items-center rounded-2xl bg-slate-100 p-1">
-                <button
-                    class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">&lt;</button>
-                <button class="rounded-2xl bg-blue-600 px-4 py-2 text-sm font-medium text-white">1</button>
-                <button
-                    class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">2</button>
-                <button
-                    class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">3</button>
-                <button
-                    class="rounded-2xl px-4 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100 transition">&gt;</button>
-            </div>
+            <p class="text-sm text-slate-500">
+                Menampilkan {{ $books->firstItem() ?? 0 }} hingga {{ $books->lastItem() ?? 0 }}
+                dari {{ $books->total() }} data
+            </p>
+
+            @if ($books->lastPage() > 1)
+                <div class="inline-flex items-center gap-2">
+                    <div class="px-4 py-2 rounded-md text-sm text-slate-700">
+                        Halaman <span class="font-semibold">{{ $books->currentPage() }}</span>
+                        dari <span class="font-semibold">{{ $books->lastPage() }}</span>
+                    </div>
+
+                    <div class="flex items-center justify-center rounded-md gap-2 bg-slate-100 p-1">
+                        @if ($books->onFirstPage())
+                            <span class="p-2 bg-slate-200 text-slate-400 rounded-md cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m15 18-6-6 6-6" />
+                                </svg>
+                            </span>
+                        @else
+                            <a href="{{ $books->previousPageUrl() }}"
+                                class="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m15 18-6-6 6-6" />
+                                </svg>
+                            </a>
+                        @endif
+
+                        @php
+                            $currentPage = $books->currentPage();
+                            $lastPage = $books->lastPage();
+                            $start = max($currentPage - 1, 1);
+                            $end = min($currentPage + 1, $lastPage);
+                            if ($currentPage === 1) {
+                                $end = min(3, $lastPage);
+                            }
+                            if ($currentPage === $lastPage) {
+                                $start = max($lastPage - 2, 1);
+                            }
+                        @endphp
+
+                        @foreach ($books->getUrlRange($start, $end) as $page => $url)
+                            @if ($page === $books->currentPage())
+                                <span class="px-4 py-2 bg-blue-600 text-white rounded-md">{{ $page }}</span>
+                            @else
+                                <a href="{{ $url }}"
+                                    class="px-4 py-2 bg-slate-100 hover:bg-slate-200 rounded-md transition">
+                                    {{ $page }}
+                                </a>
+                            @endif
+                        @endforeach
+
+                        @if ($books->hasMorePages())
+                            <a href="{{ $books->nextPageUrl() }}"
+                                class="p-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </a>
+                        @else
+                            <span class="p-2 bg-slate-200 text-slate-400 rounded-md cursor-not-allowed">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </span>
+                        @endif
+                    </div>
+                </div>
+            @endif
         </div>
     </div>
 
 
+    <script>
+        document.querySelectorAll('[data-auto-submit-search]').forEach((input) => {
+            let timeoutId;
+
+            input.addEventListener('input', () => {
+                clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(() => {
+                    input.form?.requestSubmit();
+                }, 350);
+            });
+        });
+    </script>
 @endsection
