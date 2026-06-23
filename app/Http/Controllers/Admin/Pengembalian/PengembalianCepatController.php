@@ -44,8 +44,7 @@ class PengembalianCepatController extends Controller
                 'id_item' => 'required'
             ]);
 
-            $peminjaman = Peminjaman::where('status', 'Dipinjam')->where('id_item', $request->id_item)
-                ->with(['itemBuku.buku.penulis', 'anggota.jenisKeanggotaan'])->firstOrFail();
+            $peminjaman = Peminjaman::where('status', 'Dipinjam')->where('id_item', $request->id_item)->with(['itemBuku.buku.penulis', 'anggota.jenisKeanggotaan'])->firstOrFail();
 
             $jatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo);
 
@@ -57,15 +56,8 @@ class PengembalianCepatController extends Controller
 
             $total_denda = $jumlahHariKeterlambatan * 1000;
 
-            if ($jumlahHariKeterlambatan < 0) {
-                $peminjaman->status = "Dikembalikan";
-                $peminjaman->save();
-                $message = "Pengembalian buku berhasil, terima kasih telah meminjam buku disini";
-            } else {
-                $peminjaman->status = "Terlambat";
-                $peminjaman->save();
-                $message = "Pengembalian buku berhasil, terdapat denda buku total: " . $total_denda;
-            }
+            $peminjaman->status = "Dikembalikan";
+            $peminjaman->save();
 
             $itemBuku = ItemBuku::find($peminjaman->id_item);
             $itemBuku->status_item = "Tersedia";
@@ -83,7 +75,7 @@ class PengembalianCepatController extends Controller
                 ->route('admin.pengembalian.cepat')
                 ->with([
                     'kode_peminjaman' => $peminjaman->kode_peminjaman,
-                    'success' => $message,
+                    'success' => 'Pengembalian buku berhasil, terima kasih telah meminjam buku disini'
                 ]);
         } catch (ModelNotFoundException $e) {
 
@@ -107,7 +99,7 @@ class PengembalianCepatController extends Controller
 
         // Mail::to($pengembalian->peminjaman->anggota->email)
         //     ->send(new PengembalianBukuMail($pengembalian));
-        Mail::to('test-anbkjnwl3@srv1.mail-tester.com')
+        Mail::to('danielbatubara813@gmail.com')
             ->send(new PengembalianBukuMail($pengembalian));
     }
 }
