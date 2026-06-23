@@ -3,7 +3,12 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
+use App\Models\ItemBuku;
+use App\Models\Reservasi;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 
 class ReservasiController extends Controller
 {
@@ -28,7 +33,7 @@ class ReservasiController extends Controller
                 'tanggal_pengajuan' => '16-04-2026',
                 'status_reservasi' => 'Menunggu Konfirmasi',
             ],
-            
+
             [
                 'id' => 2,
                 'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',
@@ -52,13 +57,79 @@ class ReservasiController extends Controller
     }
     public function reservasi()
     {
-        $reservasi = $this->ambilData();
+        $user = Auth::guard('web')->user();
+        $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '=', 'Draft')->where('tanggal_diajukan', '!=', null)->whereHas('anggota', function ($q) use ($user) {
+            $q->where('id_anggota', '=', $user->id_anggota);
+        })->get();
+
+        // dd($reservasi);
         return view('profile.reservasi', compact('reservasi'));
+    }
+
+    public function createReservasiSementara(Request $request)
+    {
+        try {
+            $user = Auth::guard('web')->user();
+            $request->validate([
+                'id_buku' => 'required|integer',
+            ]);
+
+            $exists = Reservasi::where(['id_anggota' => $user->id_anggota, 'id_buku' => $request->id_buku,])
+                ->whereIn('status', ['Menunggu Konfirmasi', 'Menunggu Antrian', 'Diterima'])->exists();
+
+            if ($exists) {
+                return back()->with('error', "Reservasi gagal dibuat, reservasi sudah pernah dilakukan");
+            }
+
+            $reservasi = Reservasi::create([
+                'id_anggota' => $user->id_anggota,
+                'id_buku' => $request->id_buku,
+                'tanggal_diajukan' => now(),
+            ]);
+
+            return redirect()
+                ->back()
+                ->with('success', "Reservasi berhasil dibuat silahkan ke menu reservasi pada profile untuk mengajukan reservasi");
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', "Reservasi gagal dibuat");
+        }
+    }
+    public function ajukanReservasi(Request $request)
+    {
+        $user = Auth::guard('web')->user();
+
+        $request->validate([
+            'nomor_reservasi' => 'required|array',
+            'nomor_reservasi.*' => 'exists:reservasi,nomor_reservasi'
+        ]);
+
+        $reservasi = Reservasi::whereIn('nomor_reservasi', $request->nomor_reservasi)->get();
+        foreach ($reservasi as $data) {
+            $itemBuku = ItemBuku::where('id_buku', '=', $data->id_buku)->where('status_item', '=', 'Tersedia')->first();
+
+            if ($itemBuku) {
+                $itemBuku->status_item = "Dipesan";
+                $itemBuku->save();
+
+                $data->id_item = $itemBuku->id_item;
+                $data->status = 'Menunggu Konfirmasi';
+                $data->tanggal_diterima = now();
+                $data->save();
+            } else {
+                $data->status = 'Menunggu Antrian';
+                $data->save();
+            }
+        }
     }
 
     public function daftarReservasi()
     {
-        $reservasi = $this->ambilData();
+        $user = Auth::guard('web')->user();
+        $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '!=', 'Menunggu')->whereHas('anggota', function ($q) use ($user) {
+            $q->where('id_anggota', '=', $user->id_anggota);
+        })->get();
         return view('profile.daftar-reservasi', compact('reservasi'));
     }
 }

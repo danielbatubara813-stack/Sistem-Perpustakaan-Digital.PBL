@@ -8,6 +8,7 @@ use App\Models\Anggota;
 use App\Models\ItemBuku;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
+use App\Models\Reservasi;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -74,6 +75,7 @@ class PengembalianBukuController extends Controller
             ]);
 
             $this->kirimEmailPengembalian($pengembalian);
+            $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
 
             return redirect()
                 ->back()
@@ -96,5 +98,30 @@ class PengembalianBukuController extends Controller
         //     ->send(new PengembalianBukuMail($pengembalian));
         Mail::to('franklinchang0129@gmail.com')
             ->send(new PengembalianBukuMail($pengembalian));
+    }
+
+    public function checkReservasi($id_buku, $id_item)
+    {
+        $reservasi = Reservasi::where('id_buku', $id_buku)
+            ->where('status', 'Menunggu Antrian')
+            ->orderBy('tanggal_diajukan')
+            ->first();
+
+        if (!$reservasi) {
+            return;
+        }
+
+        $itemBuku = ItemBuku::where('id_item', $id_item)->first();
+        $itemBuku->update([
+            'status_item' => 'Dipesan'
+        ]);
+
+        $reservasi->update([
+            'id_item' => $itemBuku->id_item,
+            'status' => 'Menunggu Konfirmasi',
+            'tanggal_diterima' => now(),
+            // 'tanggal_expired' => now()->addDays(2),
+        ]);
+
     }
 }

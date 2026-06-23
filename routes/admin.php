@@ -16,14 +16,14 @@ use App\Http\Controllers\Admin\Pengembalian\PengembalianBukuController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianCepatController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianController;
 use App\Http\Controllers\Auth\LoginAdminController;
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use Illuminate\Support\Facades\Route;
 
 // kumpulan halaman admin
 Route::prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/login', [LoginAdminController::class, 'login'])->name('login-page');
-        Route::post('/login', [LoginAdminController::class, 'proses'])->name('login.proses');
+    Route::get('/login', [LoginAdminController::class, 'login'])->name('login-page');
+    Route::post('/login', [LoginAdminController::class, 'proses'])->name('login.proses');
 
     Route::post('/logout', [LogoutController::class, 'logoutAdmin'])->name('logout');
 
@@ -55,34 +55,35 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/jenis/destroy', [JenisKeanggotaanController::class, 'destroyJenis'])->name('jenis.destroy');
             Route::get('/jenis/{id}/edit', [JenisKeanggotaanController::class, 'jenisEdit'])->name('jenis.edit');
             Route::put('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisUpdate'])->name('jenis.update');
-            Route::delete('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
         });
 
- // Peminjaman
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
+        // Peminjaman
+        Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
 
-    Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
-        ->name('peminjaman.aturan');
-    Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
-        ->name('peminjaman.aturan.create');
-    Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
-        ->name('peminjaman.catat-peminjaman');
+        Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
+            ->name('peminjaman.aturan');
+        Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
+            ->name('peminjaman.aturan.create');
+        Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
+            ->name('peminjaman.catat-peminjaman');
 
-    Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
+        Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
+        Route::put('/peminjaman/reservasi/Disetujui', [ReservasiController::class, 'reservasiDisetujui'])->name('peminjaman.reservasi.disetujui');
+        Route::put('/peminjaman/reservasi/Ditolak', [ReservasiController::class, 'reservasiDitolak'])->name('peminjaman.reservasi.ditolak');
 
-    // Pengembalian
-    Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-        Route::get('/', [PengembalianController::class, 'index'])
-            ->name('index');
-        Route::get('/cepat', [PengembalianCepatController::class, 'index'])
-            ->name('cepat');
-        Route::post('/cepat', [PengembalianCepatController::class, 'pengembalianCepat'])
-            ->name('cepat-process');
-        Route::get('/buku', [PengembalianBukuController::class, 'index'])
-            ->name('buku');
-        Route::post('/buku', [PengembalianBukuController::class, 'kembalikanBuku'])
-            ->name('kembalikan');
-    });
+        // Pengembalian
+        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+            Route::get('/', [PengembalianController::class, 'index'])
+                ->name('index');
+            Route::get('/cepat', [PengembalianCepatController::class, 'index'])
+                ->name('cepat');
+            Route::post('/cepat', [PengembalianCepatController::class, 'pengembalianCepat'])
+                ->name('cepat-process');
+            Route::get('/buku', [PengembalianBukuController::class, 'index'])
+                ->name('buku');
+            Route::post('/buku', [PengembalianBukuController::class, 'kembalikanBuku'])
+                ->name('kembalikan');
+        });
 
         // Data Terkendali
         Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {

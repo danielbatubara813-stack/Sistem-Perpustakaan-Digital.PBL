@@ -33,4 +33,9 @@ class ItemBuku extends Model
             'id_buku'
         );
     }
+
+    public function peminjaman()
+    {
+        return $this->belongsTo(Peminjaman::class, 'id_item', 'id_item');
+    }
 }

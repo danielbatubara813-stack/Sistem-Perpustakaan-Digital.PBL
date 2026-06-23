@@ -7,6 +7,7 @@ use App\Mail\PengembalianBukuMail;
 use App\Models\ItemBuku;
 use App\Models\Peminjaman;
 use App\Models\Pengembalian;
+use App\Models\Reservasi;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -78,6 +79,7 @@ class PengembalianCepatController extends Controller
             ]);
 
             $this->kirimEmailPengembalian($pengembalian);
+            $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
 
             return redirect()
                 ->route('admin.pengembalian.cepat')
@@ -109,5 +111,29 @@ class PengembalianCepatController extends Controller
         //     ->send(new PengembalianBukuMail($pengembalian));
         Mail::to('test-anbkjnwl3@srv1.mail-tester.com')
             ->send(new PengembalianBukuMail($pengembalian));
+    }
+
+    public function checkReservasi($id_buku, $id_item)
+    {
+        $reservasi = Reservasi::where('id_buku', $id_buku)
+            ->where('status', 'Menunggu Antrian')
+            ->orderBy('tanggal_diajukan')
+            ->first();
+
+        if (!$reservasi) {
+            return;
+        }
+
+        $itemBuku = ItemBuku::where('id_item', $id_item)->first();
+        $itemBuku->update([
+            'status_item' => 'Dipesan'
+        ]);
+
+        $reservasi->update([
+            'id_item' => $itemBuku->id_item,
+            'status' => 'Menunggu Konfirmasi',
+            'tanggal_diterima' => now(),
+        ]);
+        return;
     }
 }

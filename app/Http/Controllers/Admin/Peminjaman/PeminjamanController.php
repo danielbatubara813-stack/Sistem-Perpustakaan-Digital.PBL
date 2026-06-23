@@ -10,11 +10,11 @@ class PeminjamanController extends Controller
 {
 
     public function ambilDataLoan()
-{
-    return Peminjaman::with('anggota')
-    ->where('status', 'Dipinjam')
-    ->get();
-}
+    {
+        return Peminjaman::with('anggota')
+            ->where('status', 'Dipinjam')
+            ->get();
+    }
 
     public function ambilDataRules()
     {
