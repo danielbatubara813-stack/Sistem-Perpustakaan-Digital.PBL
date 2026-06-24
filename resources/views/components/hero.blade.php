@@ -41,11 +41,11 @@
                 </div>
 
                 {{-- Search --}}
-                <form action="" method="POST" class="mt-8 w-full max-w-2xl">
+                <form action="{{ route('cari-buku-page') }}" method="GET" class="mt-8 w-full max-w-2xl">
 
                     <div class="flex items-center gap-2">
 
-                        <input type="text" placeholder="Cari Judul Buku..."
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, ISBN, penerbit, atau subjek..."
                             class="flex-1 bg-white px-4 py-3 text-sm sm:text-base rounded-xl  focus:outline-none">
 
                         <button type="submit"

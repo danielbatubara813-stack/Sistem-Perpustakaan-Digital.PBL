@@ -12,7 +12,7 @@
                     @csrf
                     <!-- Preview -->
                     <img id="preview"
-                        src="{{ $user->profile ? asset('storage/' . $user->profile) : ($user->foto_ktp ? asset('storage/' . $user->foto_ktp) : 'https://via.placeholder.com/150') }}"
+                        src="{{ $user->foto_profile_url }}"
                         class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
                     <div class="w-full">
                         <label class="block text-sm font-medium text-gray-700 mb-2">

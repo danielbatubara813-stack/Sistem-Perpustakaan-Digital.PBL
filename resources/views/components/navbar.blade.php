@@ -11,8 +11,8 @@
                 src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
                 alt="Logo Polibatam" />
             <div class="leading-tight">
-                <h1 class="uppercase poppins font-bold text-lg lg:text-2xl text-white tracking-wide">Libratech</h1>
-                <p class="poppins text-xs text-blue-200">Perpustakaan Digital</p>
+                <h1 class="uppercase poppins font-bold text-lg lg:text-2xl text-white tracking-wide">Library</h1>
+                <p class="poppins text-xs text-blue-200">Perpustakaan Polibatam</p>
             </div>
         </div>
 
@@ -32,8 +32,9 @@
                     <button id="userDropdownButton" data-dropdown-toggle="userDropdown"
                         class="flex items-center flex-row-reverse text-end gap-4 w-full">
 
-                        <img class="w-12 h-12 aspect-square rounded-full border-2 border-white object-cover object-top"
-                            src="https://i.pinimg.com/1200x/8f/57/20/8f5720a971ba30c735213e9429c7a7e2.jpg" alt="">
+                <img class="w-12 h-12 aspect-square rounded-full border-2 border-white object-cover object-top"
+                    src="{{ auth()->user()->foto_profile_url }}"
+                    alt="{{ auth()->user()->nama }}">
 
                         <div>
                             <p class="font-bold">{{ auth()->user()->nama }}</p>
@@ -97,6 +98,12 @@
             @endauth
             @guest
                 <li>
+                    <a href="{{ route('register-page') }}"
+                        class="border border-white/60 text-white px-4 py-1.5 rounded-full text-sm font-semibold hover:bg-white hover:text-blue-800 transition-all duration-200">
+                        Daftar
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('login-page') }}"
                         class="bg-white text-blue-800 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-blue-100 transition-all duration-200 shadow">
                         Masuk
@@ -152,6 +159,10 @@
             <li class="my-1 h-px bg-gray-200 mx-2"></li>
             @guest
                 <li class="flex gap-3 px-2 pb-2 pt-1">
+                    <a href="{{ route('register-page') }}"
+                        class="flex-1 text-center py-2 rounded-full border-2 border-blue-700 text-blue-700 font-bold hover:bg-blue-700 hover:text-white transition-all duration-200">
+                        Daftar
+                    </a>
                     <a href="{{ route('login-page') }}"
                         class="flex-1 text-center py-2 rounded-full bg-blue-700 text-white font-bold hover:bg-blue-800 transition-all duration-200 shadow">
                         Masuk

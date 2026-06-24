@@ -27,6 +27,7 @@ class RegisterController extends Controller
             'gender'         => 'required|in:Laki-laki,Perempuan',
             'tanggal_lahir'  => 'required|date',
             'password'       => 'required|confirmed|min:6',
+            'photo_ktp'      => 'required|image|mimes:jpg,jpeg,png|max:10240',
         ], [
             'email.required'               => 'Email wajib diisi.',
             'email.email'                  => 'Format email tidak valid.',
@@ -41,12 +42,14 @@ class RegisterController extends Controller
             'password.required'            => 'Kata sandi wajib diisi.',
             'password.confirmed'           => 'Konfirmasi kata sandi tidak cocok.',
             'password.min'                 => 'Kata sandi minimal 6 karakter.',
+            'photo_ktp.required'           => 'Foto KTP wajib diunggah.',
+            'photo_ktp.image'               => 'Foto KTP harus berupa gambar.',
+            'photo_ktp.mimes'                => 'Foto KTP harus berformat jpg, jpeg, atau png.',
+            'photo_ktp.max'                  => 'Ukuran foto KTP maksimal 10MB.',
         ]);
 
-        $fotoKtp = null;
-        if ($request->hasFile('photo_ktp')) {
-            $fotoKtp = $request->file('photo_ktp')->store('foto_ktp', 'public');
-        }
+        // Foto KTP hanya untuk data internal/admin, BUKAN foto profile anggota
+        $fotoKtp = $request->file('photo_ktp')->store('foto_ktp', 'public');
 
         $defaultJenis = JenisKeanggotaan::firstOrCreate([
             'nama_jenis' => 'Mahasiswa',
@@ -63,7 +66,9 @@ class RegisterController extends Controller
             'jenis_kelamin'         => $request->gender,
             'tanggal_lahir'         => $request->tanggal_lahir,
             'verifikasi_admin'      => 'Menunggu',
-            'foto_ktp'              => $fotoKtp,
+            'foto_ktp'              => $fotoKtp,   // data admin, bukan profile
+            'profile'               => null,        // foto profile default kosong, diisi nanti oleh anggota
+            'tanggal_diubah'        => now(),
             'password'              => Hash::make($request->password),
         ]);
 

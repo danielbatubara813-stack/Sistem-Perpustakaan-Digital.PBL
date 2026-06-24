@@ -32,6 +32,14 @@ class Anggota extends Authenticatable
         'tanggal_diubah',
         'password',
     ];
+    public function getFotoProfileUrlAttribute()
+    {
+        if ($this->profile) {
+            return asset('storage/' . $this->profile);
+        }
+
+        return asset('images/default-avatar.svg');
+    }
 
     protected $hidden = ['password'];
 
@@ -42,6 +50,11 @@ class Anggota extends Authenticatable
             'id_jenis',
             'id_jenis'
         );
+    }
+
+    public function peminjaman()
+    {
+    return $this->hasMany(Peminjaman::class, 'id_anggota', 'id_anggota');
     }
 
 }

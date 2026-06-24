@@ -18,21 +18,21 @@
             </div>
             <div class="space-y-4 mt-4">
                 <div class="flex justify-end items-center">
-                    <button class="text-white bg-blue-800 px-6 py-2 rounded-md">
+                    <a href="{{ route('cari-buku-page', ['sort' => 'terbaru', 'scroll' => 'daftar-buku']) }}" class="text-white bg-blue-800 px-6 py-2 rounded-md">
                         Lihat Semua
-                    </button>
+                    </a>
                 </div>
                 <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
                     @foreach ($koleksi_baru as $buku)
-                        <div
+                        <a href="{{ route('detail-buku-page', $buku['id']) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
                             <img src="{{ $buku['cover'] }}" class="aspect-[1/1.6] w-full rounded-md object-fit"
-                                alt="">
+                                alt="{{ $buku['judul'] }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
                                 <h6 class="text-gray-500 text-xs line-clamp-1">{{ $buku['penulis'] }}</h6>
                                 <h4 class="font-bold text-xs line-clamp-2">{{ $buku['judul'] }}</h4>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
             </div>
@@ -65,21 +65,21 @@
             </div>
             <div class="space-y-4 mt-4">
                 <div class="flex justify-end items-center">
-                    <button class="text-white bg-blue-800 px-6 py-2 rounded-md">
+                    <a href="{{ route('cari-buku-page', ['scroll' => 'daftar-buku']) }}" class="text-white bg-blue-800 px-6 py-2 rounded-md">
                         Lihat Semua
-                    </button>
+                    </a>
                 </div>
                 <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
-                    @foreach ($koleksi_baru as $buku)
-                        <div
+                    @foreach ($koleksi_popular as $buku)
+                        <a href="{{ route('detail-buku-page', $buku['id']) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
                             <img src="{{ $buku['cover'] }}" class="aspect-[1/1.6] w-full rounded-md object-fit"
-                                alt="">
+                                alt="{{ $buku['judul'] }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
                                 <h6 class="text-gray-500 text-xs line-clamp-1">{{ $buku['penulis'] }}</h6>
                                 <h4 class="font-bold text-xs line-clamp-2">{{ $buku['judul'] }}</h4>
                             </div>
-                        </div>
+                        </a>
                     @endforeach
                 </div>
             </div>

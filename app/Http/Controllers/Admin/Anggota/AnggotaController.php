@@ -77,7 +77,6 @@ class AnggotaController extends Controller
             'gender'            => 'required',
             'birth_date'        => 'required|date',
             'registration_date' => 'required|date',
-            'institution'       => 'required',
             'ktp_photo'         => 'required|image|mimes:jpg,jpeg,png|max:10240',
             'profile_photo'     => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
         ]);

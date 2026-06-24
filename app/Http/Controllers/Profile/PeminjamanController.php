@@ -3,92 +3,106 @@
 namespace App\Http\Controllers\Profile;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pengembalian;
-use Illuminate\Http\Request;
+use App\Models\Anggota;
+use App\Models\Peminjaman;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class PeminjamanController extends Controller
 {
-    public function ambilDataBuku()
+    private function getProfileData(): array
     {
-        $koleksi_baru = [
-            [
-                'id' => 1,
-                'judul' => 'Laut Bercerita',
-                'penulis' => 'Leila S. Chudori',
-                'cover' => 'https://imgv2-1-f.scribdassets.com/img/document/443499450/original/75e0895939/1?v=1',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786024246945',
-                'no_panggil' => '813 LEI l',
-                'tahun' => 2017,
-                'penerbit' => 'Kepustakaan Populer Gramedia',
-                'bahasa' => 'Indonesia',
-                'halaman' => 379,
-                'subject' => ['Fiksi', 'Sejarah', 'Sosial Politik', 'Novel Indonesia'],
-                'deskripsi' => 'Novel yang mengangkat kisah aktivis mahasiswa pada masa Orde Baru.',
+        $user = Anggota::find(Auth::guard('web')->id());
 
-                'kode_item_buku' => 'BK001246',
-                'tanggal_jatuh_tempo' => '16-04-2026',
-                'status_peminjaman' => 'Masa Peminjaman',
-            ],
+        $totalPeminjaman = Peminjaman::where('id_anggota', $user->id_anggota)->count();
 
-            [
-                'id' => 2,
-                'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',
-                'penulis' => 'Yuniar Supardi',
-                'cover' => 'https://cdn.gramedia.com/uploads/items/9786230010460_Cov_Semua_Bisa_Menjadi_Programmer_Laravel_Basic.jpg',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786230010460',
-                'no_panggil' => '005.262 YUN s',
-                'tahun' => 2022,
-                'penerbit' => 'Elex Media',
-                'bahasa' => 'Indonesia',
-                'halaman' => 320,
-                'subject' => ['Programming', 'Laravel', 'PHP', 'Web Development'],
-                'deskripsi' => 'Panduan dasar framework Laravel untuk pemula.',
+        $totalJudul = Peminjaman::where('id_anggota', $user->id_anggota)
+            ->distinct('id_item')
+            ->count('id_item');
 
-                'kode_item_buku' => 'BK001301',
-                'tanggal_jatuh_tempo' => '26-04-2026',
-                'status_peminjaman' => 'Jatuh Tempo',
-            ],
-        ];
-
-        return $koleksi_baru;
-    }
-    public function peminjamanSekarangPage()
-    {
-        $koleksi_baru = $this->ambilDataBuku();
-        return view('profile.peminjaman-sekarang', compact('koleksi_baru'));
+        return compact('user', 'totalPeminjaman', 'totalJudul');
     }
 
-    public function sejarahPeminjamanPage(Request $request)
+    private function formatPeminjaman(Peminjaman $p): array
     {
-        $user = Auth::guard('web')->user();
-        $query = Pengembalian::with([
-            'peminjaman.anggota',
-            'peminjaman.itemBuku.buku',
-            'peminjaman.itemBuku.buku.penulis'
-        ])->whereHas('peminjaman.anggota', function ($q) use ($user) {
-            $q->where('id_anggota', '=', $user->id_anggota);
-        });
+        $jatuhTempo = Carbon::parse($p->tanggal_jatuh_tempo);
 
-        // Search
-        if ($request->filled('search')) {
-
-            $search = $request->search;
-
-            $query->whereHas('peminjaman.anggota', function ($q) use ($search) {
-                $q->where('nama', 'like', "%{$search}%")->orWhere('nomor_identitas', 'like', "%{$search}%");
-            })->orWhereHas('peminjaman.itemBuku.buku', function ($q) use ($search) {
-                $q->where('judul_buku', 'like', "%{$search}%");
-            });
+        // Tentukan status berdasarkan field status di DB dan tanggal
+        if ($p->status === 'Dikembalikan') {
+            $status = 'Dikembalikan';
+        } elseif ($jatuhTempo->isPast()) {
+            $status = 'Jatuh Tempo';
+        } else {
+            $status = 'Masa Peminjaman';
         }
 
-        $pengembalian = $query
-            ->paginate(10)
-            ->withQueryString();
+        // Ambil buku melalui relasi itemBuku -> buku
+        $buku = $p->itemBuku?->buku ?? null;
 
-        return view('profile.sejarah-peminjaman', compact('pengembalian'));
+        // Gabungkan semua nama penulis
+        $penulis = $buku
+            ? $buku->penulis->pluck('nama_penulis')->join(', ')
+            : '-';
+
+        // Cover disimpan di storage/covers/
+        $cover = ($buku && $buku->cover_buku)
+            ? asset('storage/covers/' . $buku->cover_buku)
+            : asset('image/bookcover.png');
+
+        return [
+            'id'                  => $buku?->id_buku ?? $p->id_item,
+            'judul'               => $buku?->judul_buku ?? '-',
+            'penulis'             => $penulis ?: '-',
+            'cover'               => $cover,
+            'edisi'               => $buku?->edisi ?? '-',
+            'isbn'                => $buku?->isbn ?? '-',
+            'no_panggil'          => $buku?->no_panggil ?? '-',
+            'kode_item_buku'      => $p->id_item,
+            'tanggal_peminjaman'  => $p->tanggal_peminjaman,
+            'tanggal_jatuh_tempo' => $p->tanggal_jatuh_tempo,
+            'status_peminjaman'   => $status,
+        ];
     }
 
+    public function peminjamanSekarangPage()
+    {
+        $user = Anggota::find(Auth::guard('web')->id());
+
+        $peminjaman = Peminjaman::where('id_anggota', $user->id_anggota)
+            ->whereNotIn('status', ['Dikembalikan'])
+            ->with([
+                'itemBuku',
+                'itemBuku.buku',
+                'itemBuku.buku.penulis',
+            ])
+            ->orderBy('tanggal_jatuh_tempo', 'asc')
+            ->get()
+            ->map(fn($p) => $this->formatPeminjaman($p));
+
+        $data                 = $this->getProfileData();
+        $data['koleksi_baru'] = $peminjaman;
+        $data['totalAktif']   = $peminjaman->count();
+
+        return view('profile.peminjaman-sekarang', $data);
+    }
+
+    public function sejarahPeminjamanPage()
+    {
+        $user = Anggota::find(Auth::guard('web')->id());
+
+        $peminjaman = Peminjaman::where('id_anggota', $user->id_anggota)
+            ->with([
+                'itemBuku',
+                'itemBuku.buku',
+                'itemBuku.buku.penulis',
+            ])
+            ->orderBy('tanggal_peminjaman', 'desc')
+            ->get()
+            ->map(fn($p) => $this->formatPeminjaman($p));
+
+        $data                 = $this->getProfileData();
+        $data['koleksi_baru'] = $peminjaman;
+
+        return view('profile.sejarah-peminjaman', $data);
+    }
 }

@@ -52,9 +52,11 @@
 
                         {{-- Foto --}}
                         <div class="flex flex-col gap-2 justify-center lg:block">
-                            <img class="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-xl object-cover object-top shadow-md"
-                                src="https://i.pinimg.com/736x/76/07/75/760775dfd783a04a3251e384b1a591eb.jpg"
-                                alt="">
+                        <img class="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-xl object-cover object-top shadow-md"
+                            src="{{ Auth::user()->foto_profile_url }}"
+                            onerror="this.src='{{ asset('images/default-avatar.svg') }}'"
+                            alt="{{ Auth::user()->nama }}">
+
                             <div class="block lg:hidden">
                                 <form action="{{ route('logout') }}" method="POST" class="w-full">
                                     @csrf
@@ -105,12 +107,12 @@
 
                             <div>
                                 <h6 class="text-sm text-slate-500">Total Peminjaman</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">15 Peminjaman</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">{{ $totalPeminjaman ?? 0 }} Peminjaman</h6>
                             </div>
 
                             <div>
                                 <h6 class="text-sm text-slate-500">Total Judul Dipinjam</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">9 Judul Buku</h6>
+                                <h6 class="font-bold text-sm sm:text-lg">{{ $totalJudul ?? 0 }} Judul Buku</h6>
                             </div>
 
                             {{-- Tombol --}}
@@ -151,7 +153,7 @@
             </div>
         </div>
     </section>
-    @include('components.alert')
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 <script>

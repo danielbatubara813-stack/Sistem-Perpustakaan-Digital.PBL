@@ -3,323 +3,197 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buku;
-use App\Models\Peminjaman;
+use App\Models\DokBahasa;
+use App\Models\Penerbit;
+use App\Models\Subjek;
+use App\Models\TipeKoleksi;
 use Illuminate\Http\Request;
 
 class DaftarBukuController extends Controller
 {
-    public function ambilDataBuku()
+    public function cariBukuPage(Request $request)
     {
-        $koleksi_baru = [
-            [
-                'id' => 1,
-                'judul' => 'Laut Bercerita',
-                'penulis' => 'Leila S. Chudori',
-                'cover' => 'https://imgv2-1-f.scribdassets.com/img/document/443499450/original/75e0895939/1?v=1',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786024246945',
-                'no_panggil' => '813 LEI l',
-                'tahun' => 2017,
-                'penerbit' => 'Kepustakaan Populer Gramedia',
-                'bahasa' => 'Indonesia',
-                'halaman' => 379,
-                'subject' => ['Fiksi', 'Sejarah', 'Sosial Politik', 'Novel Indonesia'],
-                'deskripsi' => 'Novel yang mengangkat kisah aktivis mahasiswa pada masa Orde Baru, tentang perjuangan, kehilangan, dan keluarga yang mencari keadilan.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (813)',
-                        'nomor_panggil' => '813 LEI l',
-                        'nomor_item' => 'BK001245',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (813)',
-                        'nomor_panggil' => '813 LEI l',
-                        'nomor_item' => 'BK001246',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '02-04-2026',
-                    ],
-                ],
-            ],
+        $tahunRange = $this->publicationYearRange();
+        $selectedYears = $this->selectedPublicationYears($request, $tahunRange);
 
-            [
-                'id' => 2,
-                'judul' => 'Semua Bisa Menjadi Programmer Laravel Basic',
-                'penulis' => 'Yuniar Supardi',
-                'cover' => 'https://cdn.gramedia.com/uploads/items/9786230010460_Cov_Semua_Bisa_Menjadi_Programmer_Laravel_Basic.jpg',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786230010460',
-                'no_panggil' => '005.262 YUN s',
-                'tahun' => 2022,
-                'penerbit' => 'Elex Media',
-                'bahasa' => 'Indonesia',
-                'halaman' => 320,
-                'subject' => ['Programming', 'Laravel', 'PHP', 'Web Development'],
-                'deskripsi' => 'Panduan dasar framework Laravel untuk pemula, membahas routing, controller, model, database, CRUD, dan pembuatan aplikasi web modern.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.262 YUN s',
-                        'nomor_item' => 'BK001300',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.262 YUN s',
-                        'nomor_item' => 'BK001301',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '12-04-2026',
-                    ],
-                ],
-            ],
+        $query = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek']);
+        $this->applyFilters($query, $request, $selectedYears);
 
-            [
-                'id' => 3,
-                'judul' => 'The Next.js Handbook: A Complete Resource for Developers',
-                'penulis' => 'Brandon Kim',
-                'cover' => 'https://m.media-amazon.com/images/I/518LETZYITL._AC_UF1000,1000_QL80_.jpg',
-                'edisi' => '1st Edition',
-                'isbn' => '9781803235929',
-                'no_panggil' => '005.276 BRA t',
-                'tahun' => 2023,
-                'penerbit' => 'Packt Publishing',
-                'bahasa' => 'English',
-                'halaman' => 410,
-                'subject' => ['Programming', 'Next.js', 'React', 'Technology', 'Frontend'],
-                'deskripsi' => 'Buku pengembangan web modern menggunakan Next.js, mencakup SSR, SSG, routing, API routes, deployment, dan best practice React ecosystem.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.276 BRA t',
-                        'nomor_item' => 'BK001350',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.276 BRA t',
-                        'nomor_item' => 'BK001351',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '15-04-2026',
-                    ],
-                ],
-            ],
+        $sort = $request->input('sort', 'terbaru');
+        match ($sort) {
+            'terlama' => $query->orderBy('tanggal_dibuat', 'asc'),
+            'judul-az' => $query->orderBy('judul_buku', 'asc'),
+            'judul-za' => $query->orderBy('judul_buku', 'desc'),
+            default => $query->orderBy('tanggal_dibuat', 'desc'),
+        };
 
-            [
-                'id' => 4,
-                'judul' => 'Akuntansi Dasar Untuk Bisnis: Teori dan Praktik',
-                'penulis' => 'Ely Suhayati',
-                'cover' => 'https://palcomtech.ac.id/wp-content/uploads/2023/08/lr7ddjapfkqm3e6qut3rnk.jpg',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786232287655',
-                'no_panggil' => '657 ELY a',
-                'tahun' => 2021,
-                'penerbit' => 'Deepublish',
-                'bahasa' => 'Indonesia',
-                'halaman' => 290,
-                'subject' => ['Akuntansi', 'Bisnis', 'Keuangan', 'Ekonomi'],
-                'deskripsi' => 'Membahas konsep dasar akuntansi, pencatatan transaksi, jurnal umum, buku besar, laporan keuangan, dan penerapannya dalam bisnis.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (657)',
-                        'nomor_panggil' => '657 ELY a',
-                        'nomor_item' => 'BK001400',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                ],
-            ],
+        $koleksi_baru = $query->paginate(12)->withQueryString()->through(
+            fn($buku) => $this->formatBook($buku)
+        );
 
-            [
-                'id' => 5,
-                'judul' => 'Buku Internet of Things (IoT) dan Aplikasinya',
-                'penulis' => 'Adhan Efendi',
-                'cover' => 'https://deepublishstore.com/wp-content/uploads/2024/06/Internet-Of-Things-IoT-dan-Aplikasinya_Adhan-Efendi-rev-1.0-depan-scaled.jpg',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786230269370',
-                'no_panggil' => '004.678 ADH i',
-                'tahun' => 2024,
-                'penerbit' => 'Deepublish',
-                'bahasa' => 'Indonesia',
-                'halaman' => 275,
-                'subject' => ['IoT', 'Teknologi', 'Embedded System', 'Networking'],
-                'deskripsi' => 'Mengenalkan konsep Internet of Things, sensor, mikrokontroler, komunikasi data, cloud integration, dan implementasi IoT di berbagai bidang.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (004)',
-                        'nomor_panggil' => '004.678 ADH i',
-                        'nomor_item' => 'BK001450',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                ],
-            ],
-            [
-                'id' => 6,
-                'judul' => 'Blockchain: Dari Konsep hingga Implementasi',
-                'penulis' => 'Achmad Fitro, S. Kom., M.Kom, dkk.',
-                'cover' => 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/product-metas/l0c-7t4hx1.jpg',
-                'edisi' => 'Cet. 1',
-                'isbn' => '9786230225475',
-                'no_panggil' => '005.824 ACH b',
-                'tahun' => 2023,
-                'penerbit' => 'Gramedia',
-                'bahasa' => 'Indonesia',
-                'halaman' => 310,
-                'subject' => ['Blockchain', 'Teknologi', 'Cryptocurrency', 'Keamanan Sistem'],
-                'deskripsi' => 'Menjelaskan teknologi blockchain dari dasar, mekanisme distributed ledger, smart contract, cryptocurrency, hingga implementasi di industri.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.824 ACH b',
-                        'nomor_item' => 'BK001500',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.824 ACH b',
-                        'nomor_item' => 'BK001501',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '18-04-2026',
-                    ],
-                ],
-            ],
-
-            [
-                'id' => 7,
-                'judul' => 'Rich Dad Poor Dad',
-                'penulis' => 'Robert T. Kiyosaki',
-                'cover' => 'https://image.gramedia.net/rs:fit:0:0/plain/https://cdn.gramedia.com/uploads/items/9786020333175_rich-dad-poor-dad-_edisi-revisi_.jpg',
-                'edisi' => 'Edisi Revisi',
-                'isbn' => '9786020333175',
-                'no_panggil' => '332.024 KIY r',
-                'tahun' => 2018,
-                'penerbit' => 'Gramedia Pustaka Utama',
-                'bahasa' => 'Indonesia',
-                'halaman' => 244,
-                'subject' => ['Keuangan', 'Investasi', 'Bisnis', 'Pengembangan Diri'],
-                'deskripsi' => 'Buku finansial populer tentang perbedaan pola pikir antara bekerja demi uang dan membuat uang bekerja untuk kita melalui investasi dan aset.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (332)',
-                        'nomor_panggil' => '332.024 KIY r',
-                        'nomor_item' => 'BK001550',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (332)',
-                        'nomor_panggil' => '332.024 KIY r',
-                        'nomor_item' => 'BK001551',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '11-04-2026',
-                    ],
-                ],
-            ],
-
-            [
-                'id' => 8,
-                'judul' => 'Clean Code',
-                'penulis' => 'Robert C. Martin',
-                'cover' => 'https://m.media-amazon.com/images/I/41xShlnTZTL.jpg',
-                'edisi' => '1st Edition',
-                'isbn' => '9780132350884',
-                'no_panggil' => '005.1 MAR c',
-                'tahun' => 2008,
-                'penerbit' => 'Prentice Hall',
-                'bahasa' => 'English',
-                'halaman' => 464,
-                'subject' => ['Programming', 'Software Engineering', 'Best Practice', 'Clean Code'],
-                'deskripsi' => 'Panduan menulis kode yang bersih, mudah dibaca, mudah dirawat, dan profesional untuk software developer.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.1 MAR c',
-                        'nomor_item' => 'BK001600',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                ],
-            ],
-
-            [
-                'id' => 9,
-                'judul' => 'Atomic Habits',
-                'penulis' => 'James Clear',
-                'cover' => 'https://m.media-amazon.com/images/I/91bYsX41DVL.jpg',
-                'edisi' => '1st Edition',
-                'isbn' => '9780735211292',
-                'no_panggil' => '158.1 CLE a',
-                'tahun' => 2018,
-                'penerbit' => 'Avery',
-                'bahasa' => 'English',
-                'halaman' => 320,
-                'subject' => ['Self Improvement', 'Produktivitas', 'Psikologi', 'Motivasi'],
-                'deskripsi' => 'Membahas bagaimana kebiasaan kecil yang dilakukan konsisten dapat menghasilkan perubahan besar dalam hidup.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (158)',
-                        'nomor_panggil' => '158.1 CLE a',
-                        'nomor_item' => 'BK001650',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                ],
-            ],
-
-            [
-                'id' => 10,
-                'judul' => 'Database System Concepts',
-                'penulis' => 'Abraham Silberschatz',
-                'cover' => 'https://m.media-amazon.com/images/I/51mFoFmu0EL.jpg',
-                'edisi' => '7th Edition',
-                'isbn' => '9780078022159',
-                'no_panggil' => '005.74 SIL d',
-                'tahun' => 2019,
-                'penerbit' => 'McGraw-Hill',
-                'bahasa' => 'English',
-                'halaman' => 1376,
-                'subject' => ['Database', 'SQL', 'Data Modeling', 'Computer Science'],
-                'deskripsi' => 'Referensi lengkap mengenai konsep basis data, SQL, transaction, concurrency control, indexing, dan distributed database.',
-                'copy' => [
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.74 SIL d',
-                        'nomor_item' => 'BK001700',
-                        'status' => 'Tersedia',
-                        'tanggal_pinjam' => null,
-                    ],
-                    [
-                        'lokasi' => '#Perpustakaan Polibatam (005)',
-                        'nomor_panggil' => '005.74 SIL d',
-                        'nomor_item' => 'BK001701',
-                        'status' => 'Sedang Dipinjam',
-                        'tanggal_pinjam' => '09-04-2026',
-                    ],
-                ],
-            ],
-        ];
-
-        return $koleksi_baru;
-    }
-    public function cariBukuPage()
-    {
-        $koleksi_baru = $this->ambilDataBuku();
-        return view('cari-buku', compact('koleksi_baru'));
+        return view('cari-buku', [
+            'koleksi_baru' => $koleksi_baru,
+            'selectedFilters' => $this->selectedFilters($request, $sort, $selectedYears),
+            'tahunRange' => $tahunRange,
+            'tipeList' => TipeKoleksi::orderBy('nama_tipe')->get(),
+            'subjekList' => Subjek::orderBy('nama_subjek')->get(),
+            'penerbitList' => Penerbit::orderBy('nama_penerbit')->get(),
+            'bahasaList' => DokBahasa::orderBy('nama_bahasa')->get(),
+        ]);
     }
 
     public function detailBukuPage($id_buku)
     {
+        $buku = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek'])
+            ->findOrFail($id_buku);
 
-        $buku = Buku::with(['penulis', 'penerbit', 'bahasa', 'subjek', 'items', 'items.peminjaman', 'tipe'])
-            ->where('id_buku', $id_buku)->firstOrFail();
-        $total_dipinjam = Peminjaman::whereHas('itemBuku.buku', function ($q) use ($id_buku) {
-            $q->where('id_buku', $id_buku);
-        })->count();
+        $bukuData = array_merge($this->formatBook($buku), [
+            'penulis' => $buku->penulis->pluck('nama_penulis')->filter()->values()->all(),
+            'subjek' => $buku->subjek->pluck('nama_subjek')->filter()->values()->all(),
+            'no_rak' => $buku->no_rak ?? '-',
+            'tanggal_terbit' => $buku->tanggal_terbit
+                ? date('d M Y', strtotime($buku->tanggal_terbit))
+                : '-',
+            'items' => $buku->items->map(fn($item) => [
+                'id' => $item->id_item,
+                'status' => $item->status_item,
+            ])->values()->all(),
+        ]);
 
-        return view('detail-buku', compact('buku', 'total_dipinjam'));
+        $subjectIds = $buku->subjek->pluck('id_subjek')->all();
+        $rekomendasi = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek'])
+            ->whereKeyNot($buku->id_buku)
+            ->where(function ($query) use ($buku, $subjectIds) {
+                $query->where('id_tipe', $buku->id_tipe);
+
+                if (!empty($subjectIds)) {
+                    $query->orWhereHas('subjek', fn($q) => $q->whereIn('subjek.id_subjek', $subjectIds));
+                }
+            })
+            ->latest('tanggal_dibuat')
+            ->limit(6)
+            ->get()
+            ->map(fn($item) => $this->formatBook($item));
+
+        return view('detail-buku', compact('bukuData', 'rekomendasi'));
+    }
+
+    private function applyFilters($query, Request $request, array $selectedYears): void
+    {
+        if ($request->filled('search')) {
+            $search = trim($request->input('search'));
+            $query->where(function ($q) use ($search) {
+                $q->where('judul_buku', 'like', "%{$search}%")
+                    ->orWhere('isbn', 'like', "%{$search}%")
+                    ->orWhere('no_panggil', 'like', "%{$search}%")
+                    ->orWhereHas('penulis', fn($penulis) => $penulis->where('nama_penulis', 'like', "%{$search}%"))
+                    ->orWhereHas('penerbit', fn($penerbit) => $penerbit->where('nama_penerbit', 'like', "%{$search}%"))
+                    ->orWhereHas('subjek', fn($subjek) => $subjek->where('nama_subjek', 'like', "%{$search}%"));
+            });
+        }
+
+        $query->whereBetween('tanggal_terbit', [
+            $selectedYears['from'] . '-01-01',
+            $selectedYears['to'] . '-12-31',
+        ]);
+
+        if ($request->filled('tipe')) {
+            $query->whereIn('id_tipe', (array) $request->input('tipe'));
+        }
+
+        if ($request->filled('subjek')) {
+            $query->whereHas('subjek', fn($q) => $q->whereIn('subjek.id_subjek', (array) $request->input('subjek')));
+        }
+
+        if ($request->filled('penerbit')) {
+            $query->whereIn('id_penerbit', (array) $request->input('penerbit'));
+        }
+
+        if ($request->filled('bahasa')) {
+            $query->whereIn('kode_bahasa', (array) $request->input('bahasa'));
+        }
+
+        if ($request->input('ketersediaan') === 'tersedia') {
+            $query->whereHas('items', fn($q) => $q->where('status_item', 'Tersedia'));
+        }
+
+        if ($request->input('ketersediaan') === 'tidak-tersedia') {
+            $query->whereDoesntHave('items', fn($q) => $q->where('status_item', 'Tersedia'));
+        }
+    }
+
+    private function selectedFilters(Request $request, string $sort, array $selectedYears): array
+    {
+        return [
+            'search' => $request->input('search', ''),
+            'tipe' => (array) $request->input('tipe', []),
+            'subjek' => (array) $request->input('subjek', []),
+            'penerbit' => (array) $request->input('penerbit', []),
+            'bahasa' => (array) $request->input('bahasa', []),
+            'ketersediaan' => $request->input('ketersediaan', ''),
+            'dari_tahun' => $selectedYears['from'],
+            'ke_tahun' => $selectedYears['to'],
+            'sort' => $sort,
+        ];
+    }
+
+    private function publicationYearRange(): array
+    {
+        $range = Buku::query()
+            ->selectRaw('MIN(tanggal_terbit) as min_date, MAX(tanggal_terbit) as max_date')
+            ->first();
+
+        $minYear = $range?->min_date ? (int) date('Y', strtotime($range->min_date)) : 1950;
+        $maxYear = $range?->max_date ? (int) date('Y', strtotime($range->max_date)) : (int) date('Y');
+
+        if ($minYear > $maxYear) {
+            [$minYear, $maxYear] = [$maxYear, $minYear];
+        }
+
+        return [
+            'min' => $minYear,
+            'max' => $maxYear,
+        ];
+    }
+
+    private function selectedPublicationYears(Request $request, array $tahunRange): array
+    {
+        $from = (int) $request->input('dari-tahun', $tahunRange['min']);
+        $to = (int) $request->input('ke-tahun', $tahunRange['max']);
+
+        $from = max($tahunRange['min'], min($from, $tahunRange['max']));
+        $to = max($tahunRange['min'], min($to, $tahunRange['max']));
+
+        if ($from > $to) {
+            [$from, $to] = [$to, $from];
+        }
+
+        return [
+            'from' => $from,
+            'to' => $to,
+        ];
+    }
+
+    private function formatBook(Buku $buku): array
+    {
+        return [
+            'id' => $buku->id_buku,
+            'judul' => $buku->judul_buku,
+            'penulis' => $buku->penulis->pluck('nama_penulis')->filter()->join(', ') ?: '-',
+            'cover' => $buku->cover_buku
+                ? asset('storage/covers/' . $buku->cover_buku)
+                : asset('images/bookcover.png'),
+            'isbn' => $buku->isbn ?? '-',
+            'edisi' => $buku->edisi ?? '-',
+            'penerbit' => $buku->penerbit->nama_penerbit ?? '-',
+            'no_panggil' => $buku->no_panggil ?? '-',
+            'deskripsi' => $buku->deskripsi ?? '-',
+            'tipe' => $buku->tipe->nama_tipe ?? '-',
+            'bahasa' => $buku->bahasa->nama_bahasa ?? '-',
+            'subjek' => $buku->subjek->pluck('nama_subjek')->filter()->join(', ') ?: '-',
+            'ketersediaan' => $buku->items->where('status_item', 'Tersedia')->count(),
+            'total_item' => $buku->items->count(),
+        ];
     }
 }
+
