@@ -31,8 +31,9 @@
                             src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
                             alt="Logo Polibatam" />
                         <div class="leading-none text-white flex flex-col justify-center">
-                            <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Library</h1>
-                            <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Polibatam</h1>
+                            <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Libratech</h1>
+                            <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Perpustakaan Digital
+                            </h1>
                         </div>
                     </div>
 
@@ -58,7 +59,7 @@
                             Hey! Hallo!
                         </h1>
                         <p class="text-white text-base lg:text-lg max-w-sm font-semibold leading-snug">
-                            Selamat datang di website Perpustakaan Politeknik negeri Batam
+                            Selamat datang di website Libratech Perpustakaan Digital
                         </p>
                     </div>
                 </div>

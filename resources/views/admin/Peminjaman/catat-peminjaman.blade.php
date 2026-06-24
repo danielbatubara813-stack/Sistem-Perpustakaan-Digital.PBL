@@ -9,14 +9,19 @@
     $kodeItem = old('id_item', request('id_item'));
     $maksimalPeminjamanTercapai = (bool) ($loanPreview['maksimal_tercapai'] ?? false);
     $peminjamanDitutup = (bool) ($loanPreview['peminjaman_ditutup'] ?? false);
-    $canStore = $anggota && $itemBuku && $itemBuku->status_item === 'Tersedia' && ! $peminjamanDitutup && ! $maksimalPeminjamanTercapai;
+    $canStore =
+        $anggota &&
+        $itemBuku &&
+        $itemBuku->status_item === 'Tersedia' &&
+        !$peminjamanDitutup &&
+        !$maksimalPeminjamanTercapai;
 
     $formatTanggal = function ($tanggal) {
         return $tanggal ? \Carbon\Carbon::parse($tanggal)->format('d-m-Y') : '-';
     };
 
     $penulisBuku = function ($buku) {
-        if (! $buku || ! $buku->penulis || ! $buku->penulis->count()) {
+        if (!$buku || !$buku->penulis || !$buku->penulis->count()) {
             return '-';
         }
 
@@ -26,7 +31,7 @@
     $coverBuku = function ($buku) {
         $placeholder = 'https://placehold.co/80x120?text=Cover';
 
-        if (! $buku || ! $buku->cover_buku) {
+        if (!$buku || !$buku->cover_buku) {
             return $placeholder;
         }
 
@@ -79,12 +84,11 @@
             </h3>
 
             <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full lg:w-auto">
-                <button type="submit" form="store-peminjaman-form" @disabled(! $canStore)
+                <button type="submit" form="store-peminjaman-form" @disabled(!$canStore)
                     class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm shadow-sm transition
                     {{ $canStore ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'bg-slate-300 text-slate-500 cursor-not-allowed' }}">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
                         <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
@@ -95,9 +99,8 @@
 
                 <a href="{{ route('admin.peminjaman') }}"
                     class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white rounded-md px-4 py-2 text-sm shadow-sm transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M10 11v6" />
                         <path d="M14 11v6" />
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
@@ -315,7 +318,7 @@
                 <div class="mt-4 p-4 bg-yellow-100 rounded">
                     Item buku tidak bisa dipinjam karena statusnya {{ $itemBuku->status_item }}.
                 </div>
-            @elseif (! $anggota)
+            @elseif (!$anggota)
                 <div class="mt-4 p-4 bg-yellow-100 rounded">
                     Pilih anggota terlebih dahulu sebelum menyimpan peminjaman.
                 </div>

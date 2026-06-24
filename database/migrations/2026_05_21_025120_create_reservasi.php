@@ -41,7 +41,8 @@ return new class extends Migration {
             $table->dateTime('tanggal_expired')->nullable();
             // kapan reservasi berubah menjadi peminjaman
             $table->dateTime('tanggal_selesai')->nullable();
-            $table->timestamps();
+            $table->timestamp('tanggal_dibuat')->useCurrent();
+            $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 
             $table->foreign('id_anggota')->references('id_anggota')->on('anggota');
             $table->foreign('id_buku')->references('id_buku')->on('buku');

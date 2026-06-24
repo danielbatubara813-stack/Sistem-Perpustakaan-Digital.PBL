@@ -15,8 +15,8 @@
             <p class="text-blue-300 font-semibold tracking-widest mb-2">TENTANG KAMI</p>
 
             <h1 class="text-2xl md:text-4xl lg:text-6xl font-extrabold leading-tight uppercase">
-                PERPUSTAKAAN <br>
-                POLITEKNIK NEGERI BATAM
+                LIBRATECH <br>
+                PERPUSTAKAAN DIGITAL
             </h1>
         </div>
     </div>
@@ -64,8 +64,8 @@
                         class="bg-white border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                         <h3 class="font-bold mb-2">VISI</h3>
                         <p class="text-sm text-justify">
-                            Visi dari Polibatam adalah menjadi politeknik generasi baru yang bermutu, adaptif, inovatif, dan
-                            bermitra erat dengan industri dan masyarakat untuk mendukung Indonesia Maju dan Sejahtera 2045.
+                            Menjadi pusat informasi dan literasi yang modern, inovatif, dan mudah diakses untuk mendukung
+                            pembelajaran, penelitian, serta pengembangan pengetahuan masyarakat.
                         </p>
                     </div>
 
@@ -74,9 +74,9 @@
                         class="bg-white border border-gray-300 rounded-xl p-6 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                         <h3 class="font-bold mb-2">MISI</h3>
                         <p class="text-sm text-justify">
-                            Misi dari Polibatam adalah aktif dalam proses kreasi, penyebaran dan penerapan sains dan
-                            teknologi
-                            melalui layanan pendidikan tinggi vokasi dan penelitian terapan yang bermutu.
+                            Perpustakaan berkomitmen menyediakan sumber informasi dan koleksi yang berkualitas, memberikan
+                            layanan yang mudah diakses dan profesional, serta mendukung peningkatan budaya literasi dan
+                            pembelajaran bagi seluruh pengguna.
                         </p>
                     </div>
                 </div>
@@ -86,11 +86,12 @@
                     class="bg-white border border-gray-300 p-6 rounded-lg shadow mt-6 text-left hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                     <h3 class="font-bold mb-2">TUJUAN</h3>
                     <ul class="list-disc pl-5 text-sm space-y-1">
-                        <li>Terwujudnya layanan pembelajaran bermutu</li>
-                        <li>Meningkatnya organisasi yang transparan dan akuntabel</li>
-                        <li>Meningkatkan mutu akses layanan pendidikan</li>
-                        <li>Meningkatkan kualitas penelitian dan inovasi</li>
-                        <li>Meningkatkan tata kelola organisasi</li>
+                        <li>Menyediakan sumber informasi yang akurat dan mudah diakses oleh seluruh pengguna.</li>
+                        <li>Mendukung proses belajar mengajar, penelitian, dan pengembangan ilmu pengetahuan.</li>
+                        <li>Meningkatkan kualitas layanan perpustakaan berbasis teknologi.</li>
+                        <li>Menumbuhkan budaya membaca dan belajar sepanjang hayat.</li>
+                        <li>Mempermudah pengelolaan dan pencarian koleksi perpustakaan.</li>
+                        <li>Meningkatkan kepuasan pengguna melalui layanan yang efektif dan efisien.</li>
                     </ul>
                 </div>
             </div>

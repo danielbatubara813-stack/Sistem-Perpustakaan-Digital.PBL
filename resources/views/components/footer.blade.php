@@ -7,12 +7,12 @@
                     src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
                     alt="">
                 <div>
-                    <h1 class="uppercase font-bold text-md">Library</h1>
-                    <p class="text-xs">Perpustakaan Polibatam</p>
+                    <h1 class="uppercase font-bold text-md">Libratech</h1>
+                    <p class="text-xs">Perpustakaan Digital</p>
                 </div>
             </div>
-            <p class="text-lg">Website ini merupakan website perpustakaan Politeknik Negeri Batam untuk melihat dan
-                meminjam buku</p>
+            <p class="text-lg">LibraTech menghadirkan solusi perpustakaan digital yang modern dan mudah digunakan untuk
+                mendukung pengelolaan serta akses informasi yang lebih efektif.</p>
             <div>
                 <ul class="flex items-center gap-4 text-white">
                     <li class="bg-red-600 w-10 aspect-square p-2 rounded-lg">
@@ -93,7 +93,7 @@
                             d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                     </svg>
                     <a class="transition-all duration-150 ease-in-out hover:underline"
-                        href="{{ route('home-page') }}">+62-778-469858</a>
+                        href="{{ route('home-page') }}">+62</a>
                 </li>
                 <li class="w-full py-2 rounded-md text-lg flex flex-row items-start justify-start gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 aspect-square" viewBox="0 0 24 24" fill="none"
@@ -103,7 +103,7 @@
                         <rect x="2" y="4" width="20" height="16" rx="2" />
                     </svg>
                     <a class="transition-all duration-150 ease-in-out hover:underline"
-                        href="{{ route('home-page') }}">perpus@polibatam.ac.id </a>
+                        href="{{ route('home-page') }}">libratech.if2a3@gmail.com</a>
                 </li>
                 <li class="w-full py-2 rounded-md text-lg flex flex-row items-start justify-start gap-4">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 aspect-square" viewBox="0 0 24 24" fill="none"

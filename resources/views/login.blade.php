@@ -6,8 +6,9 @@
             Masuk untuk dapat melakukan peminjaman buku
         </p>
 
-        <form method="POST"action="{{ Route::is('admin.login-page') ? route('admin.login.proses') : route('login.proses') }}"
-        class="space-y-6 w-full md:w-3/4">
+        <form
+            method="POST"action="{{ Route::is('admin.login-page') ? route('admin.login.proses') : route('login.proses') }}"
+            class="space-y-6 w-full md:w-3/4">
             @csrf
 
             <!-- Email / Member ID -->
@@ -25,13 +26,13 @@
                     @endif
                 </label>
                 @if (Route::is('admin.login-page'))
-                <input type="text" name="username"
-                    class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                    required>
-                    @else
-                <input type="text" name="login_id"
-                    class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
-                    required>
+                    <input type="text" name="username"
+                        class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                        required>
+                @else
+                    <input type="text" name="login_id"
+                        class="w-full px-4 py-3 border border-gray-400 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all"
+                        required>
                 @endif
             </div>
             <!-- End Email -->
@@ -74,14 +75,6 @@
                     Masuk
                 </button>
             </div>
-
-            @if (!Route::is('admin.login-page'))
-                <div class="text-center mt-6 text-xs font-bold text-black">
-                    Belum punya akun?
-                    <a href="{{ route('register-page') }}"
-                        class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">Daftar</a>
-                </div>
-            @endif
 
         </form>
         <!-- End Form -->

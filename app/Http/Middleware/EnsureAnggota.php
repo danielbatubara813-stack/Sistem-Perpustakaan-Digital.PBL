@@ -13,8 +13,12 @@ class EnsureAnggota
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! Auth::guard('web')->check()) {
+        if (!Auth::guard('web')->check()) {
             return redirect()->route('login-page');
+        }
+        
+        if (!Auth::guard('admin')->check()) {
+            return redirect()->route('admin.login-page');
         }
 
         return $next($request);

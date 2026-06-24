@@ -79,4 +79,12 @@ class Buku extends Model
             'id_buku'
         );
     }
+    public function reservasi()
+    {
+        return $this->hasMany(
+            Reservasi::class,
+            'id_buku',
+            'id_buku'
+        );
+    }
 }

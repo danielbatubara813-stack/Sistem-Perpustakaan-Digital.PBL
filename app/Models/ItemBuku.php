@@ -38,4 +38,13 @@ class ItemBuku extends Model
     {
         return $this->belongsTo(Peminjaman::class, 'id_item', 'id_item');
     }
+
+    public function reservasi()
+    {
+        return $this->hasMany(
+            Reservasi::class,
+            'id_buku',
+            'id_buku'
+        );
+    }
 }

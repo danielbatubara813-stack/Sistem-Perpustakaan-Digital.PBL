@@ -11,6 +11,7 @@ use App\Models\Reservasi;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use PHPUnit\Framework\Exception;
 
@@ -41,42 +42,48 @@ class PengembalianCepatController extends Controller
     public function pengembalianCepat(Request $request)
     {
         try {
-            $request->validate([
-                'id_item' => 'required'
-            ]);
+            $kode_peminjaman = null;
 
-            $peminjaman = Peminjaman::where('status', 'Dipinjam')->where('id_item', $request->id_item)->with(['itemBuku.buku.penulis', 'anggota.jenisKeanggotaan'])->firstOrFail();
+            DB::transaction(function () use ($request, &$kode_peminjaman) {
+                $request->validate([
+                    'id_item' => 'required'
+                ]);
 
-            $jatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo);
+                $peminjaman = Peminjaman::where('status', 'Dipinjam')->where('id_item', $request->id_item)->with(['itemBuku.buku.penulis', 'anggota.jenisKeanggotaan'])->firstOrFail();
 
-            $jumlahHariKeterlambatan = $jatuhTempo->diffInDays(now()->format('Y-m-d'), false);
+                $jatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo);
 
-            if ($jumlahHariKeterlambatan < 0) {
-                $jumlahHariKeterlambatan = 0;
-            }
+                $jumlahHariKeterlambatan = $jatuhTempo->diffInDays(now()->format('Y-m-d'), false);
 
-            $total_denda = $jumlahHariKeterlambatan * 1000;
+                if ($jumlahHariKeterlambatan < 0) {
+                    $jumlahHariKeterlambatan = 0;
+                }
 
-            $peminjaman->status = "Dikembalikan";
-            $peminjaman->save();
+                $total_denda = $jumlahHariKeterlambatan * 1000;
 
-            $itemBuku = ItemBuku::find($peminjaman->id_item);
-            $itemBuku->status_item = "Tersedia";
-            $itemBuku->save();
+                $peminjaman->status = "Dikembalikan";
+                $peminjaman->save();
 
-            $pengembalian = Pengembalian::create([
-                'kode_peminjaman' => $peminjaman->kode_peminjaman,
-                'tanggal_pengembalian' => now(),
-                'total_denda' => $total_denda,
-            ]);
+                $itemBuku = ItemBuku::find($peminjaman->id_item);
+                $itemBuku->status_item = "Tersedia";
+                $itemBuku->save();
 
-            $this->kirimEmailPengembalian($pengembalian);
-            $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
+                $pengembalian = Pengembalian::create([
+                    'kode_peminjaman' => $peminjaman->kode_peminjaman,
+                    'tanggal_pengembalian' => now(),
+                    'total_denda' => $total_denda,
+                ]);
+
+                $this->kirimEmailPengembalian($pengembalian);
+                $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
+
+                $kode_peminjaman = $peminjaman->kode_peminjaman;
+            });
 
             return redirect()
                 ->route('admin.pengembalian.cepat')
                 ->with([
-                    'kode_peminjaman' => $peminjaman->kode_peminjaman,
+                    'kode_peminjaman' => $kode_peminjaman,
                     'success' => 'Pengembalian buku berhasil, terima kasih telah meminjam buku disini'
                 ]);
         } catch (ModelNotFoundException $e) {

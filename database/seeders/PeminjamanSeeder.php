@@ -20,10 +20,7 @@ class PeminjamanSeeder extends Seeder
             $tanggalPinjam = Carbon::now()
                 ->subDays(rand(1, 30));
 
-            $status = collect([
-                'Dipinjam',
-                'Dikembalikan'
-            ])->random();
+            $status = 'Dipinjam';
 
             $idItem = $items[array_rand($items)];
 

@@ -148,7 +148,6 @@ class AnggotaController extends Controller
             'phone'           => 'required|unique:anggota,no_hp,' . $id . ',id_anggota',
             'gender'          => 'required',
             'birth_date'      => 'required|date',
-            'institution'     => 'required',
         ]);
 
         $updateData = [
@@ -164,7 +163,6 @@ class AnggotaController extends Controller
                                         : 'Perempuan',
             'tanggal_lahir'          => $request->birth_date,
             'tanggal_daftar'         => $request->registration_date ?? $anggota->tanggal_daftar,
-            'instansi'               => $request->institution,
             'verifikasi_admin'       => $request->verifikasi_admin ?? $anggota->verifikasi_admin,
             'tanggal_diubah'         => now(),
         ];

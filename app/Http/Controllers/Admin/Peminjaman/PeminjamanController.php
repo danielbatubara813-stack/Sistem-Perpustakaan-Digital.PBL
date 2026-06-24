@@ -152,7 +152,7 @@ class PeminjamanController extends Controller
                 ->where('nomor_identitas', $request->nomor_identitas)
                 ->first();
 
-            $anggotaNotFound = ! $anggota;
+            $anggotaNotFound = !$anggota;
 
             if ($anggota) {
                 $memberLoans = Peminjaman::with('itemBuku.buku.penulis')
@@ -171,7 +171,7 @@ class PeminjamanController extends Controller
                 ->where('id_item', $request->id_item)
                 ->first();
 
-            $itemNotFound = ! $itemBuku;
+            $itemNotFound = !$itemBuku;
         }
 
         if ($anggota && $itemBuku) {
@@ -270,18 +270,25 @@ class PeminjamanController extends Controller
 
             $tanggalPeminjaman = Carbon::today();
 
-            $aturanPeminjaman = $this->ambilAturanPeminjaman(
-                $anggota,
-                $itemBuku
-            );
+            $aturanPeminjaman = $this->ambilAturanPeminjaman($anggota, $itemBuku);
+
+            $hariIni = Carbon::today();
+
+
+            $terlambat = Peminjaman::where('id_anggota', $anggota->id_anggota)
+                ->where('status', 'Dipinjam')
+                ->whereDate('tanggal_jatuh_tempo', '<', $hariIni)
+                ->exists();
+
+            if ($terlambat) {
+                throw ValidationException::withMessages([
+                    'id_item' => 'Anggota memiliki peminjaman yang sudah melewati batas pengembalian. Silakan kembalikan buku terlebih dahulu.',
+                ]);
+            }
 
             $periodePeminjaman = (int) ($aturanPeminjaman?->periode_peminjaman ?: 7);
             $batasPeminjaman = (int) ($aturanPeminjaman?->batas_peminjaman ?? 2);
-            $jumlahPeminjamanAktif = $this->jumlahPeminjamanAktifSesuaiAturan(
-                $anggota,
-                $itemBuku,
-                $aturanPeminjaman
-            );
+            $jumlahPeminjamanAktif = $this->jumlahPeminjamanAktifSesuaiAturan($anggota, $itemBuku, $aturanPeminjaman);
 
             if ($batasPeminjaman === 0) {
                 throw ValidationException::withMessages([
