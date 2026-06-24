@@ -34,7 +34,7 @@ class LoginController extends Controller
 
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('profile.akun-saya-page');
+            return redirect()->route('profile.akun-saya-page')->with('success', 'Login berhasil');
         }
 
         return back()->with('error', 'Login gagal. Email/Nomor Identitas atau kata sandi salah.');

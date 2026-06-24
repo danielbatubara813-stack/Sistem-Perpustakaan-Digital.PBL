@@ -22,12 +22,7 @@ class ItemBukuSeeder extends Seeder
 
                     'id_buku' => $buku,
 
-                    'status_item' => collect([
-                        'Tersedia',
-                        'Sedang Dipinjam',
-                        'Dipesan',
-                        'Tidak Aktif'
-                    ])->random(),
+                    'status_item' => 'Tersedia',
                 ]);
 
                 $counter++;

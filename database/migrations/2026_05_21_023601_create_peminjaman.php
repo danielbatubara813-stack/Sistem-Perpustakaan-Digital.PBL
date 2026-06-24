@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('id_item', 19);
             $table->date('tanggal_peminjaman');
             $table->date('tanggal_jatuh_tempo');
-            $table->enum('status', ['Dipinjam', 'Dikembalikan']);
+            $table->enum('status', ['Dipinjam', 'Dikembalikan', "Terlambat"]);
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 

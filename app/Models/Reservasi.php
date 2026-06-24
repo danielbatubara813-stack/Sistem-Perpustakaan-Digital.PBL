@@ -37,6 +37,11 @@ class Reservasi extends Model
         'tanggal_selesai' => 'datetime',
     ];
 
+    public $timestamps = false;
+
+    const CREATED_AT = 'tanggal_dibuat';
+    const UPDATED_AT = 'tanggal_diubah';
+
     protected static function boot()
     {
         parent::boot();

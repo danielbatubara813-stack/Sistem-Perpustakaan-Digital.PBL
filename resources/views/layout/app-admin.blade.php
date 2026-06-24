@@ -26,6 +26,7 @@
 
     @include('components.alert')
     @include('components.confirm-delete')
+    @include('components.export-modal')
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
 {{-- Script buka tutup sidebar --}}

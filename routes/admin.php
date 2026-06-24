@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DataTerkendali\PenerbitController;
 use App\Http\Controllers\Admin\DataTerkendali\PenulisController;
 use App\Http\Controllers\Admin\DataTerkendali\SubjekController;
 use App\Http\Controllers\Admin\DataTerkendali\TipeKoleksiController;
+use App\Http\Controllers\Admin\ExportLaporanController;
 use App\Http\Controllers\Admin\Peminjaman\PeminjamanController;
 use App\Http\Controllers\Admin\Peminjaman\ReservasiController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianBukuController;
@@ -95,9 +96,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'store'])
             ->name('peminjaman.store');
 
-        Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
-        Route::put('/peminjaman/reservasi/Disetujui', [ReservasiController::class, 'reservasiDisetujui'])->name('peminjaman.reservasi.disetujui');
-        Route::put('/peminjaman/reservasi/Ditolak', [ReservasiController::class, 'reservasiDitolak'])->name('peminjaman.reservasi.ditolak');
+        Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
+        Route::put('/reservasi/disetujui', [ReservasiController::class, 'reservasiDisetujui'])->name('peminjaman.reservasi.disetujui');
+        Route::put('/reservasi/ditolak', [ReservasiController::class, 'reservasiDitolak'])->name('peminjaman.reservasi.ditolak');
+        Route::put('/reservasi/jadikan-peminjaman', [ReservasiController::class, 'jadikanPeminjaman'])->name('peminjaman.reservasi.jadikan-peminjaman');
 
         // Pengembalian
         Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
@@ -157,5 +159,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::delete('/destroy', [PenerbitController::class, 'destroyPenerbit'])->name('destroy');
             });
         });
+
+        Route::post('/export/laporan', [ExportLaporanController::class, 'export'])->name('export.laporan');
     });
 });

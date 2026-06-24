@@ -70,16 +70,6 @@
                     Batal
                 </a>
             </div>
-
-            <!-- Link kembali ke login -->
-            <div class="text-center mt-6 text-xs font-bold text-black">
-                Sudah ingat password?
-                <a href="{{ route('login-page') }}"
-                    class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
-                    Masuk
-                </a>
-            </div>
-
         </form>
     </div>
 @endsection

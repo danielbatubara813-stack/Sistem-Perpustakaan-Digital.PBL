@@ -30,7 +30,7 @@ class LoginAdminController extends Controller
 
         if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('admin.dashboard');
+            return redirect()->route('admin.dashboard')->with('success', 'Login berhasil');
         }
 
         return back()->with('error', 'Login gagal. Username atau kata sandi salah.');
