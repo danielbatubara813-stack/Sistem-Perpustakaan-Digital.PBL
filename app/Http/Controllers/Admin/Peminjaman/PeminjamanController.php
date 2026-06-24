@@ -17,8 +17,6 @@ use Illuminate\Validation\ValidationException;
 
 class PeminjamanController extends Controller
 {
-
-
     public function ambilDataLoan(Request $request)
     {
         $query = Peminjaman::with([
