@@ -36,66 +36,87 @@
     {{-- Script untuk grafik chart pada dashboard admin --}}
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        const ctxAnggota = document.getElementById('anggotaChart');
+        const statusAnggota = @json($statusAnggota);
 
-        const anggotaBaru = 200
-        const anggotaInactive = 500
-        const anggotaPerpanjang = 200
-
-        const data = {
-            labels: [
-                'Baru',
-                'Perpanjang',
-                'Tidak Aktif',
-            ],
-            datasets: [{
-                label: 'Keanggotaan',
-                data: [anggotaBaru, anggotaPerpanjang, anggotaInactive],
-                backgroundColor: [
-                    'rgb(37 99 235)',
-                    'rgb(59 130 246)',
-                    'rgb(96 165 250)'
-                ],
-                hoverOffset: 4
-            }]
-        };
-
-        new Chart(ctxAnggota, {
+        new Chart(document.getElementById('anggotaChart'), {
             type: 'doughnut',
-            data: data,
+            data: {
+                labels: Object.keys(statusAnggota),
+                datasets: [{
+                    data: Object.values(statusAnggota),
+                    backgroundColor: [
+                        '#2563EB',
+                        '#3B82F6',
+                        '#93C5FD',
+                        '#BFDBFE'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            generateLabels(chart) {
+                                const data = chart.data;
+
+                                return data.labels.map((label, index) => ({
+                                    text: `${label} (${data.datasets[0].data[index]})`,
+                                    fillStyle: data.datasets[0].backgroundColor[index],
+                                    strokeStyle: data.datasets[0].backgroundColor[index],
+                                    lineWidth: 0,
+                                    hidden: false,
+                                    index
+                                }));
+                            }
+                        }
+                    }
+                }
+            }
         });
     </script>
     <script>
-        const ctxPeminjaman = document.getElementById('peminjamanChart');
+        const statusPeminjaman = @json($statusPeminjaman);
 
-        const peminjamanDikembalikan = 200
-        const peminjamanProses = 500
-        const peminjamanTerlambat = 200
-        const peminjamanHilang = 200
-
-        const data2 = {
-            labels: [
-                'Dikembalikan',
-                'Proses',
-                'Terlambat',
-                'Hilang',
-            ],
-            datasets: [{
-                label: 'Jumlah Peminjaman',
-                data: [peminjamanDikembalikan, peminjamanProses, peminjamanTerlambat, peminjamanHilang],
-                backgroundColor: [
-                    'rgb(234 88 12)',
-                    'rgb(249 115 22)',
-                    'rgb(251 146 60)',
-                    'rgb(253 186 116)'
-                ],
-                hoverOffset: 4
-            }]
-        };
-
-        new Chart(ctxPeminjaman, {
+        new Chart(document.getElementById('peminjamanChart'), {
             type: 'doughnut',
-            data: data2,
+            data: {
+                labels: Object.keys(statusPeminjaman),
+                datasets: [{
+                    data: Object.values(statusPeminjaman),
+                    backgroundColor: [
+                        '#EA580C',
+                        '#F97316',
+                        '#FB923C',
+                        '#FDBA74'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            generateLabels(chart) {
+                                const data = chart.data;
+
+                                return data.labels.map((label, index) => ({
+                                    text: `${label} (${data.datasets[0].data[index]})`,
+                                    fillStyle: data.datasets[0].backgroundColor[index],
+                                    strokeStyle: data.datasets[0].backgroundColor[index],
+                                    lineWidth: 0,
+                                    hidden: false,
+                                    index
+                                }));
+                            }
+                        }
+                    }
+                }
+            }
         });
     </script>
 @endif

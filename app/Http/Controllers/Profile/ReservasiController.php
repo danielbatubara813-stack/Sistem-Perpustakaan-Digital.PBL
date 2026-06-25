@@ -17,7 +17,7 @@ class ReservasiController extends Controller
     public function reservasi()
     {
         $user = Auth::guard('web')->user();
-        $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '=', 'Draft')->where('tanggal_diajukan', '!=', null)->whereHas('anggota', function ($q) use ($user) {
+        $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '=', 'Draft')->where('tanggal_diajukan', '!=', null)->orderBy('tanggal_diajukan', 'ASC')->whereHas('anggota', function ($q) use ($user) {
             $q->where('id_anggota', '=', $user->id_anggota);
         })->paginate(10);
 
@@ -62,6 +62,22 @@ class ReservasiController extends Controller
                 'nomor_reservasi' => 'required|array',
                 'nomor_reservasi.*' => 'exists:reservasi,nomor_reservasi'
             ]);
+
+            // Jika tombol batal ditekan
+            if ($request->action === 'batal') {
+
+                Reservasi::whereIn(
+                    'nomor_reservasi',
+                    $request->nomor_reservasi
+                )->update([
+                            'status' => 'Dibatalkan'
+                        ]);
+
+                return back()->with(
+                    'success',
+                    'Reservasi berhasil dibatalkan'
+                );
+            }
 
             $reservasi = Reservasi::with(['anggota', 'buku', 'itemBuku'])
                 ->whereIn('nomor_reservasi', $request->nomor_reservasi)->get();
@@ -124,7 +140,39 @@ class ReservasiController extends Controller
         $user = Auth::guard('web')->user();
         $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '!=', 'Menunggu')->whereHas('anggota', function ($q) use ($user) {
             $q->where('id_anggota', '=', $user->id_anggota);
-        })->get();
+        })->paginate(10);
         return view('profile.daftar-reservasi', compact('reservasi'));
+    }
+
+    public function batalkanReservasi(Request $request)
+    {
+        $request->validate([
+            'nomor_reservasi' => 'required|exists:reservasi,nomor_reservasi'
+        ]);
+
+        $reservasi = Reservasi::where(
+            'nomor_reservasi',
+            $request->nomor_reservasi
+        )->firstOrFail();
+
+        // Jika ada item buku yang sudah dipesan
+        if ($reservasi->itemBuku) {
+            $reservasi->itemBuku->update([
+                'status_item' => 'Tersedia'
+            ]);
+
+            $reservasi->update([
+                'id_item' => null
+            ]);
+        }
+
+        $reservasi->update([
+            'status' => 'Dibatalkan'
+        ]);
+
+        return back()->with(
+            'success',
+            'Reservasi berhasil dibatalkan'
+        );
     }
 }

@@ -47,6 +47,7 @@ Route::middleware('auth:web')->group(function () {
         Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi-page');
         Route::post('/reservasi/ajukan', [ReservasiController::class, 'ajukanReservasi'])->name('reservasi-ajukan');
         Route::get('/daftar-reservasi', [ReservasiController::class, 'daftarReservasi'])->name('daftar-reservasi-page');
+        Route::put('/reservasi/batalkan-reservasi', [ReservasiController::class, 'batalkanReservasi'])->name('reservasi.jadikan-reservasi');
     });
     Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 });

@@ -18,19 +18,21 @@
             </div>
             <div class="space-y-4 mt-4">
                 <div class="flex justify-end items-center">
-                    <a href="{{ route('cari-buku-page', ['sort' => 'terbaru', 'scroll' => 'daftar-buku']) }}" class="text-white bg-blue-800 px-6 py-2 rounded-md">
+                    <a href="{{ route('cari-buku-page', ['sort' => 'terbaru', 'scroll' => 'daftar-buku']) }}"
+                        class="text-white bg-blue-800 px-6 py-2 rounded-md">
                         Lihat Semua
                     </a>
                 </div>
                 <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
                     @foreach ($koleksi_baru as $buku)
-                        <a href="{{ route('detail-buku-page', $buku['id']) }}"
+                        <a href="{{ route('detail-buku-page', $buku->id_buku) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
-                            <img src="{{ $buku['cover'] }}" class="aspect-[1/1.6] w-full rounded-md object-fit"
-                                alt="{{ $buku['judul'] }}">
+                            <img src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
+                                class="aspect-[1/1.6] w-full rounded-md object-fit" alt="{{ $buku->judul_buku }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
-                                <h6 class="text-gray-500 text-xs line-clamp-1">{{ $buku['penulis'] }}</h6>
-                                <h4 class="font-bold text-xs line-clamp-2">{{ $buku['judul'] }}</h4>
+                                <h6 class="text-gray-500 text-xs line-clamp-1">
+                                    {{ $buku->penulis->first()?->nama_penulis ?? '-' }}</h6>
+                                <h4 class="font-bold text-xs line-clamp-2">{{ $buku->judul_buku }}</h4>
                             </div>
                         </a>
                     @endforeach
@@ -65,19 +67,21 @@
             </div>
             <div class="space-y-4 mt-4">
                 <div class="flex justify-end items-center">
-                    <a href="{{ route('cari-buku-page', ['scroll' => 'daftar-buku']) }}" class="text-white bg-blue-800 px-6 py-2 rounded-md">
+                    <a href="{{ route('cari-buku-page', ['scroll' => 'daftar-buku']) }}"
+                        class="text-white bg-blue-800 px-6 py-2 rounded-md">
                         Lihat Semua
                     </a>
                 </div>
                 <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7 gap-4">
                     @foreach ($koleksi_popular as $buku)
-                        <a href="{{ route('detail-buku-page', $buku['id']) }}"
+                        <a href="{{ route('detail-buku-page', $buku->id_buku) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
-                            <img src="{{ $buku['cover'] }}" class="aspect-[1/1.6] w-full rounded-md object-fit"
-                                alt="{{ $buku['judul'] }}">
+                            <img src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
+                                class="aspect-[1/1.6] w-full rounded-md object-fit" alt="{{ $buku->judul }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
-                                <h6 class="text-gray-500 text-xs line-clamp-1">{{ $buku['penulis'] }}</h6>
-                                <h4 class="font-bold text-xs line-clamp-2">{{ $buku['judul'] }}</h4>
+                                <h6 class="text-gray-500 text-xs line-clamp-1">
+                                    {{ $buku->penulis->first()?->nama_penulis ?? '-' }}</h6>
+                                <h4 class="font-bold text-xs line-clamp-2">{{ $buku->judul_buku }}</h4>
                             </div>
                         </a>
                     @endforeach
@@ -100,15 +104,16 @@
                 @foreach ($penikmat_koleksi as $akun)
                     <div
                         class="bg-white rounded-md p-4 border border-gray-300 grid grid-cols-3 gap-4 hover:scale-105 hover:shadow-md transition-all duration-300">
-                        <img class="aspect-square object-cover object-top rounded-full" src="{{ $akun['profile'] }}"
+                        <img class="aspect-square object-cover object-top rounded-full"
+                            src="{{ $akun->profile ? $akun->profile : asset('static/profileDefault.jpg') }}"
                             alt="">
                         <div class="col-span-2 flex justify-between flex-col">
-                            <h4 class="text-2xl font-bold uppercase mb-0">{{ $akun['nama'] }}</h4>
-                            <h4 class="text-sm">{{ $akun['jenis_keanggotaan'] }}</h4>
+                            <h4 class="text-2xl font-bold uppercase mb-0">{{ $akun->nama }}</h4>
+                            <h4 class="text-sm">{{ $akun->jenis_keanggotaan }}</h4>
                             <div class="flex justify-evenly items-center border border-black rounded-md">
-                                <p class="p-2 text-nowrap">{{ $akun['total_peminjaman'] }} Pinjam</p>
+                                <p class="p-2 text-nowrap">{{ $akun->total_peminjaman }} Pinjam</p>
                                 <div class="h-full w-px bg-black"></div>
-                                <p class="p-2">{{ $akun['total_buku'] }} Judul</p>
+                                <p class="p-2">{{ $akun->total_buku }} Judul</p>
                             </div>
                         </div>
                     </div>

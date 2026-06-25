@@ -53,11 +53,11 @@
                     <div class="flex flex-row lg:flex-col gap-6">
 
                         {{-- Foto --}}
-                        <div class="flex flex-col gap-2 justify-center lg:block">
-                        <img class="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-xl object-cover object-top shadow-md"
-                            src="{{ Auth::user()->foto_profile_url }}"
-                            onerror="this.src='{{ asset('images/default-avatar.svg') }}'"
-                            alt="{{ Auth::user()->nama }}">
+                        <div class="flex flex-col gap-2 justify-center items-center">
+                            <img class="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 rounded-xl object-cover object-top shadow-md"
+                                src="{{ Auth::user()->foto_profile_url ? Auth::user()->foto_profile_url : asset('static/profileDefault.jpg') }}"
+                                onerror="this.src='{{ asset('images/default-avatar.svg') }}'"
+                                alt="{{ Auth::user()->nama }}">
 
                             <div class="block lg:hidden">
                                 <form action="{{ route('logout') }}" method="POST" class="w-full">
@@ -76,7 +76,7 @@
                                         </svg>
 
                                         <span class="text-sm sm:text-base font-medium">
-                                            Keluar
+                                            Logout
                                         </span>
                                     </button>
                                 </form>
@@ -87,34 +87,36 @@
                         <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
 
                             <div class="col-span-2 lg:col-span-1">
-                                <h6 class="text-sm text-slate-500">Nama Anggota</h6>
+                                <h6 class="text-xs md:text-sm text-slate-500">Nama Anggota</h6>
                                 <h6 class="font-bold text-base sm:text-lg">
                                     {{ Auth::user()->nama }}
                                 </h6>
                             </div>
 
                             <div>
-                                <h6 class="text-sm text-slate-500">ID Anggota</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">
+                                <h6 class="text-xs md:text-sm text-slate-500">ID Anggota</h6>
+                                <h6 class="font-bold text-xs md:text-sm lg:text-lg">
                                     {{ auth()->user()->nomor_identitas }}
                                 </h6>
                             </div>
 
                             <div>
-                                <h6 class="text-sm text-slate-500">Jenis Keanggotaan</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">
+                                <h6 class="text-xs md:text-sm text-slate-500">Jenis Keanggotaan</h6>
+                                <h6 class="font-bold text-xs md:text-sm lg:text-lg">
                                     {{ Auth::user()->jenisKeanggotaan->nama_jenis }}
                                 </h6>
                             </div>
 
                             <div>
-                                <h6 class="text-sm text-slate-500">Total Peminjaman</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">{{ $totalPeminjaman ?? 0 }} Peminjaman</h6>
+                                <h6 class="text-xs md:text-sm text-slate-500">Total Peminjaman</h6>
+                                <h6 class="font-bold text-xs md:text-sm lg:text-lg">{{ $totalPeminjaman ?? 0 }}
+                                    Peminjaman</h6>
                             </div>
 
                             <div>
-                                <h6 class="text-sm text-slate-500">Total Judul Dipinjam</h6>
-                                <h6 class="font-bold text-sm sm:text-lg">{{ $totalJudul ?? 0 }} Judul Buku</h6>
+                                <h6 class="text-xs md:text-sm text-slate-500">Total Judul Dipinjam</h6>
+                                <h6 class="font-bold text-xs md:text-sm lg:text-lg">{{ $totalJudul ?? 0 }} Judul Buku
+                                </h6>
                             </div>
 
                             {{-- Tombol --}}
@@ -155,90 +157,12 @@
             </div>
         </div>
     </section>
-
+    @if (Route::is('profile.reservasi-page', 'profile.daftar-reservasi-page'))
+        @include('components.confirm-batalkan-reservasi')
+    @endif
 </body>
 <script src="https://cdn.jsdelivr.net/npm/flowbite@4.0.1/dist/flowbite.min.js"></script>
-<script>
-    (function() {
-        const MIN = 1950,
-            MAX = 2025;
-        const sliderDari = document.getElementById('sliderDari');
-        const sliderKe = document.getElementById('sliderKe');
-        const inputDari = document.getElementById('inputDari');
-        const inputKe = document.getElementById('inputKe');
-        const fill = document.getElementById('sliderFill');
-        const errMsg = document.getElementById('errMsg');
-        const panel = document.getElementById('panel');
-        const chevron = document.getElementById('chevron');
-        const toggleBtn = document.getElementById('toggleBtn');
 
-        let isOpen = true;
-
-        function pct(v) {
-            return (v - MIN) / (MAX - MIN) * 100;
-        }
-
-        function updateFill() {
-            const a = parseInt(sliderDari.value);
-            const b = parseInt(sliderKe.value);
-            fill.style.left = pct(a) + '%';
-            fill.style.width = (pct(b) - pct(a)) + '%';
-        }
-
-        sliderDari.addEventListener('input', () => {
-            let v = parseInt(sliderDari.value);
-            if (v > parseInt(sliderKe.value)) {
-                v = parseInt(sliderKe.value);
-                sliderDari.value = v;
-            }
-            inputDari.value = v;
-            errMsg.classList.add('hidden');
-            updateFill();
-        });
-
-        sliderKe.addEventListener('input', () => {
-            let v = parseInt(sliderKe.value);
-            if (v < parseInt(sliderDari.value)) {
-                v = parseInt(sliderDari.value);
-                sliderKe.value = v;
-            }
-            inputKe.value = v;
-            errMsg.classList.add('hidden');
-            updateFill();
-        });
-
-        inputDari.addEventListener('input', () => {
-            let v = Math.max(MIN, Math.min(MAX, parseInt(inputDari.value) || MIN));
-            if (v > parseInt(inputKe.value)) {
-                errMsg.classList.remove('hidden');
-                return;
-            }
-            errMsg.classList.add('hidden');
-            sliderDari.value = v;
-            updateFill();
-        });
-
-        inputKe.addEventListener('input', () => {
-            let v = Math.max(MIN, Math.min(MAX, parseInt(inputKe.value) || MAX));
-            if (v < parseInt(inputDari.value)) {
-                errMsg.classList.remove('hidden');
-                return;
-            }
-            errMsg.classList.add('hidden');
-            sliderKe.value = v;
-            updateFill();
-        });
-
-        toggleBtn.addEventListener('click', () => {
-            isOpen = !isOpen;
-            panel.style.maxHeight = isOpen ? '200px' : '0px';
-            panel.style.opacity = isOpen ? '1' : '0';
-            chevron.style.transform = isOpen ? 'rotate(90deg)' : 'rotate(0deg)';
-        });
-
-        updateFill();
-    })();
-</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const sections = document.querySelectorAll(".filter-collapse");

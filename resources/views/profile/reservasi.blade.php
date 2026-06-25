@@ -18,7 +18,7 @@
 
                                 {{-- Top --}}
                                 <div class="flex gap-4">
-                                    <img src="{{ !empty($item->buku->cover) ? $item->buku->cover : asset('images/default-book-cover.jpg') }}"
+                                    <img src="{{ !empty($item->buku->cover_buku) ? $item->buku->cover_buku : asset('static/bookcover.png') }}"
                                         class="aspect-1/1.5 w-28 rounded-lg object-cover border border-gray-300 shadow-sm"
                                         alt="{{ $item->buku->judul_buku }}">
 
@@ -98,7 +98,7 @@
                             {{-- DESKTOP --}}
                             <div class="hidden lg:grid grid-cols-6 gap-2">
 
-                                <img src="{{ !empty($item->buku->cover) ? $item->buku->cover : asset('images/default-book-cover.jpg') }}"
+                                <img src="{{ !empty($item->buku->cover_buku) ? $item->buku->cover_buku : asset('static/bookcover.png') }}"
                                     class="aspect-[1/1.6] w-36 rounded-md object-cover border shadow-md border-gray-300"
                                     alt="{{ $item->buku->judul_buku }}">
 
@@ -173,8 +173,10 @@
                         </div>
                     </a>
                 @endforeach
-                <div class="flex gap-2 justify-between lg:justify-end items-center">
-                    <button class="rounded-md bg-blue-800 text-white flex items-center justify-center px-6 py-2 gap-2">
+                <div class="mt-6 flex gap-2 justify-between lg:justify-end items-center">
+
+                    <button type="submit" name="action" value="kirim"
+                        class="rounded-md bg-blue-800 text-white flex items-center justify-center px-6 py-2 gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" class="lucide lucide-upload-icon lucide-upload">
@@ -183,7 +185,10 @@
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                         </svg>
                         Kirim Reservasi</button>
-                    <button class="rounded-md bg-red-600 text-white flex items-center justify-center px-6 py-2 gap-2">
+
+                    <input type="hidden" name="action">
+                    <button type="button" data-action="batal"
+                        class="open-cancel-modal rounded-md bg-red-600 text-white flex items-center justify-center px-6 py-2 gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                             stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2">
