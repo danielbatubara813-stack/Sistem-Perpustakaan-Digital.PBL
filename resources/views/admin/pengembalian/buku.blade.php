@@ -107,7 +107,7 @@
                                                 <input type="hidden" name="kode_peminjaman"
                                                     value="{{ $loan->kode_peminjaman }}">
                                                 <button type="submit"
-                                                    class="px-3 py-1 rounded-md bg-slate-200 text-slate-700 hover:bg-slate-300 transition whitespace-nowrap">
+                                                    class="px-3 py-1 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition whitespace-nowrap">
                                                     Kembalikan
                                                 </button>
                                             </form>
@@ -165,7 +165,8 @@
 
                                             $total_denda = $jumlahHariKeterlambatan * 1000;
                                         @endphp
-                                        <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                                        <td
+                                            class="px-4 sm:px-6 py-4 whitespace-nowrap {{ $total_denda > 0 ? 'text-red-600 font-bold' : '' }}">
                                             Rp {{ number_format($total_denda, 0, ',', '.') }}
                                         </td>
 

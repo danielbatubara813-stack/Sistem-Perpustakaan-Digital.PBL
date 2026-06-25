@@ -98,7 +98,8 @@
 
                                 $total_denda = $jumlahHariKeterlambatan * 1000;
                             @endphp
-                            <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
+                            <td
+                                class="px-4 sm:px-6 py-4 whitespace-nowrap {{ $total_denda > 0 ? 'text-red-600 font-bold' : '' }}">
                                 Rp {{ number_format($total_denda, 0, ',', '.') }}
                             </td>
                         </tr>
