@@ -8,6 +8,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
+    @include('components.alert')
+    
     @vite(['resources/css/app.css'])
 
     <style>
