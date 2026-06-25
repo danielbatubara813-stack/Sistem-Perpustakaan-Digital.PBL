@@ -147,7 +147,7 @@ class ExportLaporanController extends Controller
             ]);
 
             $query->whereBetween(
-                'tanggal_dibuat',
+                'tanggal_daftar',
                 [
                     $request->tanggal_awal,
                     $request->tanggal_akhir

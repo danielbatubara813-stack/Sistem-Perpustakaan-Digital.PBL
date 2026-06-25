@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DataTerkendali\PenerbitController;
 use App\Http\Controllers\Admin\DataTerkendali\PenulisController;
 use App\Http\Controllers\Admin\DataTerkendali\SubjekController;
 use App\Http\Controllers\Admin\DataTerkendali\TipeKoleksiController;
+use App\Http\Controllers\Admin\ExportLaporanController;
 use App\Http\Controllers\Admin\Peminjaman\PeminjamanController;
 use App\Http\Controllers\Admin\Peminjaman\ReservasiController;
 use App\Http\Controllers\Admin\Pengembalian\PengembalianBukuController;
@@ -23,8 +24,8 @@ use Illuminate\Support\Facades\Route;
 // kumpulan halaman admin
 Route::prefix('admin')->name('admin.')->group(function () {
 
-        Route::get('/login', [LoginAdminController::class, 'login'])->name('login-page');
-        Route::post('/login', [LoginAdminController::class, 'proses'])->name('login.proses');
+    Route::get('/login', [LoginAdminController::class, 'login'])->name('login-page');
+    Route::post('/login', [LoginAdminController::class, 'proses'])->name('login.proses');
 
     Route::post('/logout', [LogoutController::class, 'logoutAdmin'])->name('logout');
 
@@ -59,31 +60,46 @@ Route::prefix('admin')->name('admin.')->group(function () {
             Route::delete('/jenis/{id}', [JenisKeanggotaanController::class, 'jenisDestroy'])->name('jenis.destroy');
         });
 
- // Peminjaman
-    Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
+        // Peminjaman
+        Route::get('/peminjaman', [PeminjamanController::class, 'index'])->name('peminjaman');
+        Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
+            ->name('peminjaman.catat-peminjaman');
+        Route::post('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'store'])
+            ->name('peminjaman.store');
 
-    Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
-        ->name('peminjaman.aturan');
-    Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
-        ->name('peminjaman.aturan.create');
-    Route::get('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'catatPeminjaman'])
-        ->name('peminjaman.catat-peminjaman');
+        Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
+            ->name('peminjaman.aturan');
+        Route::get('/peminjaman/aturan/create', [PeminjamanController::class, 'aturanCreate'])
+            ->name('peminjaman.aturan.create');
+        Route::post('/peminjaman/aturan', [PeminjamanController::class, 'aturanStore'])
+            ->name('peminjaman.aturan.store');
+        Route::delete('/peminjaman/aturan/destroy', [PeminjamanController::class, 'aturanDestroyMultiple'])
+            ->name('peminjaman.aturan.destroyMultiple');
+        Route::get('/peminjaman/aturan/{id}/edit', [PeminjamanController::class, 'aturanEdit'])
+            ->name('peminjaman.aturan.edit');
+        Route::put('/peminjaman/aturan/{id}', [PeminjamanController::class, 'aturanUpdate'])
+            ->name('peminjaman.aturan.update');
+        Route::delete('/peminjaman/aturan/{id}', [PeminjamanController::class, 'aturanDestroy'])
+            ->name('peminjaman.aturan.destroy');
 
-    Route::get('/peminjaman/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
-
-    // Pengembalian
-    Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
-        Route::get('/', [PengembalianController::class, 'index'])
-            ->name('index');
-        Route::get('/cepat', [PengembalianCepatController::class, 'index'])
-            ->name('cepat');
-        Route::post('/cepat', [PengembalianCepatController::class, 'pengembalianCepat'])
-            ->name('cepat-process');
-        Route::get('/buku', [PengembalianBukuController::class, 'index'])
-            ->name('buku');
-        Route::post('/buku', [PengembalianBukuController::class, 'kembalikanBuku'])
-            ->name('kembalikan');
-    });
+        Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('peminjaman.reservasi');
+        Route::put('/reservasi/disetujui', [ReservasiController::class, 'reservasiDisetujui'])->name('peminjaman.reservasi.disetujui');
+        Route::put('/reservasi/ditolak', [ReservasiController::class, 'reservasiDitolak'])->name('peminjaman.reservasi.ditolak');
+        Route::put('/reservasi/jadikan-peminjaman', [ReservasiController::class, 'jadikanPeminjaman'])->name('peminjaman.reservasi.jadikan-peminjaman');
+        
+        // Pengembalian
+        Route::prefix('pengembalian')->name('pengembalian.')->group(function () {
+            Route::get('/', [PengembalianController::class, 'index'])
+                ->name('index');
+            Route::get('/cepat', [PengembalianCepatController::class, 'index'])
+                ->name('cepat');
+            Route::post('/cepat', [PengembalianCepatController::class, 'pengembalianCepat'])
+                ->name('cepat-process');
+            Route::get('/buku', [PengembalianBukuController::class, 'index'])
+                ->name('buku');
+            Route::post('/buku', [PengembalianBukuController::class, 'kembalikanBuku'])
+                ->name('kembalikan');
+        });
 
         // Data Terkendali
         Route::prefix('data-terkendali')->name('data-terkendali.')->group(function () {
@@ -128,6 +144,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
                 Route::delete('/destroy', [PenerbitController::class, 'destroyPenerbit'])->name('destroy');
             });
         });
+        Route::post('/export/laporan', [ExportLaporanController::class, 'export'])->name('export.laporan');
 
     });
 

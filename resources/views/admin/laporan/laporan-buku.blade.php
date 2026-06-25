@@ -309,7 +309,7 @@
                 <th>Judul Buku</th>
                 <th>Penulis</th>
                 <th>Penerbit</th>
-                <th>Tahun</th>
+                <th>Tahun Terbit</th>
                 <th>Tipe Koleksi</th>
                 <th>Jumlah Eksemplar</th>
                 <th>Tersedia</th>
@@ -335,7 +335,7 @@
                     </td>
 
                     <td>
-                        {{ $item->tahun_terbit }}
+                        {{ \Carbon\Carbon::parse($item->tanggal_terbit)->format('Y') }}
                     </td>
 
                     <td>

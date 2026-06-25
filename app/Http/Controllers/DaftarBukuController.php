@@ -16,8 +16,12 @@ class DaftarBukuController extends Controller
         $tahunRange = $this->publicationYearRange();
         $selectedYears = $this->selectedPublicationYears($request, $tahunRange);
 
-        $query = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek']);
-        $this->applyFilters($query, $request, $selectedYears);
+        $query = Buku::query()
+            ->with(['penulis', 'penerbit', 'subjek', 'items'])->withCount([
+                    'items as ketersediaan' => function ($query) {
+                        $query->where('status_item', 'Tersedia');
+                    }
+                ]);
 
         $sort = $request->input('sort', 'terbaru');
         match ($sort) {
@@ -27,55 +31,75 @@ class DaftarBukuController extends Controller
             default => $query->orderBy('tanggal_dibuat', 'desc'),
         };
 
-        $koleksi_baru = $query->paginate(12)->withQueryString()->through(
-            fn($buku) => $this->formatBook($buku)
-        );
 
-        return view('cari-buku', [
-            'koleksi_baru' => $koleksi_baru,
-            'selectedFilters' => $this->selectedFilters($request, $sort, $selectedYears),
-            'tahunRange' => $tahunRange,
-            'tipeList' => TipeKoleksi::orderBy('nama_tipe')->get(),
-            'subjekList' => Subjek::orderBy('nama_subjek')->get(),
-            'penerbitList' => Penerbit::orderBy('nama_penerbit')->get(),
-            'bahasaList' => DokBahasa::orderBy('nama_bahasa')->get(),
-        ]);
+        $this->applyFilters($query, $request, $selectedYears);
+
+        $koleksi_baru = $query->paginate(12);
+
+        $selectedFilters = $this->selectedFilters($request, $sort, $selectedYears);
+        $tipeList = TipeKoleksi::orderBy('nama_tipe')->get();
+        $subjekList = Subjek::orderBy('nama_subjek')->get();
+        $penerbitList = Penerbit::orderBy('nama_penerbit')->get();
+        $bahasaList = DokBahasa::orderBy('nama_bahasa')->get();
+
+        return view('cari-buku', compact(
+            'koleksi_baru',
+            'selectedFilters',
+            'tahunRange',
+            'tipeList',
+            'subjekList',
+            'penerbitList',
+            'bahasaList'
+        ));
     }
 
     public function detailBukuPage($id_buku)
     {
-        $buku = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek'])
+        $buku = Buku::with([
+            'penulis',
+            'penerbit',
+            'tipe',
+            'bahasa',
+            'items',
+            'subjek'
+        ])
+            ->withCount([
+                'items as ketersediaan' => function ($query) {
+                    $query->where('status_item', 'Tersedia');
+                }
+            ])
             ->findOrFail($id_buku);
 
-        $bukuData = array_merge($this->formatBook($buku), [
-            'penulis' => $buku->penulis->pluck('nama_penulis')->filter()->values()->all(),
-            'subjek' => $buku->subjek->pluck('nama_subjek')->filter()->values()->all(),
-            'no_rak' => $buku->no_rak ?? '-',
-            'tanggal_terbit' => $buku->tanggal_terbit
-                ? date('d M Y', strtotime($buku->tanggal_terbit))
-                : '-',
-            'items' => $buku->items->map(fn($item) => [
-                'id' => $item->id_item,
-                'status' => $item->status_item,
-            ])->values()->all(),
-        ]);
+        $subjectIds = $buku->subjek->pluck('id_subjek');
 
-        $subjectIds = $buku->subjek->pluck('id_subjek')->all();
-        $rekomendasi = Buku::with(['penulis', 'penerbit', 'tipe', 'bahasa', 'items', 'subjek'])
+        $rekomendasi = Buku::with([
+            'penulis',
+            'penerbit',
+            'tipe',
+            'bahasa',
+            'items',
+            'subjek'
+        ])
+            ->withCount([
+                'items as ketersediaan' => function ($query) {
+                    $query->where('status_item', 'Tersedia');
+                }
+            ])
             ->whereKeyNot($buku->id_buku)
             ->where(function ($query) use ($buku, $subjectIds) {
                 $query->where('id_tipe', $buku->id_tipe);
 
-                if (!empty($subjectIds)) {
-                    $query->orWhereHas('subjek', fn($q) => $q->whereIn('subjek.id_subjek', $subjectIds));
+                if ($subjectIds->isNotEmpty()) {
+                    $query->orWhereHas('subjek', function ($q) use ($subjectIds) {
+                        $q->whereIn('subjek.id_subjek', $subjectIds);
+                    });
                 }
             })
             ->latest('tanggal_dibuat')
-            ->limit(6)
-            ->get()
-            ->map(fn($item) => $this->formatBook($item));
+            ->take(6)
+            ->get();
 
-        return view('detail-buku', compact('bukuData', 'rekomendasi'));
+        return view('detail-buku', compact('buku', 'rekomendasi'));
     }
 
     private function applyFilters($query, Request $request, array $selectedYears): void
@@ -171,28 +195,6 @@ class DaftarBukuController extends Controller
         return [
             'from' => $from,
             'to' => $to,
-        ];
-    }
-
-    private function formatBook(Buku $buku): array
-    {
-        return [
-            'id' => $buku->id_buku,
-            'judul' => $buku->judul_buku,
-            'penulis' => $buku->penulis->pluck('nama_penulis')->filter()->join(', ') ?: '-',
-            'cover' => $buku->cover_buku
-                ? asset('storage/covers/' . $buku->cover_buku)
-                : asset('images/bookcover.png'),
-            'isbn' => $buku->isbn ?? '-',
-            'edisi' => $buku->edisi ?? '-',
-            'penerbit' => $buku->penerbit->nama_penerbit ?? '-',
-            'no_panggil' => $buku->no_panggil ?? '-',
-            'deskripsi' => $buku->deskripsi ?? '-',
-            'tipe' => $buku->tipe->nama_tipe ?? '-',
-            'bahasa' => $buku->bahasa->nama_bahasa ?? '-',
-            'subjek' => $buku->subjek->pluck('nama_subjek')->filter()->join(', ') ?: '-',
-            'ketersediaan' => $buku->items->where('status_item', 'Tersedia')->count(),
-            'total_item' => $buku->items->count(),
         ];
     }
 }
