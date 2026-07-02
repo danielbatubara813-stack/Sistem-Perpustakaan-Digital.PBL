@@ -1,4 +1,8 @@
 {{-- Component sidebar untuk reusability --}}
+@php
+    $anggotaMenunggu = \App\Models\Anggota::where('verifikasi_admin', 'Menunggu')->count();
+@endphp
+<nav class="flex-1 px-3 py-4 poppins overflow-y-auto">
 <div id="sidebar"
     class="fixed top-0 left-0 z-30 w-64 h-screen  bg-white shadow-xl transition-all duration-300 ease-in-out">
     <div class="relative w-full h-full flex flex-col">
@@ -28,6 +32,7 @@
         <div class="mx-4 border-t border-gray-200"></div>
 
         {{-- Navigation --}}
+
         <nav class="flex-1 px-3 py-4 poppins overflow-y-auto">
             @php
                 function is_route_active($routeName)

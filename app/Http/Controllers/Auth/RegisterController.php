@@ -13,61 +13,67 @@ class RegisterController extends Controller
 {
     public function register()
     {
-        session()->forget('_old_input');
-        return view('register');
+        $jenisKeanggotaan = JenisKeanggotaan::all();
+        return view('register', compact('jenisKeanggotaan'));
     }
 
     public function prosesRegister(Request $request)
     {
         $request->validate([
-            'email'          => 'required|email|unique:anggota,email',
-            'nik'            => 'required|unique:anggota,nomor_identitas',
-            'name'           => 'required',
-            'no_handphone'   => 'required|unique:anggota,no_hp',
-            'gender'         => 'required|in:Laki-laki,Perempuan',
-            'tanggal_lahir'  => 'required|date',
-            'password'       => 'required|confirmed|min:6',
-            'photo_ktp'      => 'required|image|mimes:jpg,jpeg,png|max:10240',
+            'email'           => 'required|email|unique:anggota,email',
+            'identity_number' => 'required|unique:anggota,nomor_identitas',
+            'identity_type'   => 'required|in:NIM,NIDN',
+            'name'            => 'required',
+            'membership_type' => 'required|exists:jenis_keanggotaan,id_jenis',
+            'phone'           => 'required|unique:anggota,no_hp',
+            'gender'          => 'required|in:L,P',
+            'birth_date'      => 'required|date',
+            'password'        => 'required|confirmed|min:6',
+            'ktp_photo'       => 'required|image|mimes:jpg,jpeg,png|max:10240',
+            'profile_photo'   => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
         ], [
-            'email.required'               => 'Email wajib diisi.',
-            'email.email'                  => 'Format email tidak valid.',
-            'email.unique'                 => 'Email sudah terdaftar.',
-            'nik.required'                 => 'Nomor identitas wajib diisi.',
-            'nik.unique'                   => 'Nomor identitas sudah terdaftar.',
-            'name.required'                => 'Nama lengkap wajib diisi.',
-            'no_handphone.required'        => 'Nomor handphone wajib diisi.',
-            'no_handphone.unique'          => 'Nomor handphone sudah terdaftar.',
-            'gender.required'              => 'Jenis kelamin wajib dipilih.',
-            'tanggal_lahir.required'       => 'Tanggal lahir wajib diisi.',
-            'password.required'            => 'Kata sandi wajib diisi.',
-            'password.confirmed'           => 'Konfirmasi kata sandi tidak cocok.',
-            'password.min'                 => 'Kata sandi minimal 6 karakter.',
-            'photo_ktp.required'           => 'Foto KTP wajib diunggah.',
-            'photo_ktp.image'               => 'Foto KTP harus berupa gambar.',
-            'photo_ktp.mimes'                => 'Foto KTP harus berformat jpg, jpeg, atau png.',
-            'photo_ktp.max'                  => 'Ukuran foto KTP maksimal 10MB.',
+            'email.required'            => 'Email wajib diisi.',
+            'email.email'               => 'Format email tidak valid.',
+            'email.unique'              => 'Email sudah terdaftar.',
+            'identity_number.required'  => 'Nomor identitas wajib diisi.',
+            'identity_number.unique'    => 'Nomor identitas sudah terdaftar.',
+            'identity_type.required'    => 'Jenis nomor identitas wajib dipilih.',
+            'name.required'             => 'Nama lengkap wajib diisi.',
+            'membership_type.required'  => 'Tipe keanggotaan wajib dipilih.',
+            'membership_type.exists'    => 'Tipe keanggotaan tidak valid.',
+            'phone.required'            => 'Nomor telepon wajib diisi.',
+            'phone.unique'              => 'Nomor telepon sudah terdaftar.',
+            'gender.required'           => 'Jenis kelamin wajib dipilih.',
+            'birth_date.required'       => 'Tanggal lahir wajib diisi.',
+            'password.required'         => 'Kata sandi wajib diisi.',
+            'password.confirmed'        => 'Konfirmasi kata sandi tidak cocok.',
+            'password.min'              => 'Kata sandi minimal 6 karakter.',
+            'ktp_photo.required'        => 'Foto KTP wajib diunggah.',
+            'ktp_photo.image'           => 'Foto KTP harus berupa gambar.',
+            'ktp_photo.mimes'           => 'Foto KTP harus berformat jpg, jpeg, atau png.',
+            'ktp_photo.max'             => 'Ukuran foto KTP maksimal 10MB.',
         ]);
 
-        // Foto KTP hanya untuk data internal/admin, BUKAN foto profile anggota
-        $fotoKtp = $request->file('photo_ktp')->store('foto_ktp', 'public');
+        $fotoKtp = $request->file('ktp_photo')->store('ktp', 'public');
 
-        $defaultJenis = JenisKeanggotaan::firstOrCreate([
-            'nama_jenis' => 'Mahasiswa',
-        ]);
+        $fotoProfil = null;
+        if ($request->hasFile('profile_photo')) {
+            $fotoProfil = $request->file('profile_photo')->store('profil', 'public');
+        }
 
         Anggota::create([
-            'id_jenis'              => $defaultJenis->id_jenis,
-            'nomor_identitas'       => $request->nik,
-            'jenis_nomor_identitas' => 'NIM',
+            'id_jenis'              => $request->membership_type,
+            'nomor_identitas'       => $request->identity_number,
+            'jenis_nomor_identitas' => $request->identity_type,
             'email'                 => $request->email,
             'nama'                  => $request->name,
-            'no_hp'                 => $request->no_handphone,
-            'status_anggota'        => 'Aktif',
-            'jenis_kelamin'         => $request->gender,
-            'tanggal_lahir'         => $request->tanggal_lahir,
+            'no_hp'                 => $request->phone,
+            'status_anggota'        => 'tidak aktif',
+            'jenis_kelamin'         => $request->gender == 'L' ? 'Laki-Laki' : 'Perempuan',
+            'tanggal_lahir'         => $request->birth_date,
             'verifikasi_admin'      => 'Menunggu',
-            'foto_ktp'              => $fotoKtp,   // data admin, bukan profile
-            'profile'               => null,        // foto profile default kosong, diisi nanti oleh anggota
+            'foto_ktp'              => $fotoKtp,
+            'profile'               => $fotoProfil,
             'tanggal_diubah'        => now(),
             'password'              => Hash::make($request->password),
         ]);

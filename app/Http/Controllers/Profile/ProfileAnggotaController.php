@@ -14,7 +14,8 @@ class ProfileAnggotaController extends Controller
 {
     private function getProfileData()
     {
-        $user = Anggota::find(Auth::guard('web')->id());
+        $user = Anggota::with('jenisKeanggotaan')  
+                    ->find(Auth::guard('web')->id());
 
         $totalPeminjaman = Peminjaman::where('id_anggota', $user->id_anggota)->count();
 

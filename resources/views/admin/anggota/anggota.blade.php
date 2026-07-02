@@ -8,7 +8,19 @@
 @section('content')
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="flex flex-col gap-4">
-
+        {{-- Banner notif anggota menunggu verifikasi --}}
+            @if ($anggotaMenunggu > 0)
+                <div class="mb-6 flex items-center gap-3 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                    </svg>
+                    <span class="text-sm font-semibold">
+                        Ada <strong>{{ $anggotaMenunggu }}</strong> anggota baru menunggu verifikasi.
+                    </span>
+                </div>
+            @endif
             {{-- Tabs --}}
             <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
                 <a id="daftarTab" href="{{ route('admin.anggota.daftar') }}"

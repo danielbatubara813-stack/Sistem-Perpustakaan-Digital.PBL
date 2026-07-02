@@ -9,7 +9,7 @@
     <title>@yield('title') | Perpustakaan Politeknik Negeri Batam</title>
 
     @include('components.alert')
-    
+
     @vite(['resources/css/app.css'])
 
     <style>
@@ -103,7 +103,7 @@
                             <div>
                                 <h6 class="text-xs md:text-sm text-slate-500">Jenis Keanggotaan</h6>
                                 <h6 class="font-bold text-xs md:text-sm lg:text-lg">
-                                    {{ Auth::user()->jenisKeanggotaan->nama_jenis }}
+                                    {{ optional(Auth::user()->jenisKeanggotaan)->nama_jenis ?? '-' }}
                                 </h6>
                             </div>
 

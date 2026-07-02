@@ -88,16 +88,17 @@
                     @error('birth_date')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Tanggal Registrasi (wajib saat create, opsional saat edit) --}}
-                <label class="sm:col-span-3 text-sm text-slate-700">
-                    Tanggal Registrasi{{ isset($anggota) ? '' : '*' }}
-                </label>
-                <div class="sm:col-span-9">
-                    <input name="registration_date"
-                        value="{{ old('registration_date', $anggota->tanggal_daftar ?? '') }}" type="date"
-                        class="rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
-                    @error('registration_date')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                </div>
+                {{-- Tanggal Registrasi: auto saat create, readonly saat edit --}}
+                @if (isset($anggota))
+                    <label class="sm:col-span-3 text-sm text-slate-700">Tanggal Registrasi</label>
+                    <div class="sm:col-span-9">
+                        <input type="date"
+                            value="{{ $anggota->tanggal_daftar ? \Carbon\Carbon::parse($anggota->tanggal_daftar)->format('Y-m-d') : '' }}"
+                            readonly
+                            class="rounded-md border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-500 cursor-not-allowed" />
+                        <p class="text-xs text-slate-400 mt-1">Tanggal registrasi tidak dapat diubah.</p>
+                    </div>
+                @endif
 
                 {{-- Tipe Keanggotaan --}}
                 <label class="sm:col-span-3 text-sm text-slate-700">Tipe Keanggotaan*</label>
@@ -194,7 +195,7 @@
                         <div class="flex-1">
                             <input id="ktpInput" name="ktp_photo" type="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" class="text-sm" />
                             @error('ktp_photo')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
-                            <p class="text-xs text-slate-500 mt-1">Maks 10 MB. Format: jpg, jpeg, png.{{ isset($anggota) ? ' Kosongkan jika tidak ingin mengganti.' : '' }}</p>
+                            <p class="text-xs text-slate-500 mt-1">Maks 10 MB. Format: jpg, jpeg, png.</p>
                         </div>
                     </div>
                 </div>
