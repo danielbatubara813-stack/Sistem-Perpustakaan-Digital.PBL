@@ -10,6 +10,7 @@ use App\Models\Peminjaman;
 use App\Models\Pengembalian;
 use App\Models\Reservasi;
 use Exception;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -29,64 +30,71 @@ class PengembalianBukuController extends Controller
             $peminjaman = Peminjaman::where('status', 'Dipinjam')->where('id_anggota', $anggota->id_anggota)->with('itemBuku.buku.penulis')->get();
         }
 
+        $anggotaData = Anggota::orderBy('nama')->get();
+
         return view('admin.pengembalian.buku', compact(
             'anggota',
+            'anggotaData',
             'peminjaman'
         ));
     }
 
     public function kembalikanBuku(Request $request)
     {
-        // try {
-        $message = null;
-        DB::transaction(function () use ($request, &$message) {
-            $request->validate([
-                'kode_peminjaman' => 'required'
-            ]);
+        try {
+            $message = null;
+            DB::transaction(function () use ($request, &$message) {
+                $request->validate([
+                    'kode_peminjaman' => 'required'
+                ]);
 
-            $peminjaman = Peminjaman::where('kode_peminjaman', '=', $request->kode_peminjaman)->first();
+                $peminjaman = Peminjaman::where('kode_peminjaman', '=', $request->kode_peminjaman)->first();
 
-            $jatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo);
+                $jatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo);
 
-            $jumlahHariKeterlambatan = $jatuhTempo
-                ->diffInDays(now()->format('Y-m-d'), false);
+                $jumlahHariKeterlambatan = $jatuhTempo
+                    ->diffInDays(now()->format('Y-m-d'), false);
 
-            if ($jumlahHariKeterlambatan > 0) {
-                $total_denda = $jumlahHariKeterlambatan * 1000;
-                $peminjaman->status = "Terlambat";
-                $message =
-                    "Pengembalian buku berhasil, terdapat denda buku total: "
-                    . $total_denda;
-            } else {
-                $total_denda = 0;
-                $peminjaman->status = "Dikembalikan";
-                $message =
-                    "Pengembalian buku berhasil, terima kasih telah meminjam buku disini";
-            }
+                if ($jumlahHariKeterlambatan > 0) {
+                    $total_denda = $jumlahHariKeterlambatan * 1000;
+                    $peminjaman->status = "Terlambat";
+                    $message =
+                        "Pengembalian buku berhasil, terdapat denda buku total: "
+                        . $total_denda;
+                } else {
+                    $total_denda = 0;
+                    $peminjaman->status = "Dikembalikan";
+                    $message =
+                        "Pengembalian buku berhasil, terima kasih telah meminjam buku disini";
+                }
 
-            $peminjaman->save();
+                $peminjaman->save();
 
-            $itemBuku = ItemBuku::find($peminjaman->id_item);
-            $itemBuku->status_item = "Tersedia";
-            $itemBuku->save();
+                $itemBuku = ItemBuku::find($peminjaman->id_item);
+                $itemBuku->status_item = "Tersedia";
+                $itemBuku->save();
 
-            $pengembalian = Pengembalian::create([
-                'kode_peminjaman' => $request->kode_peminjaman,
-                'tanggal_pengembalian' => now(),
-                'total_denda' => $total_denda,
-            ]);
+                $pengembalian = Pengembalian::create([
+                    'kode_peminjaman' => $request->kode_peminjaman,
+                    'tanggal_pengembalian' => now(),
+                    'total_denda' => $total_denda,
+                ]);
 
-            $this->kirimEmailPengembalian($pengembalian);
-            $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
-        });
-        return redirect()
-            ->back()
-            ->with('success', $message);
-        // } catch (Exception $e) {
-        //     return redirect()
-        //         ->back()
-        //         ->with('error', 'Pengembalian buku gagal');
-        // }
+                $this->kirimEmailPengembalian($pengembalian);
+                $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
+            });
+            return redirect()
+                ->back()
+                ->with('success', $message);
+        } catch (ModelNotFoundException $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Peminjaman tidak ditemukan atau buku sudah dikembalikan.');
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Pengembalian buku gagal');
+        }
     }
 
     public function kirimEmailPengembalian($pengembalian)
@@ -96,8 +104,6 @@ class PengembalianBukuController extends Controller
             'peminjaman.itemBuku.buku'
         ]);
 
-        // Mail::to($pengembalian->peminjaman->anggota->email)
-        //     ->send(new PengembalianBukuMail($pengembalian));
         Mail::to('franklinchang0129@gmail.com')
             ->send(new PengembalianBukuMail($pengembalian));
     }

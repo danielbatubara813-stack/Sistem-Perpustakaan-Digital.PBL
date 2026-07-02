@@ -13,20 +13,46 @@
         <h3 class="font-bold text-lg mt-4 mb-4">CATAT PENGEMBALIAN</h3>
 
         <form action="" method="GET">
-            @method('GET')
-            @csrf
-            {{-- Input ID --}}
             <div class="mb-4">
-                <label class="block text-sm text-slate-600 mb-2">ID Anggota</label>
+                <label class="block text-sm text-slate-600 mb-2">
+                    ID Anggota
+                </label>
 
-                <div class="flex gap-4">
-                    <input type="text" name="nomor_identitas" value="{{ request('nomor_identitas') }}"
-                        placeholder="Contoh: 3312501012"
-                        class="w-full rounded-md border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
+                <div class="relative flex gap-4 items-center">
+                    {{-- Input Search --}}
+                    <input type="text" id="searchAnggota" placeholder="Cari nomor identitas atau nama..." autocomplete="off"
+                        class="w-full rounded-md border border-slate-300 px-4 py-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+
+                    {{-- Value yang dikirim --}}
+                    <input type="hidden" name="nomor_identitas" id="nomor_identitas"
+                        value="{{ request('nomor_identitas') }}">
+
+                    {{-- Dropdown --}}
+                    <div id="dropdownAnggota"
+                        class="absolute top-12 left-0 right-0 mt-1 bg-white border border-slate-300 rounded-md shadow-lg max-h-64 max-w-80 overflow-y-auto hidden z-20">
+
+                        @foreach ($anggotaData as $item)
+                            <div class="anggota-item px-4 py-3 cursor-pointer hover:bg-blue-50 border-b border-gray-300 last:border-b-0"
+                                data-id="{{ $item->nomor_identitas }}"
+                                data-search="{{ strtolower($item->nomor_identitas . ' ' . $item->nama) }}">
+
+                                <div class="font-medium">
+                                    {{ $item->nama }}
+                                </div>
+
+                                <div class="text-xs text-gray-500">
+                                    {{ $item->nomor_identitas }}
+                                </div>
+                            </div>
+                        @endforeach
+
+                    </div>
+
                     <button type="submit" class="px-4 py-3 bg-blue-600 text-white rounded-md">
                         Cari
                     </button>
                 </div>
+
             </div>
         </form>
 
@@ -186,4 +212,50 @@
         @endif
 
     </div>
+
+    <script>
+        const input = document.getElementById('searchAnggota');
+        const dropdown = document.getElementById('dropdownAnggota');
+        const hiddenInput = document.getElementById('nomor_identitas');
+
+        const items = document.querySelectorAll('.anggota-item');
+
+        // buka dropdown saat fokus
+        input.addEventListener('focus', () => {
+            dropdown.classList.remove('hidden');
+        });
+
+        // filter
+        input.addEventListener('input', function() {
+            const keyword = this.value.toLowerCase();
+            dropdown.classList.remove('hidden');
+            items.forEach(item => {
+                if (item.dataset.search.includes(keyword)) {
+                    item.classList.remove('hidden');
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+        });
+
+        // pilih data
+        items.forEach(item => {
+            item.addEventListener('click', function() {
+                const nama = this.querySelector('.font-medium').textContent.trim();
+                const nim = this.dataset.id;
+
+                input.value = `${nama} (${nim})`;
+                hiddenInput.value = nim;
+
+                dropdown.classList.add('hidden');
+            });
+        });
+
+        // klik di luar
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.relative')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    </script>
 @endsection
