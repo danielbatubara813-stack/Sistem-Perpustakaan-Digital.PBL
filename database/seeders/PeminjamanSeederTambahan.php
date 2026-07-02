@@ -45,7 +45,7 @@ class PeminjamanSeederTambahan extends Seeder
             DB::table('item_buku')
                 ->where('id_item', $idItem)
                 ->update([
-                    'status_item' => 'Sedang Dipinjam'
+                    'status_item' => 'Dipinjam'
                 ]);
         }
     }

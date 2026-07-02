@@ -31,7 +31,7 @@ class HomeController extends Controller
         ])
             ->withCount([
                 'items as dipinjam_count' => fn($query) =>
-                    $query->where('status_item', 'Sedang Dipinjam'),
+                    $query->where('status_item', 'Dipinjam'),
 
                 'items as ketersediaan' => fn($query) =>
                     $query->where('status_item', 'Tersedia'),

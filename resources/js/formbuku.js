@@ -46,6 +46,19 @@ enforce(kode2);
 const regenBtn = document.getElementById('regenBtn');
 if (regenBtn) regenBtn.addEventListener('click', generateKode12);
 
+document.querySelectorAll('[data-item-status-blocked]').forEach(button => {
+    button.addEventListener('click', function() {
+        const message = this.dataset.blockedMessage || 'Status item buku ini tidak dapat diubah manual.';
+
+        if (typeof showNotification === 'function') {
+            showNotification('warning', message);
+            return;
+        }
+
+        alert(message);
+    });
+});
+
 // 🔹 Preview gambar
 const coverInput = document.getElementById('coverInput');
 if (coverInput) {

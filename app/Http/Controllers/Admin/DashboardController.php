@@ -16,7 +16,7 @@ class DashboardController extends Controller
     {
         $totalBuku = Buku::count();
 
-        $totalBukuDipinjam = ItemBuku::where('status_item', 'Sedang Dipinjam')
+        $totalBukuDipinjam = ItemBuku::where('status_item', 'Dipinjam')
             ->count();
 
         $totalAnggota = Anggota::count();

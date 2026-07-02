@@ -225,11 +225,13 @@
 
 
         // auto close
+        const displayDuration = String(message).length > 120 ? 7000 : 3000;
+
         setTimeout(() => {
 
             closeNotification();
 
-        }, 3000);
+        }, displayDuration);
 
     }
 
@@ -274,7 +276,7 @@
 
                     showNotification(
                         'success',
-                        "{{ session('success') }}"
+                        @json(session('success'))
                     );
 
                 }, 200);
@@ -288,7 +290,7 @@
 
                     showNotification(
                         'error',
-                        "{{ session('error') }}"
+                        @json(session('error'))
                     );
 
                 }, 200);
@@ -302,7 +304,7 @@
 
                     showNotification(
                         'warning',
-                        "{{ session('warning') }}"
+                        @json(session('warning'))
                     );
 
                 }, 200);
@@ -316,7 +318,7 @@
 
                     showNotification(
                         'info',
-                        "{{ session('info') }}"
+                        @json(session('info'))
                     );
 
                 }, 200);

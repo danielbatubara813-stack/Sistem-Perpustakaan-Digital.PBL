@@ -50,7 +50,7 @@ class PeminjamanSeeder extends Seeder
                 ->where('id_item', $idItem)
                 ->update([
                     'status_item' => $status == 'Dipinjam'
-                        ? 'Sedang Dipinjam'
+                        ? 'Dipinjam'
                         : 'Tersedia'
                 ]);
         }

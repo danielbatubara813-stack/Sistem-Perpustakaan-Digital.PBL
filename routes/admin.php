@@ -38,9 +38,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/list-buku/create', [BukuController::class, 'create'])->name('buku.create');
         Route::post('/list-buku', [BukuController::class, 'store'])->name('buku.store');
         Route::get('/list-buku/{id}/edit', [BukuController::class, 'edit'])->name('buku.edit');
+        Route::put('/list-buku/item/{idItem}/status', [BukuController::class, 'updateItemStatus'])->name('buku.item-status.update');
         Route::put('/list-buku/{id}', [BukuController::class, 'update'])->name('buku.update');
-        Route::delete('/list-buku/{id}', [BukuController::class, 'destroy'])->name('buku.destroy');
         Route::delete('/list-buku/destroy', [BukuController::class, 'destroyMultiple'])->name('buku.destroyMultiple');
+        Route::delete('/list-buku/{id}', [BukuController::class, 'destroy'])->whereNumber('id')->name('buku.destroy');
 
         // Anggota
         Route::prefix('list-anggota')->name('anggota.')->group(function () {
@@ -66,6 +67,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
             ->name('peminjaman.catat-peminjaman');
         Route::post('/peminjaman/catat-peminjaman', [PeminjamanController::class, 'store'])
             ->name('peminjaman.store');
+        Route::post('/peminjaman/{kodePeminjaman}/perpanjang', [PeminjamanController::class, 'perpanjang'])
+            ->name('peminjaman.perpanjang');
 
         Route::get('/peminjaman/aturan', [PeminjamanController::class, 'aturan'])
             ->name('peminjaman.aturan');

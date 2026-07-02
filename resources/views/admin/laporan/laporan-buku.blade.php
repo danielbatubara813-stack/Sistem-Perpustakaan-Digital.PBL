@@ -351,7 +351,7 @@
                     </td>
 
                     <td class="text-center">
-                        {{ $item->items->where('status_item', 'Sedang Dipinjam')->count() }}
+                        {{ $item->items->where('status_item', 'Dipinjam')->count() }}
                     </td>
                 </tr>
             @empty

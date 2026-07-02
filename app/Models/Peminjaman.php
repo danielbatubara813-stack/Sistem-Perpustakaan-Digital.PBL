@@ -23,6 +23,7 @@ class Peminjaman extends Model
         'id_item',
         'tanggal_peminjaman',
         'tanggal_jatuh_tempo',
+        'tanggal_perpanjangan',
         'status'
     ];
 

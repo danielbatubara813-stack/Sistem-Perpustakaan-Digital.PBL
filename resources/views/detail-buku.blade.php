@@ -34,7 +34,7 @@
                 @csrf
                 @method('POST')
                 <input type="hidden" name="id_buku" value="{{ $buku->id_buku }}">
-                <button class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
+                <button type="submit" class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
                     <span>Reservasi</span>
                 </button>
             </form>

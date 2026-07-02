@@ -50,7 +50,7 @@ return new class extends Migration {
         Schema::create('item_buku', function (Blueprint $table) {
             $table->string('id_item', 19)->primary();
             $table->integer('id_buku')->unsigned();
-            $table->enum('status_item', ['Tersedia', 'Sedang Dipinjam', 'Dipesan', 'Tidak Aktif']);
+            $table->enum('status_item', ['Tersedia', 'Dipinjam', 'Dipesan', 'Tidak Tersedia']);
             $table->timestamp('tanggal_dibuat')->useCurrent();
             $table->timestamp('tanggal_diubah')->useCurrent()->useCurrentOnUpdate();
 

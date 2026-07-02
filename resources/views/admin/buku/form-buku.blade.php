@@ -30,6 +30,9 @@
                             @endforeach
                         @endif
                     </select>
+                    @error('id_tipe')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Judul --}}
@@ -38,7 +41,7 @@
 
                     <input name="judul_buku" value="{{ old('judul_buku', $book->judul_buku ?? '') }}" type="text" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
                     @error('judul_buku')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -196,6 +199,9 @@
 
                     <input name="no_rak" type="text" id="no_rak" maxlength="10" value="{{ old('no_rak', $book->no_rak ?? '') }}"
                         class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    @error('no_rak')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- No Panggil --}}
@@ -208,6 +214,9 @@
 
                         <input name="no_panggil" type="text" class="flex-1 border border-gray-400 rounded-r px-3 py-2 min-w-0" value="{{ old('no_panggil', $book->no_panggil ?? '') }}">
                     </div>
+                    @error('no_panggil')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Penerbit --}}
@@ -225,6 +234,9 @@
                         @else
                             <input name="id_penerbit" type="text" class="w-full border border-gray-400 rounded px-3 py-2" value="{{ old('id_penerbit', $book->id_penerbit ?? '') }}">
                         @endif
+                        @error('id_penerbit')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
@@ -248,6 +260,12 @@
                             <input type="number" id="jumlah_buku" name="jumlah_buku" min="{{ (isset($book) && $book->exists) ? $book->items->count() : 1 }}" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
                                 class="border border-gray-400 rounded px-3 py-2">
                         </div>
+                        @if($errors->has('kode_1') || $errors->has('kode_2'))
+                            <p class="text-sm text-red-600 mt-1">{{ $errors->first('kode_1') ?: $errors->first('kode_2') }}</p>
+                        @endif
+                        @error('jumlah_buku')
+                            <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        @enderror
 
                         <div class="flex flex-col sm:flex-row gap-2 sm:items-center mt-2">
 
@@ -268,20 +286,121 @@
                 </div>
 
                 {{-- Bahasa --}}
+                @if(isset($book) && $book->exists)
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start">
+                        <label class="md:col-span-3">Data Item Buku</label>
+
+                        <div class="md:col-span-9">
+                            <div class="overflow-x-auto rounded-md border border-slate-200">
+                                <table class="min-w-full text-left text-sm text-slate-700">
+                                    <thead class="bg-slate-100 text-xs uppercase text-slate-600">
+                                        <tr>
+                                            <th class="px-4 py-3">Kode Item</th>
+                                            <th class="px-4 py-3">Status Saat Ini</th>
+                                            <th class="px-4 py-3">Ubah Manual</th>
+                                            <th class="px-4 py-3">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse($book->items as $itemBuku)
+                                            @php
+                                                $statusItem = match ($itemBuku->status_item) {
+                                                    'Sedang Dipinjam' => 'Dipinjam',
+                                                    'Tidak Aktif' => 'Tidak Tersedia',
+                                                    default => $itemBuku->status_item,
+                                                };
+                                                $formStatusId = 'item-status-form-' . preg_replace('/[^A-Za-z0-9_-]/', '_', $itemBuku->id_item);
+                                                $bisaUbahManual = in_array($statusItem, ['Tersedia', 'Tidak Tersedia'], true);
+                                                $pesanTidakBisaUbah = match ($statusItem) {
+                                                    'Dipinjam' => 'Buku masih dipinjam',
+                                                    'Dipesan' => 'Buku sedang dipesan melalui reservasi',
+                                                    default => 'Status item buku ini tidak dapat diubah manual',
+                                                };
+                                                $badgeStatus = match ($statusItem) {
+                                                    'Tersedia' => 'bg-emerald-100 text-emerald-700',
+                                                    'Dipinjam' => 'bg-blue-100 text-blue-700',
+                                                    'Dipesan' => 'bg-amber-100 text-amber-700',
+                                                    'Tidak Tersedia' => 'bg-red-100 text-red-700',
+                                                    default => 'bg-slate-100 text-slate-700',
+                                                };
+                                            @endphp
+                                            <tr class="border-t border-slate-200 odd:bg-white even:bg-slate-50">
+                                                <td class="px-4 py-3 font-medium text-slate-900">
+                                                    {{ $itemBuku->id_item }}
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="inline-flex rounded px-2.5 py-1 text-xs font-semibold {{ $badgeStatus }}">
+                                                        {{ $statusItem }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <select name="status_item" form="{{ $formStatusId }}"
+                                                        @disabled(!$bisaUbahManual)
+                                                        class="w-44 rounded border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200 disabled:bg-slate-100 disabled:text-slate-500">
+                                                        <option value="Tersedia" {{ $statusItem === 'Tersedia' ? 'selected' : '' }}>
+                                                            Tersedia
+                                                        </option>
+                                                        <option value="Tidak Tersedia" {{ $statusItem === 'Tidak Tersedia' ? 'selected' : '' }}>
+                                                            Tidak Tersedia
+                                                        </option>
+                                                    </select>
+                                                    @if(!$bisaUbahManual)
+                                                        <p class="mt-1 text-xs text-slate-500">{{ $pesanTidakBisaUbah }}</p>
+                                                    @endif
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    @if($bisaUbahManual)
+                                                        <button type="submit" form="{{ $formStatusId }}"
+                                                            title="Simpan status item buku"
+                                                            class="inline-flex items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700">
+                                                            Simpan
+                                                        </button>
+                                                    @else
+                                                        <button type="button"
+                                                            data-item-status-blocked
+                                                            data-blocked-message="{{ $pesanTidakBisaUbah }}"
+                                                            title="{{ $pesanTidakBisaUbah }}"
+                                                            class="inline-flex cursor-not-allowed items-center justify-center rounded-md bg-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-300">
+                                                            Simpan
+                                                        </button>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td colspan="4" class="px-4 py-4 text-center text-slate-500">
+                                                    Belum ada item buku.
+                                                </td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="mt-2 text-xs text-gray-500">
+                                Status Dipinjam dan Dipesan mengikuti data peminjaman/reservasi, sehingga tidak dapat diubah manual.
+                            </p>
+                        </div>
+                    </div>
+                @endif
+
+                {{-- Bahasa --}}
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-4 items-start">
                     <label class="md:col-span-3">Bahasa*</label>
 
                     <select name="kode_bahasa" class="md:col-span-3 w-full border border-gray-400 rounded px-3 py-2">
+                        <option value="">Pilih Bahasa</option>
                         @if(isset($bahasa) && $bahasa->count())
                             @foreach($bahasa as $b)
                                 <option value="{{ $b->kode_bahasa }}" {{ old('kode_bahasa', $book->kode_bahasa ?? '') == $b->kode_bahasa ? 'selected' : '' }}>{{ $b->nama_bahasa }}</option>
                             @endforeach
                         @else
-                            <option value="">Default</option>
                             <option value="id">Indonesia</option>
                             <option value="en">English</option>
                         @endif
                     </select>
+                    @error('kode_bahasa')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- ISBN --}}
@@ -290,7 +409,7 @@
 
                     <input name="isbn" type="text" value="{{ old('isbn', $book->isbn ?? '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
                     @error('isbn')
-                        <p class="text-sm text-red-600 mt-1">{{ $message }}</p>
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
                     @enderror
                 </div>
 
@@ -299,6 +418,9 @@
                     <label class="md:col-span-3">Edisi</label>
 
                     <input name="edisi" type="text" value="{{ old('edisi', $book->edisi ?? '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    @error('edisi')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Tanggal Terbit --}}
@@ -307,6 +429,9 @@
 
                     <input name="tanggal_terbit" type="date" value="{{ old('tanggal_terbit', isset($book->tanggal_terbit) ?
                         \Carbon\Carbon::parse($book->tanggal_terbit)->format('Y-m-d') : '') }}" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">
+                    @error('tanggal_terbit')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Deskripsi --}}
@@ -314,6 +439,9 @@
                     <label class="md:col-span-3">Deskripsi</label>
 
                     <textarea name="deskripsi" class="md:col-span-9 w-full border border-gray-400 rounded px-3 py-2">{{ old('deskripsi', $book->deskripsi ?? '') }}</textarea>
+                    @error('deskripsi')
+                        <p class="md:col-start-4 md:col-span-9 text-sm text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Subjek --}}
@@ -467,11 +595,66 @@
 
             </div>
         </form>
+
+        @if(isset($book) && $book->exists)
+            @foreach($book->items as $itemBuku)
+                @php
+                    $formStatusId = 'item-status-form-' . preg_replace('/[^A-Za-z0-9_-]/', '_', $itemBuku->id_item);
+                @endphp
+                <form id="{{ $formStatusId }}" method="POST"
+                    action="{{ route('admin.buku.item-status.update', $itemBuku->id_item) }}" class="hidden">
+                    @csrf
+                    @method('PUT')
+                </form>
+            @endforeach
+        @endif
     </div>
 
     <script>
         window.PENULIS_DATA = @json(isset($penulis) ? $penulis->map(function($p){ return ['id' => $p->id_penulis, 'nama' => $p->nama_penulis, 'tipe' => $p->tipe_penulis]; }) : []);
     </script>
+    @if($errors->any())
+        @php
+            $labelErrorValidasi = [
+                'id_tipe' => 'tipe koleksi',
+                'judul_buku' => 'judul',
+                'penulis_input' => 'penulis',
+                'no_rak' => 'nomor rak',
+                'no_panggil' => 'nomor panggil',
+                'id_penerbit' => 'penerbit',
+                'kode_1' => 'kode unik',
+                'kode_2' => 'kode unik',
+                'jumlah_buku' => 'jumlah buku',
+                'kode_bahasa' => 'bahasa',
+                'isbn' => 'ISBN/ISSN',
+                'id_subjek' => 'subjek',
+                'tanggal_terbit' => 'tanggal terbit',
+                'deskripsi' => 'deskripsi',
+                'edisi' => 'edisi',
+            ];
+
+            $fieldErrorValidasi = collect($errors->getMessages())
+                ->keys()
+                ->map(fn($field) => explode('.', $field)[0])
+                ->map(fn($field) => $labelErrorValidasi[$field] ?? null)
+                ->filter()
+                ->unique()
+                ->values();
+
+            $pesanValidasi = $fieldErrorValidasi->isNotEmpty()
+                ? 'Lengkapi data wajib: ' . $fieldErrorValidasi->implode(', ') . '.'
+                : $errors->first();
+        @endphp
+        <script>
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    if (typeof showNotification === 'function') {
+                        showNotification('warning', @json($pesanValidasi));
+                    }
+                }, 200);
+            });
+        </script>
+    @endif
     @vite('resources/js/formbuku.js')
 
 @endsection

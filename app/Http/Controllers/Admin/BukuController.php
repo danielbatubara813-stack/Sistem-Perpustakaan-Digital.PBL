@@ -11,13 +11,20 @@ use App\Models\Penerbit;
 use App\Models\Subjek;
 use App\Models\ItemBuku;
 use App\Models\Penulis;
+use App\Models\Peminjaman;
+use App\Models\Reservasi;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 use Throwable;
 
 class BukuController extends Controller
 {
+    private const STATUS_ITEM_MANUAL = ['Tersedia', 'Tidak Tersedia'];
+    private const STATUS_RESERVASI_ITEM_AKTIF = ['Menunggu Konfirmasi', 'Siap Diambil'];
+
     public function listBuku(Request $request)
     {
         $query = Buku::with(['bahasa', 'subjek'])
@@ -78,39 +85,7 @@ class BukuController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'isbn' => 'required|string|max:13|unique:buku,isbn',
-            'tanggal_terbit' => 'required|date',
-            'deskripsi' => 'required|string',
-            'edisi' => 'required|string|max:100',
-            'no_panggil' => 'required|string|max:255',
-            'no_rak' => 'required|string|max:255',
-            'id_tipe' => 'required|exists:tipe_koleksi,id_tipe',
-            'kode_bahasa' => 'required|exists:dok_bahasa,kode_bahasa',
-            'id_penerbit' => 'required|exists:penerbit,id_penerbit',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
-            'id_subjek' => 'required|array',
-            'id_subjek.*' => 'integer|exists:subjek,id_subjek',
-            'kode_1' => 'required|string|size:4',
-            'kode_2' => 'required|string|size:4',
-            'jumlah_buku' => 'required|integer|min:1',
-            'id_penulis' => 'nullable|array',
-            'id_penulis.*' => 'integer|exists:penulis,id_penulis',
-            'penulis_baru' => 'nullable|array',
-            'penulis_baru.*' => 'string|max:255',
-            'penulis_baru_tipe' => 'nullable|array',
-            'penulis_baru_tipe.*' => 'in:Nama Orang,Badan Organisasi,Konferensi',
-        ]);
-
-        if (!$this->requestMemilikiPenulis($request)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors([
-                    'penulis_input' => 'Pilih penulis dari daftar atau tambahkan penulis baru.',
-                ]);
-        }
+        $this->validasiBuku($request);
 
         $data = $request->only([
             'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
@@ -156,7 +131,23 @@ class BukuController extends Controller
 
     public function edit($id)
     {
-        $book = Buku::findOrFail($id);
+        $book = Buku::with([
+            'items' => function ($query) {
+                $query
+                    ->orderBy('tanggal_dibuat')
+                    ->orderBy('id_item');
+            },
+        ])->findOrFail($id);
+
+        $this->sinkronkanStatusItemBuku($book);
+
+        $book->load([
+            'items' => function ($query) {
+                $query
+                    ->orderBy('tanggal_dibuat')
+                    ->orderBy('id_item');
+            },
+        ]);
 
         $tipe = TipeKoleksi::all();
         $bahasa = DokBahasa::all();
@@ -169,44 +160,89 @@ class BukuController extends Controller
         return view('admin.buku.form-buku', compact('book', 'tipe', 'bahasa', 'penerbit', 'subjek', 'penulis', 'tipe_penulis', 'kode1Item', 'kode2Item'));
     }
 
+    public function updateItemStatus(Request $request, string $idItem)
+    {
+        $validated = $request->validate([
+            'status_item' => ['required', 'in:Tersedia,Tidak Tersedia'],
+        ], [
+            'status_item.required' => 'Status item buku wajib dipilih.',
+            'status_item.in' => 'Status item buku hanya dapat diubah menjadi Tersedia atau Tidak Tersedia.',
+        ]);
+
+        $pesanSukses = null;
+
+        try {
+            DB::transaction(function () use ($idItem, $validated, &$pesanSukses) {
+                $itemBuku = ItemBuku::where('id_item', $idItem)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$itemBuku) {
+                    throw ValidationException::withMessages([
+                        'status_item' => 'Item buku tidak ditemukan.',
+                    ]);
+                }
+
+                if ($this->itemBukuSedangDipinjam($itemBuku)) {
+                    $itemBuku->update(['status_item' => 'Dipinjam']);
+
+                    throw ValidationException::withMessages([
+                        'status_item' => 'Buku masih dipinjam.',
+                    ]);
+                }
+
+                if ($this->itemBukuSedangDipesan($itemBuku)) {
+                    $itemBuku->update(['status_item' => 'Dipesan']);
+
+                    throw ValidationException::withMessages([
+                        'status_item' => 'Buku sedang dipesan melalui reservasi.',
+                    ]);
+                }
+
+                if ($itemBuku->status_item === 'Tidak Aktif') {
+                    $itemBuku->update(['status_item' => 'Tidak Tersedia']);
+                    $itemBuku->refresh();
+                }
+
+                if (!in_array($itemBuku->status_item, self::STATUS_ITEM_MANUAL, true)) {
+                    throw ValidationException::withMessages([
+                        'status_item' => 'Status buku hanya dapat diubah manual jika item sedang Tersedia atau Tidak Tersedia.',
+                    ]);
+                }
+
+                if ($itemBuku->status_item === $validated['status_item']) {
+                    $pesanSukses = 'Status item buku ' . $itemBuku->id_item . ' sudah '
+                        . $validated['status_item'] . '.';
+                    return;
+                }
+
+                $itemBuku->update([
+                    'status_item' => $validated['status_item'],
+                ]);
+
+                $pesanSukses = 'Status item buku ' . $itemBuku->id_item . ' berhasil diubah menjadi '
+                    . $validated['status_item'] . '.';
+            });
+        } catch (ValidationException $e) {
+            return redirect()
+                ->back()
+                ->with('error', collect($e->errors())->flatten()->first());
+        } catch (Throwable $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Status item buku gagal diubah. Silakan coba lagi.');
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', $pesanSukses);
+    }
+
     public function update(Request $request, $id)
     {
         $book = Buku::findOrFail($id);
 
-        $request->validate([
-            'judul_buku' => 'required|string|max:255',
-            'isbn' => 'required|string|max:13|unique:buku,isbn,' . $book->id_buku . ',id_buku',
-            'tanggal_terbit' => 'required|date',
-            'deskripsi' => 'required|string',
-            'edisi' => 'required|string|max:100',
-            'no_panggil' => 'required|string|max:255',
-            'no_rak' => 'required|string|max:255',
-            'id_tipe' => 'required|exists:tipe_koleksi,id_tipe',
-            'kode_bahasa' => 'required|exists:dok_bahasa,kode_bahasa',
-            // kode_1 / kode_2 are immutable on edit; we'll derive them from existing items
-            'kode_1' => 'nullable|string|size:4',
-            'kode_2' => 'nullable|string|size:4',
-            'jumlah_buku' => 'required|integer|min:1',
-            'id_penerbit' => 'required|exists:penerbit,id_penerbit',
-            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
-            'id_subjek' => 'required|array',
-            'id_subjek.*' => 'integer|exists:subjek,id_subjek',
-            'id_penulis' => 'nullable|array',
-            'id_penulis.*' => 'integer|exists:penulis,id_penulis',
-            'penulis_baru' => 'nullable|array',
-            'penulis_baru.*' => 'string|max:255',
-            'penulis_baru_tipe' => 'nullable|array',
-            'penulis_baru_tipe.*' => 'in:Nama Orang,Badan Organisasi,Konferensi',
-        ]);
-
-        if (!$this->requestMemilikiPenulis($request)) {
-            return redirect()
-                ->back()
-                ->withInput()
-                ->withErrors([
-                    'penulis_input' => 'Pilih penulis dari daftar atau tambahkan penulis baru.',
-                ]);
-        }
+        $this->validasiBuku($request, $book);
 
         $data = $request->only([
             'id_tipe', 'kode_bahasa', 'id_penerbit', 'isbn', 'judul_buku',
@@ -267,28 +303,32 @@ class BukuController extends Controller
 
     public function destroy($id)
     {
-        $book = Buku::findOrFail($id);
+        $book = Buku::find($id);
+
+        if (!$book) {
+            return redirect()->route('admin.buku')->with('error', 'Data buku tidak ditemukan atau sudah dihapus.');
+        }
+
+        $pemakaian = $this->detailPemakaianBuku($book);
+
+        if ($pemakaian['digunakan']) {
+            return redirect()
+                ->route('admin.buku')
+                ->with('error', $this->pesanBukuSedangDigunakan($book, $pemakaian));
+        }
 
         try {
-            // lepaskan relasi pivot
-            if (method_exists($book, 'penulis')) {
-                $book->penulis()->detach();
-            }
-            if (method_exists($book, 'subjek')) {
-                $book->subjek()->detach();
-            }
+            $cover = $book->cover_buku;
 
-            // hapus baris item_buku terkait terlebih dahulu agar tidak terjadi pelanggaran FK
-            ItemBuku::where('id_buku', $book->id_buku)->delete();
+            DB::transaction(function () use ($book) {
+                $this->hapusBukuTanpaPemakaian($book);
+            });
 
-            // hapus file cover di disk jika ada
-            $this->deleteCoverIfExists($book->cover_buku);
-
-            $book->delete();
+            $this->deleteCoverIfExists($cover);
 
             return redirect()->route('admin.buku')->with('success', 'Data buku berhasil dihapus');
         } catch (Throwable $e) {
-            return redirect()->route('admin.buku')->with('error', 'Gagal menghapus buku: ' . $e->getMessage());
+            return redirect()->route('admin.buku')->with('error', 'Gagal menghapus buku. Pastikan data buku tidak sedang digunakan pada peminjaman atau reservasi.');
         }
     }
 
@@ -297,38 +337,227 @@ class BukuController extends Controller
      */
     public function destroyMultiple(Request $request)
     {
-        $ids = $request->input('id_buku', []);
+        $ids = collect($request->input('id_buku', []))
+            ->filter(fn($id) => filled($id))
+            ->unique()
+            ->values();
 
-        if (!is_array($ids) || !count($ids)) {
+        if ($ids->isEmpty()) {
             return redirect()->route('admin.buku')->with('warning', 'Pilih minimal satu data');
         }
 
+        $books = Buku::whereIn('id_buku', $ids)->get();
+
+        if ($books->isEmpty()) {
+            return redirect()->route('admin.buku')->with('error', 'Data buku yang dipilih tidak ditemukan atau sudah dihapus.');
+        }
+
+        $bukuDigunakan = $books
+            ->map(function ($book) {
+                return [
+                    'book' => $book,
+                    'pemakaian' => $this->detailPemakaianBuku($book),
+                ];
+            })
+            ->filter(fn($data) => $data['pemakaian']['digunakan'])
+            ->values();
+
+        if ($bukuDigunakan->isNotEmpty()) {
+            return redirect()
+                ->route('admin.buku')
+                ->with('error', $this->pesanBeberapaBukuSedangDigunakan($bukuDigunakan));
+        }
+
         try {
-            foreach ($ids as $id) {
-                $book = Buku::find($id);
-                if (!$book) continue;
+            $covers = $books->pluck('cover_buku')->filter();
 
-                // lepaskan relasi pivot
-                if (method_exists($book, 'penulis')) {
-                    $book->penulis()->detach();
+            DB::transaction(function () use ($books) {
+                foreach ($books as $book) {
+                    $this->hapusBukuTanpaPemakaian($book);
                 }
-                if (method_exists($book, 'subjek')) {
-                    $book->subjek()->detach();
-                }
+            });
 
-                // hapus item terkait
-                ItemBuku::where('id_buku', $book->id_buku)->delete();
-
-                // hapus file cover jika ada di disk
-                $this->deleteCoverIfExists($book->cover_buku);
-
-                $book->delete();
+            foreach ($covers as $cover) {
+                $this->deleteCoverIfExists($cover);
             }
 
             return redirect()->route('admin.buku')->with('success', 'Data buku berhasil dihapus');
         } catch (Throwable $e) {
-            return redirect()->route('admin.buku')->with('error', 'Gagal menghapus beberapa buku: ' . $e->getMessage());
+            return redirect()->route('admin.buku')->with('error', 'Gagal menghapus beberapa buku. Pastikan data buku tidak sedang digunakan pada peminjaman atau reservasi.');
         }
+    }
+
+    protected function hapusBukuTanpaPemakaian(Buku $book)
+    {
+        if (method_exists($book, 'penulis')) {
+            $book->penulis()->detach();
+        }
+
+        if (method_exists($book, 'subjek')) {
+            $book->subjek()->detach();
+        }
+
+        ItemBuku::where('id_buku', $book->id_buku)->delete();
+
+        $book->delete();
+    }
+
+    protected function detailPemakaianBuku(Buku $book)
+    {
+        $itemIds = $book->items()->pluck('id_item');
+
+        $peminjaman = $itemIds->isEmpty()
+            ? 0
+            : DB::table('peminjaman')->whereIn('id_item', $itemIds)->count();
+
+        $peminjamanAktif = $itemIds->isEmpty()
+            ? 0
+            : DB::table('peminjaman')
+                ->whereIn('id_item', $itemIds)
+                ->whereIn('status', ['Dipinjam', 'Terlambat'])
+                ->count();
+
+        $pengembalian = $itemIds->isEmpty()
+            ? 0
+            : DB::table('pengembalian')
+                ->join('peminjaman', 'pengembalian.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+                ->whereIn('peminjaman.id_item', $itemIds)
+                ->count();
+
+        $reservasi = DB::table('reservasi')
+            ->where('id_buku', $book->id_buku)
+            ->count();
+
+        $reservasiAktif = DB::table('reservasi')
+            ->where('id_buku', $book->id_buku)
+            ->whereIn('status', ['Draft', 'Menunggu Konfirmasi', 'Menunggu Antrian', 'Siap Diambil'])
+            ->count();
+
+        return [
+            'peminjaman' => $peminjaman,
+            'peminjaman_aktif' => $peminjamanAktif,
+            'pengembalian' => $pengembalian,
+            'reservasi' => $reservasi,
+            'reservasi_aktif' => $reservasiAktif,
+            'digunakan' => $peminjaman > 0 || $pengembalian > 0 || $reservasi > 0,
+        ];
+    }
+
+    protected function pesanBukuSedangDigunakan(Buku $book, array $pemakaian)
+    {
+        return 'Buku "' . $book->judul_buku . '" tidak dapat dihapus karena sudah digunakan pada '
+            . $this->ringkasanPemakaianBuku($pemakaian)
+            . '. Selesaikan atau periksa data terkait terlebih dahulu.';
+    }
+
+    protected function pesanBeberapaBukuSedangDigunakan($bukuDigunakan)
+    {
+        $detail = $bukuDigunakan
+            ->take(3)
+            ->map(function ($data) {
+                return '"' . $data['book']->judul_buku . '" (' . $this->ringkasanPemakaianBuku($data['pemakaian']) . ')';
+            })
+            ->implode('; ');
+
+        $sisa = $bukuDigunakan->count() - 3;
+        $tambahan = $sisa > 0 ? '; dan ' . $sisa . ' buku lainnya' : '';
+
+        return $bukuDigunakan->count()
+            . ' buku tidak dapat dihapus karena sudah digunakan: '
+            . $detail
+            . $tambahan
+            . '. Tidak ada data buku yang dihapus.';
+    }
+
+    protected function ringkasanPemakaianBuku(array $pemakaian)
+    {
+        $bagian = [];
+
+        if ($pemakaian['peminjaman'] > 0) {
+            $bagian[] = $pemakaian['peminjaman'] . ' data peminjaman'
+                . ($pemakaian['peminjaman_aktif'] > 0 ? ' (' . $pemakaian['peminjaman_aktif'] . ' masih aktif)' : '');
+        }
+
+        if ($pemakaian['pengembalian'] > 0) {
+            $bagian[] = $pemakaian['pengembalian'] . ' data pengembalian';
+        }
+
+        if ($pemakaian['reservasi'] > 0) {
+            $bagian[] = $pemakaian['reservasi'] . ' data reservasi'
+                . ($pemakaian['reservasi_aktif'] > 0 ? ' (' . $pemakaian['reservasi_aktif'] . ' masih aktif)' : '');
+        }
+
+        return implode(', ', $bagian);
+    }
+
+    protected function sinkronkanStatusItemBuku(Buku $book): void
+    {
+        $itemIds = $book->items()->pluck('id_item');
+
+        if ($itemIds->isEmpty()) {
+            return;
+        }
+
+        $itemDipinjam = Peminjaman::whereIn('id_item', $itemIds)
+            ->where('status', 'Dipinjam')
+            ->pluck('id_item');
+
+        if ($itemDipinjam->isNotEmpty()) {
+            ItemBuku::whereIn('id_item', $itemDipinjam)
+                ->where('status_item', '!=', 'Dipinjam')
+                ->update(['status_item' => 'Dipinjam']);
+        }
+
+        $itemDipesan = Reservasi::whereIn('id_item', $itemIds)
+            ->whereIn('status', self::STATUS_RESERVASI_ITEM_AKTIF)
+            ->pluck('id_item')
+            ->diff($itemDipinjam)
+            ->values();
+
+        if ($itemDipesan->isNotEmpty()) {
+            ItemBuku::whereIn('id_item', $itemDipesan)
+                ->where('status_item', '!=', 'Dipesan')
+                ->update(['status_item' => 'Dipesan']);
+        }
+
+        $itemBebas = $itemIds
+            ->diff($itemDipinjam)
+            ->diff($itemDipesan)
+            ->values();
+
+        if ($itemBebas->isEmpty()) {
+            return;
+        }
+
+        ItemBuku::whereIn('id_item', $itemBebas)
+            ->whereIn('status_item', ['Sedang Dipinjam', 'Dipinjam', 'Dipesan'])
+            ->update(['status_item' => 'Tersedia']);
+
+        ItemBuku::whereIn('id_item', $itemBebas)
+            ->where('status_item', 'Tidak Aktif')
+            ->update(['status_item' => 'Tidak Tersedia']);
+    }
+
+    protected function itemBukuSedangDipinjam(ItemBuku $itemBuku): bool
+    {
+        if (in_array($itemBuku->status_item, ['Dipinjam', 'Sedang Dipinjam'], true)) {
+            return true;
+        }
+
+        return Peminjaman::where('id_item', $itemBuku->id_item)
+            ->where('status', 'Dipinjam')
+            ->exists();
+    }
+
+    protected function itemBukuSedangDipesan(ItemBuku $itemBuku): bool
+    {
+        if ($itemBuku->status_item === 'Dipesan') {
+            return true;
+        }
+
+        return Reservasi::where('id_item', $itemBuku->id_item)
+            ->whereIn('status', self::STATUS_RESERVASI_ITEM_AKTIF)
+            ->exists();
     }
 
     /**
@@ -374,6 +603,90 @@ class BukuController extends Controller
         $parts = explode('-', $idItem);
 
         return [$parts[0] ?? null, $parts[1] ?? null];
+    }
+
+    protected function validasiBuku(Request $request, ?Buku $book = null)
+    {
+        $isEdit = $book && $book->exists;
+
+        $rules = [
+            'id_tipe' => 'required|exists:tipe_koleksi,id_tipe',
+            'judul_buku' => 'required|string|max:255',
+            'no_rak' => 'required|string|max:255',
+            'no_panggil' => 'required|string|max:255',
+            'id_penerbit' => 'required|exists:penerbit,id_penerbit',
+            // kode_1 / kode_2 are immutable on edit; we'll derive them from existing items
+            'kode_1' => ($isEdit ? 'nullable' : 'required') . '|string|size:4',
+            'kode_2' => ($isEdit ? 'nullable' : 'required') . '|string|size:4',
+            'jumlah_buku' => 'required|integer|min:1',
+            'kode_bahasa' => 'required|exists:dok_bahasa,kode_bahasa',
+            'isbn' => 'required|string|max:13|unique:buku,isbn' . ($isEdit ? ',' . $book->id_buku . ',id_buku' : ''),
+            'id_subjek' => 'required|array',
+            'id_subjek.*' => 'integer|exists:subjek,id_subjek',
+            'tanggal_terbit' => 'required|date',
+            'deskripsi' => 'required|string',
+            'edisi' => 'required|string|max:100',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
+            'id_penulis' => 'nullable|array',
+            'id_penulis.*' => 'integer|exists:penulis,id_penulis',
+            'penulis_baru' => 'nullable|array',
+            'penulis_baru.*' => 'string|max:255',
+            'penulis_baru_tipe' => 'nullable|array',
+            'penulis_baru_tipe.*' => 'in:Nama Orang,Badan Organisasi,Konferensi',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $this->pesanValidasiBuku());
+
+        $validator->after(function ($validator) use ($request) {
+            if (!$this->requestMemilikiPenulis($request)) {
+                $validator->errors()->add('penulis_input', 'Penulis wajib dipilih atau ditambahkan.');
+            }
+        });
+
+        return $validator->validate();
+    }
+
+    protected function pesanValidasiBuku()
+    {
+        return [
+            'id_tipe.required' => 'Tipe koleksi wajib dipilih.',
+            'id_tipe.exists' => 'Tipe koleksi yang dipilih tidak valid.',
+            'judul_buku.required' => 'Judul wajib diisi.',
+            'judul_buku.max' => 'Judul maksimal 255 karakter.',
+            'no_rak.required' => 'Nomor rak wajib diisi.',
+            'no_rak.max' => 'Nomor rak maksimal 255 karakter.',
+            'no_panggil.required' => 'Nomor panggil wajib diisi.',
+            'no_panggil.max' => 'Nomor panggil maksimal 255 karakter.',
+            'id_penerbit.required' => 'Penerbit wajib dipilih.',
+            'id_penerbit.exists' => 'Penerbit yang dipilih tidak valid.',
+            'kode_1.required' => 'Kode unik wajib diisi.',
+            'kode_2.required' => 'Kode unik wajib diisi.',
+            'kode_1.size' => 'Kode unik harus terdiri dari 4 karakter.',
+            'kode_2.size' => 'Kode unik harus terdiri dari 4 karakter.',
+            'jumlah_buku.required' => 'Jumlah buku wajib diisi.',
+            'jumlah_buku.integer' => 'Jumlah buku harus berupa angka.',
+            'jumlah_buku.min' => 'Jumlah buku minimal 1.',
+            'kode_bahasa.required' => 'Bahasa wajib dipilih.',
+            'kode_bahasa.exists' => 'Bahasa yang dipilih tidak valid.',
+            'isbn.required' => 'ISBN/ISSN wajib diisi.',
+            'isbn.max' => 'ISBN/ISSN maksimal 13 karakter.',
+            'isbn.unique' => 'ISBN/ISSN sudah digunakan.',
+            'id_subjek.required' => 'Subjek wajib dipilih.',
+            'id_subjek.array' => 'Subjek wajib dipilih.',
+            'id_subjek.*.exists' => 'Subjek yang dipilih tidak valid.',
+            'tanggal_terbit.required' => 'Tanggal terbit wajib diisi.',
+            'tanggal_terbit.date' => 'Tanggal terbit tidak valid.',
+            'deskripsi.required' => 'Deskripsi wajib diisi.',
+            'edisi.required' => 'Edisi wajib diisi.',
+            'edisi.max' => 'Edisi maksimal 100 karakter.',
+            'cover.image' => 'Gambar sampul harus berupa gambar.',
+            'cover.mimes' => 'Gambar sampul harus berformat JPG, JPEG, atau PNG.',
+            'cover.max' => 'Ukuran gambar sampul maksimal 10MB.',
+            'id_penulis.array' => 'Data penulis tidak valid.',
+            'id_penulis.*.exists' => 'Penulis yang dipilih tidak valid.',
+            'penulis_baru.*.max' => 'Nama penulis maksimal 255 karakter.',
+            'penulis_baru_tipe.*.in' => 'Tipe penulis tidak valid.',
+        ];
     }
 
     protected function requestMemilikiPenulis(Request $request)

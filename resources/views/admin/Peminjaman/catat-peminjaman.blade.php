@@ -7,6 +7,9 @@
     $description = $description ?? 'Kelola daftar peminjaman buku dan catat peminjaman baru.';
     $nomorIdentitas = old('nomor_identitas', request('nomor_identitas'));
     $kodeItem = old('id_item', request('id_item'));
+    $aturanPerpanjangan = $aturanPerpanjangan ?? collect();
+    $anggotaMemilikiDenda = (bool) ($anggotaMemilikiDenda ?? false);
+    $pesanDendaAnggota = $pesanDendaAnggota ?? null;
     $maksimalPeminjamanTercapai = (bool) ($loanPreview['maksimal_tercapai'] ?? false);
     $peminjamanDitutup = (bool) ($loanPreview['peminjaman_ditutup'] ?? false);
     $canStore =
@@ -187,6 +190,12 @@
             </div>
 
             @if ($memberLoans->count())
+                @if ($anggotaMemilikiDenda)
+                    <div class="mb-4 p-4 bg-yellow-100 rounded text-sm text-yellow-800">
+                        {{ $pesanDendaAnggota }}
+                    </div>
+                @endif
+
                 <div class="overflow-x-auto mt-6 mb-6">
                     <table class="min-w-237.5 w-full text-sm text-left text-gray-600">
                         <thead class="text-xs text-gray-600 uppercase bg-gray-300">
@@ -200,9 +209,31 @@
 
                         <tbody>
                             @foreach ($memberLoans as $loan)
+                                @php
+                                    $statusPerpanjangan = $aturanPerpanjangan[$loan->kode_peminjaman] ?? [
+                                        'boleh' => false,
+                                        'kode' => 'tidak_tersedia',
+                                        'pesan' => 'Perpanjangan tidak tersedia.',
+                                    ];
+                                    $sudahDiperpanjang =
+                                        ($statusPerpanjangan['kode'] ?? null) === 'sudah_diperpanjang' ||
+                                        !empty($loan->tanggal_perpanjangan);
+                                @endphp
                                 <tr class="odd:bg-white even:bg-slate-100">
                                     <td class="px-4 sm:px-6 py-4 font-medium text-gray-900">
                                         <div class="flex items-center gap-4 min-w-70">
+                                            @if (!$sudahDiperpanjang)
+                                                <form
+                                                    action="{{ route('admin.peminjaman.perpanjang', $loan->kode_peminjaman) }}"
+                                                    method="POST" class="shrink-0">
+                                                    @csrf
+                                                    <button type="submit" title="{{ $statusPerpanjangan['pesan'] }}"
+                                                        class="inline-flex h-9 min-w-20 items-center justify-center rounded bg-blue-600 px-3 text-[11px] font-bold text-white shadow-sm transition hover:bg-blue-700">
+                                                        Perpanjang
+                                                    </button>
+                                                </form>
+                                            @endif
+
                                             <img src="{{ $coverBuku($loan->itemBuku?->buku) }}"
                                                 class="w-12 h-16 object-cover rounded shadow-sm" alt="">
 

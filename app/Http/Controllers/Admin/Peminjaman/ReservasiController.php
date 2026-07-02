@@ -133,7 +133,7 @@ class ReservasiController extends Controller
                 ]);
 
                 $reservasi->itemBuku->update([
-                    'status_item' => 'Sedang Dipinjam'
+                    'status_item' => 'Dipinjam'
                 ]);
 
             });

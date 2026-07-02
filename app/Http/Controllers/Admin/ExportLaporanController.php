@@ -225,7 +225,7 @@ class ExportLaporanController extends Controller
 
         $totalDipinjam = $data->sum(function ($buku) {
             return $buku->items
-                ->where('status_item', 'Sedang Dipinjam')
+                ->where('status_item', 'Dipinjam')
                 ->count();
         });
 

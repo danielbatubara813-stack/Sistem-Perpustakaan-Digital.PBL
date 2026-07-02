@@ -17,6 +17,8 @@ use Illuminate\Validation\ValidationException;
 
 class PeminjamanController extends Controller
 {
+    private const PERIODE_PERPANJANGAN_HARI = 7;
+
     public function ambilDataLoan(Request $request)
     {
         $query = Peminjaman::with([
@@ -141,6 +143,12 @@ class PeminjamanController extends Controller
 
         $memberLoans = collect();
 
+        $aturanPerpanjangan = collect();
+
+        $anggotaMemilikiDenda = false;
+
+        $pesanDendaAnggota = null;
+
         $loanPreview = null;
 
         $anggotaNotFound = false;
@@ -160,6 +168,16 @@ class PeminjamanController extends Controller
                     ->where('status', 'Dipinjam')
                     ->orderByDesc('tanggal_peminjaman')
                     ->get();
+
+                $pesanDendaAnggota = $this->pesanDendaAnggota($anggota);
+
+                $anggotaMemilikiDenda = $pesanDendaAnggota !== null;
+
+                $aturanPerpanjangan = $memberLoans->mapWithKeys(function ($loan) use ($pesanDendaAnggota) {
+                    return [
+                        $loan->kode_peminjaman => $this->statusPerpanjangan($loan, $pesanDendaAnggota),
+                    ];
+                });
             }
         }
 
@@ -211,6 +229,9 @@ class PeminjamanController extends Controller
                 'anggota',
                 'itemBuku',
                 'memberLoans',
+                'aturanPerpanjangan',
+                'anggotaMemilikiDenda',
+                'pesanDendaAnggota',
                 'loanPreview',
                 'anggotaNotFound',
                 'itemNotFound'
@@ -315,13 +336,78 @@ class PeminjamanController extends Controller
             ]);
 
             $itemBuku->update([
-                'status_item' => 'Sedang Dipinjam',
+                'status_item' => 'Dipinjam',
             ]);
         });
 
         return redirect()
             ->route('admin.peminjaman')
             ->with('success', 'Data peminjaman berhasil disimpan.');
+    }
+
+    public function perpanjang(Request $request, string $kodePeminjaman)
+    {
+        $pesanSukses = null;
+
+        try {
+            DB::transaction(function () use ($kodePeminjaman, &$pesanSukses) {
+                $peminjaman = Peminjaman::where('kode_peminjaman', $kodePeminjaman)
+                    ->lockForUpdate()
+                    ->first();
+
+                if (!$peminjaman) {
+                    throw ValidationException::withMessages([
+                        'kode_peminjaman' => 'Data peminjaman tidak ditemukan.',
+                    ]);
+                }
+
+                $peminjaman->load(['anggota', 'itemBuku.buku']);
+
+                if (!$peminjaman->anggota) {
+                    throw ValidationException::withMessages([
+                        'kode_peminjaman' => 'Data anggota pada peminjaman ini tidak ditemukan.',
+                    ]);
+                }
+
+                $statusPerpanjangan = $this->statusPerpanjangan(
+                    $peminjaman,
+                    $this->pesanDendaAnggota($peminjaman->anggota)
+                );
+
+                if (!$statusPerpanjangan['boleh']) {
+                    throw ValidationException::withMessages([
+                        'kode_peminjaman' => $statusPerpanjangan['pesan'],
+                    ]);
+                }
+
+                $tanggalJatuhTempoBaru = Carbon::parse($peminjaman->tanggal_jatuh_tempo)
+                    ->startOfDay()
+                    ->addDays(self::PERIODE_PERPANJANGAN_HARI);
+
+                $peminjaman->update([
+                    'tanggal_jatuh_tempo' => $tanggalJatuhTempoBaru->toDateString(),
+                    'tanggal_perpanjangan' => Carbon::today()->toDateString(),
+                ]);
+
+                $judulBuku = $peminjaman->itemBuku?->buku?->judul_buku ?? $peminjaman->id_item;
+
+                $pesanSukses = 'Perpanjangan buku "' . $judulBuku . '" berhasil selama '
+                    . self::PERIODE_PERPANJANGAN_HARI . ' hari. Tanggal jatuh tempo baru: '
+                    . $tanggalJatuhTempoBaru->format('d-m-Y') . '.';
+            });
+        } catch (ValidationException $e) {
+            return redirect()
+                ->back()
+                ->with('error', collect($e->errors())->flatten()->implode(' '));
+        } catch (\Throwable $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Perpanjangan gagal diproses. Silakan coba lagi.');
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', $pesanSukses);
     }
 
     public function aturanCreate()
@@ -392,6 +478,137 @@ class PeminjamanController extends Controller
         return redirect()
             ->back()
             ->with('success', count($ids) . ' aturan peminjaman berhasil dihapus.');
+    }
+
+    private function statusPerpanjangan(Peminjaman $peminjaman, ?string $pesanDendaAnggota): array
+    {
+        $tanggalHariIni = Carbon::today();
+        $tanggalJatuhTempo = Carbon::parse($peminjaman->tanggal_jatuh_tempo)->startOfDay();
+        $hariMenujuJatuhTempo = (int) $tanggalHariIni->diffInDays($tanggalJatuhTempo, false);
+        $tanggalJatuhTempoBaru = $tanggalJatuhTempo
+            ->copy()
+            ->addDays(self::PERIODE_PERPANJANGAN_HARI);
+        $tanggalPerpanjangan = $peminjaman->tanggal_perpanjangan
+            ? Carbon::parse($peminjaman->tanggal_perpanjangan)->format('d-m-Y')
+            : null;
+
+        if ($peminjaman->status !== 'Dipinjam') {
+            return [
+                'boleh' => false,
+                'kode' => 'status_tidak_aktif',
+                'pesan' => 'Perpanjangan ditolak. Status peminjaman saat ini "' . $peminjaman->status
+                    . '"; hanya peminjaman aktif dengan status Dipinjam yang dapat diperpanjang.',
+                'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+                'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+            ];
+        }
+
+        if ($tanggalPerpanjangan) {
+            return [
+                'boleh' => false,
+                'kode' => 'sudah_diperpanjang',
+                'pesan' => 'Perpanjangan tidak tersedia. Item buku ini sudah pernah diperpanjang pada '
+                    . $tanggalPerpanjangan . '; setiap peminjaman satu item buku hanya dapat diperpanjang satu kali.',
+                'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+                'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+            ];
+        }
+
+        if ($pesanDendaAnggota !== null) {
+            return [
+                'boleh' => false,
+                'kode' => 'anggota_memiliki_denda',
+                'pesan' => $pesanDendaAnggota,
+                'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+                'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+            ];
+        }
+
+        if ($hariMenujuJatuhTempo < 1) {
+            return [
+                'boleh' => false,
+                'kode' => $hariMenujuJatuhTempo < 0 ? 'lewat_jatuh_tempo' : 'hari_jatuh_tempo',
+                'pesan' => $hariMenujuJatuhTempo < 0
+                    ? 'Perpanjangan ditolak. Buku sudah melewati tanggal jatuh tempo '
+                        . $tanggalJatuhTempo->format('d-m-Y') . ' selama '
+                        . abs($hariMenujuJatuhTempo) . ' hari; perpanjangan hanya dapat dilakukan 1 atau 2 hari sebelum jatuh tempo.'
+                    : 'Perpanjangan ditolak. Hari ini adalah tanggal jatuh tempo '
+                        . $tanggalJatuhTempo->format('d-m-Y') . '; perpanjangan harus dilakukan 1 atau 2 hari sebelum jatuh tempo.',
+                'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+                'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+            ];
+        }
+
+        if ($hariMenujuJatuhTempo > 2) {
+            return [
+                'boleh' => false,
+                'kode' => 'terlalu_awal',
+                'pesan' => 'Perpanjangan ditolak. Perpanjangan hanya dapat dilakukan 1 atau 2 hari sebelum jatuh tempo. Hari ini '
+                    . $tanggalHariIni->format('d-m-Y') . ', jatuh tempo '
+                    . $tanggalJatuhTempo->format('d-m-Y') . ', sisa '
+                    . $hariMenujuJatuhTempo . ' hari.',
+                'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+                'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+            ];
+        }
+
+        return [
+            'boleh' => true,
+            'kode' => 'boleh',
+            'pesan' => 'Dapat diperpanjang selama ' . self::PERIODE_PERPANJANGAN_HARI
+                . ' hari sampai ' . $tanggalJatuhTempoBaru->format('d-m-Y') . '.',
+            'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
+            'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
+        ];
+    }
+
+    private function anggotaMemilikiDenda(Anggota $anggota): bool
+    {
+        return $this->pesanDendaAnggota($anggota) !== null;
+    }
+
+    private function pesanDendaAnggota(Anggota $anggota): ?string
+    {
+        $pengembalianDenda = DB::table('pengembalian')
+            ->join('peminjaman', 'pengembalian.kode_peminjaman', '=', 'peminjaman.kode_peminjaman')
+            ->where('peminjaman.id_anggota', $anggota->id_anggota)
+            ->where('pengembalian.total_denda', '>', 0)
+            ->orderByDesc('pengembalian.tanggal_pengembalian')
+            ->select([
+                'pengembalian.total_denda',
+                'pengembalian.tanggal_pengembalian',
+                'peminjaman.kode_peminjaman',
+                'peminjaman.id_item',
+            ])
+            ->first();
+
+        if ($pengembalianDenda) {
+            return 'Perpanjangan ditolak karena anggota masih memiliki denda Rp '
+                . number_format((int) $pengembalianDenda->total_denda, 0, ',', '.')
+                . ' pada peminjaman ' . $pengembalianDenda->kode_peminjaman
+                . ' (item ' . $pengembalianDenda->id_item . ', tanggal pengembalian '
+                . Carbon::parse($pengembalianDenda->tanggal_pengembalian)->format('d-m-Y')
+                . '). Selesaikan denda terlebih dahulu.';
+        }
+
+        $peminjamanTerlambat = Peminjaman::where('id_anggota', $anggota->id_anggota)
+            ->where('status', 'Dipinjam')
+            ->whereDate('tanggal_jatuh_tempo', '<', Carbon::today())
+            ->orderBy('tanggal_jatuh_tempo')
+            ->first();
+
+        if (!$peminjamanTerlambat) {
+            return null;
+        }
+
+        $tanggalJatuhTempo = Carbon::parse($peminjamanTerlambat->tanggal_jatuh_tempo)->startOfDay();
+        $hariTerlambat = (int) $tanggalJatuhTempo->diffInDays(Carbon::today(), false);
+
+        return 'Perpanjangan ditolak karena anggota memiliki peminjaman terlambat '
+            . $peminjamanTerlambat->kode_peminjaman . ' (item '
+            . $peminjamanTerlambat->id_item . ') yang jatuh tempo pada '
+            . $tanggalJatuhTempo->format('d-m-Y') . ' dan sudah terlambat '
+            . $hariTerlambat . ' hari. Kembalikan buku atau selesaikan denda terlebih dahulu.';
     }
 
     private function ambilPeriodePeminjaman(Anggota $anggota, ItemBuku $itemBuku): int
