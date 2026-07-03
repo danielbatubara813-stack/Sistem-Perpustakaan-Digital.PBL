@@ -27,7 +27,9 @@
                     @foreach ($koleksi_baru as $buku)
                         <a href="{{ route('detail-buku-page', $buku->id_buku) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
-                            <img src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
+                            <img src="{{ $buku->cover_buku && Storage::disk('public')->exists('covers/' . $buku->cover_buku)
+                                ? asset('storage/covers/' . $buku->cover_buku)
+                                : asset('static/bookcover.png') }}"
                                 class="aspect-[1/1.6] w-full rounded-md object-fit" alt="{{ $buku->judul_buku }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
                                 <h6 class="text-gray-500 text-xs line-clamp-1">
@@ -76,7 +78,9 @@
                     @foreach ($koleksi_popular as $buku)
                         <a href="{{ route('detail-buku-page', $buku->id_buku) }}"
                             class="p-2 rounded-md border border-gray-300 space-y-4 bg-white shadow-md hover:scale-105 transition-all duration-300 ease-in-out">
-                            <img src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
+                            <img src="{{ $buku->cover_buku && Storage::disk('public')->exists('covers/' . $buku->cover_buku)
+                                ? asset('storage/covers/' . $buku->cover_buku)
+                                : asset('static/bookcover.png') }}"
                                 class="aspect-[1/1.6] w-full rounded-md object-fit" alt="{{ $buku->judul }}">
                             <div class="w-full h-max text-start flex flex-col justify-center items-start space-y-2">
                                 <h6 class="text-gray-500 text-xs line-clamp-1">

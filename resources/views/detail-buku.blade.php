@@ -14,10 +14,11 @@
         {{-- Sidebar kiri --}}
         <div
             class="bg-white h-max p-6 rounded-md border border-gray-300 shadow-md space-y-4 flex flex-col justify-center items-center">
-            <img src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
-                onerror="this.src='{{ asset('images/bookcover.png') }}'"
+            <img src="{{ $buku->cover_buku && Storage::disk('public')->exists('covers/' . $buku->cover_buku)
+                ? asset('storage/covers/' . $buku->cover_buku)
+                : asset('static/bookcover.png') }}"
                 class="aspect-[1/1.6] w-3/5 lg:w-full rounded-md object-cover border shadow-md border-gray-300"
-                alt="{{ $buku->judul }}">
+                alt="{{ $buku->judul_buku }}">
 
             <button onclick="copyLink()"
                 class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
@@ -34,7 +35,8 @@
                 @csrf
                 @method('POST')
                 <input type="hidden" name="id_buku" value="{{ $buku->id_buku }}">
-                <button type="submit" class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
+                <button type="submit"
+                    class="p-2 rounded-md bg-blue-800 flex items-center justify-center gap-4 w-full text-white">
                     <span>Reservasi</span>
                 </button>
             </form>
@@ -167,8 +169,10 @@
                             <a href="{{ route('detail-buku-page', $rek->id_buku) }}">
                                 <div
                                     class="p-2 rounded-md border border-gray-300 bg-white shadow-sm hover:shadow-md hover:scale-105 transition-all duration-300">
-                                    <img src="{{ $rek->cover_buku ? $rek->cover_buku : asset('static/bookcover.png') }}"
-                                        onerror="this.src=''" class="aspect-[1/1.6] w-full rounded-md object-cover"
+                                    <img src="{{ $rek->cover_buku && Storage::disk('public')->exists('covers/' . $rek->cover_buku)
+                                        ? asset('storage/covers/' . $rek->cover_buku)
+                                        : asset('static/bookcover.png') }}"
+                                        class="aspect-[1/1.6] w-full max-w-sm rounded-md object-cover border border-gray-300 shadow-md"
                                         alt="{{ $rek->judul_buku }}">
                                     <div class="mt-2 space-y-1">
                                         <p class="font-bold text-xs line-clamp-2">{{ $rek->judul_buku }}</p>

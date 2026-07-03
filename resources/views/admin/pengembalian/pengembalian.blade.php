@@ -129,7 +129,19 @@
                                 <td class="px-6 py-4">
                                     Rp {{ number_format($item->total_denda, 0, ',', '.') }}
                                 </td>
-                                <td class="px-6 py-4">{{ $item->peminjaman->status }}</td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $statusClass = match ($item->peminjaman->status) {
+                                            'Dikembalikan' => 'bg-green-100 text-green-700',
+                                            'Terlambat' => 'bg-red-100 text-red-700',
+                                            default => 'bg-gray-100 text-gray-700',
+                                        };
+                                    @endphp
+
+                                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $statusClass }}">
+                                        {{ $item->peminjaman->status }}
+                                    </span>
+                                </td>
                                 <td class="px-6 py-4">
                                     <button
                                         class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-yellow-300 text-black hover:bg-yellow-400 transition"

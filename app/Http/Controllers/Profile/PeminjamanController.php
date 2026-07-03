@@ -50,59 +50,49 @@ class PeminjamanController extends Controller
             : asset('image/bookcover.png');
 
         return [
-            'id'                  => $buku?->id_buku ?? $p->id_item,
-            'judul'               => $buku?->judul_buku ?? '-',
-            'penulis'             => $penulis ?: '-',
-            'cover'               => $cover,
-            'edisi'               => $buku?->edisi ?? '-',
-            'isbn'                => $buku?->isbn ?? '-',
-            'no_panggil'          => $buku?->no_panggil ?? '-',
-            'kode_item_buku'      => $p->id_item,
-            'tanggal_peminjaman'  => $p->tanggal_peminjaman,
+            'id' => $buku?->id_buku ?? $p->id_item,
+            'judul' => $buku?->judul_buku ?? '-',
+            'penulis' => $penulis ?: '-',
+            'cover' => $cover,
+            'edisi' => $buku?->edisi ?? '-',
+            'isbn' => $buku?->isbn ?? '-',
+            'no_panggil' => $buku?->no_panggil ?? '-',
+            'kode_item_buku' => $p->id_item,
+            'tanggal_peminjaman' => $p->tanggal_peminjaman,
             'tanggal_jatuh_tempo' => $p->tanggal_jatuh_tempo,
-            'status_peminjaman'   => $status,
+            'status_peminjaman' => $status,
         ];
     }
 
     public function peminjamanSekarangPage()
     {
-        $user = Anggota::find(Auth::guard('web')->id());
+        $user = Auth::guard('web')->user();
 
         $peminjaman = Peminjaman::where('id_anggota', $user->id_anggota)
-            ->whereNotIn('status', ['Dikembalikan'])
+            ->where('status', '!=', ['Dikembalikan', 'Terlambat'])
             ->with([
-                'itemBuku',
-                'itemBuku.buku',
                 'itemBuku.buku.penulis',
             ])
-            ->orderBy('tanggal_jatuh_tempo', 'asc')
-            ->get()
-            ->map(fn($p) => $this->formatPeminjaman($p));
+            ->orderBy('tanggal_jatuh_tempo')
+            ->get();
 
-        $data                 = $this->getProfileData();
-        $data['koleksi_baru'] = $peminjaman;
-        $data['totalAktif']   = $peminjaman->count();
-
-        return view('profile.peminjaman-sekarang', $data);
+        return view('profile.peminjaman-sekarang', $this->getProfileData())
+            ->with('peminjaman', $peminjaman)
+            ->with('totalAktif', $peminjaman->count());
     }
 
     public function sejarahPeminjamanPage()
     {
-        $user = Anggota::find(Auth::guard('web')->id());
+        $user = Auth::guard('web')->user();
 
         $peminjaman = Peminjaman::where('id_anggota', $user->id_anggota)
             ->with([
-                'itemBuku',
-                'itemBuku.buku',
                 'itemBuku.buku.penulis',
             ])
-            ->orderBy('tanggal_peminjaman', 'desc')
-            ->get()
-            ->map(fn($p) => $this->formatPeminjaman($p));
+            ->orderByDesc('tanggal_peminjaman')
+            ->get();
 
-        $data                 = $this->getProfileData();
-        $data['koleksi_baru'] = $peminjaman;
-
-        return view('profile.sejarah-peminjaman', $data);
+        return view('profile.sejarah-peminjaman', $this->getProfileData())
+            ->with('peminjaman', $peminjaman);
     }
 }

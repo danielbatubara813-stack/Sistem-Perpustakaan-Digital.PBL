@@ -63,16 +63,11 @@
                 <div class="flex flex-col lg:flex-row gap-6 lg:items-center">
 
                     {{-- Avatar --}}
-                    <div
-                        class="w-28 h-28 bg-white rounded-md flex items-center justify-center border shrink-0 mx-auto lg:mx-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <path d="M8 14s1.5-2 4-2 4 2 4 2" />
-                            <path d="M8 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                        </svg>
-                    </div>
+                    <img class="w-28 h-28 rounded-xl object-cover object-top shadow-md"
+                        src="{{ $anggota->profile && Storage::disk('public')->exists($anggota->profile)
+                            ? asset('storage/' . $anggota->profile)
+                            : asset('static/profileDefault.jpg') }}"
+                        alt="{{ $anggota->nama }}">
 
                     {{-- Detail --}}
                     <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -146,7 +141,10 @@
 
                                                 <div class="flex items-center gap-4 min-w-70">
 
-                                                    <img src="{{ $loan->itemBuku->buku->cover_buku }}"
+                                                    <img src="{{ $loan->itemBuku->buku->cover_buku &&
+                                                    Storage::disk('public')->exists('covers/' . $loan->itemBuku->buku->cover_buku)
+                                                        ? asset('storage/covers/' . $loan->itemBuku->buku->cover_buku)
+                                                        : asset('static/bookcover.png') }}"
                                                         class="w-12 h-16 object-cover rounded shadow-sm" />
 
                                                     <div>

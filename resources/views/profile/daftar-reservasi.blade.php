@@ -29,7 +29,9 @@
 
                             {{-- Book Cover --}}
                             <div class="w-full flex justify-center items-center">
-                                <img src="{{ !empty($item->buku->cover) ? $item->buku->cover : asset('static/bookcover.png') }}"
+                                <img src="{{ $item->buku->cover_buku && Storage::disk('public')->exists('covers/' . $item->buku->cover_buku)
+                                    ? asset('storage/covers/' . $item->buku->cover_buku)
+                                    : asset('static/bookcover.png') }}"
                                     class="w-28 lg:w-36 aspect-[1/1.6] rounded-lg lg:rounded-md object-cover border border-gray-300 shadow-sm lg:shadow-md"
                                     alt="{{ $item->buku->judul_buku }}">
                             </div>

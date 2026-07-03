@@ -37,7 +37,9 @@
                                 class="border border-gray-300 p-4 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-300">
                                 <div class="grid grid-cols-1 sm:grid-cols-6 gap-4">
                                     <div class="sm:col-span-1 flex justify-center sm:justify-start">
-                                        <img src="{{ $item->cover_buku ? $item->cover_buku : asset('static/bookcover.png') }}"
+                                        <img src="{{ $item->cover_buku && Storage::disk('public')->exists('covers/' . $item->cover_buku)
+                                            ? asset('storage/covers/' . $item->cover_buku)
+                                            : asset('static/bookcover.png') }}"
                                             class="aspect-[1/1.6] w-full max-w-sm rounded-md object-cover border border-gray-300 shadow-md"
                                             alt="{{ $item->judul_buku }}">
                                     </div>

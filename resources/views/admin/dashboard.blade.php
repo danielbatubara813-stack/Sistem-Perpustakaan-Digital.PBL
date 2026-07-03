@@ -48,7 +48,9 @@
                     @forelse ($bukuTerbaru as $buku)
                         <div class="shrink-0 relative group overflow-hidden rounded-md">
                             <img class="w-28 h-40 object-cover shadow transition-all duration-300 group-hover:brightness-50"
-                                src="{{ $buku->cover_buku ? $buku->cover_buku : asset('static/bookcover.png') }}"
+                                src="{{ $buku->cover_buku && Storage::disk('public')->exists('covers/' . $buku->cover_buku)
+                                    ? asset('storage/covers/' . $buku->cover_buku)
+                                    : asset('static/bookcover.png') }}"
                                 alt="{{ $buku->judul_buku }}">
 
                             <div
