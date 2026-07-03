@@ -154,14 +154,11 @@
             <div class="mb-6 border border-slate-200 rounded-md p-4 shadow-sm bg-slate-50">
                 <div class="flex flex-col lg:flex-row gap-6 lg:items-center">
                     <div
-                        class="w-28 h-28 bg-white rounded-md flex items-center justify-center border shrink-0 mx-auto lg:mx-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <path d="M8 14s1.5-2 4-2 4 2 4 2" />
-                            <path d="M8 10a1 1 0 1 1 0-2 1 1 0 0 1 0 2z" />
-                        </svg>
+                        class="w-28 h-28 bg-white rounded-md flex items-center justify-center border shrink-0 mx-auto lg:mx-0 overflow-hidden">
+                        <img src="{{ $anggota->foto_profile_url }}"
+                            alt="Foto profil {{ $anggota->nama }}"
+                            class="w-full h-full object-cover"
+                            onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.svg') }}';">
                     </div>
 
                     <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

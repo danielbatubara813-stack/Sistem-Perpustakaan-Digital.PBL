@@ -257,8 +257,16 @@
                                 class="border border-gray-400 rounded px-3 py-2 uppercase" {{ (isset($book) && $book->exists) ? 'readonly' : '' }}>
 
                             {{-- Jumlah Buku --}}
-                            <input type="number" id="jumlah_buku" name="jumlah_buku" min="{{ (isset($book) && $book->exists) ? $book->items->count() : 1 }}" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
-                                class="border border-gray-400 rounded px-3 py-2">
+                            <div>
+                                <input type="number" id="jumlah_buku" name="jumlah_buku" min="{{ (isset($book) && $book->exists) ? $book->items->count() : 1 }}" value="{{ old('jumlah_buku', (isset($book) && $book->exists) ? $book->items->count() : 1) }}"
+                                    class="w-full border border-gray-400 rounded px-3 py-2">
+
+                                @if(isset($book) && $book->exists)
+                                    <p class="mt-1 text-xs text-gray-500">
+                                        Jumlah item buku hanya bisa ditambah dan tidak bisa dikurangi.
+                                    </p>
+                                @endif
+                            </div>
                         </div>
                         @if($errors->has('kode_1') || $errors->has('kode_2'))
                             <p class="text-sm text-red-600 mt-1">{{ $errors->first('kode_1') ?: $errors->first('kode_2') }}</p>
