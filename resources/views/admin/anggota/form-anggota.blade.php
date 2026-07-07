@@ -148,15 +148,16 @@
                     @error('phone')<p class="text-sm text-red-600 mt-1">{{ $message }}</p>@enderror
                 </div>
 
-                {{-- Status & Verifikasi (hanya tampil saat edit) --}}
+                {{-- Status & Verifikasi --}}
                 @if (isset($anggota))
                     <label class="sm:col-span-3 text-sm text-slate-700">Status Anggota</label>
                     <div class="sm:col-span-9">
-                        <select id="status_anggota" name="status_anggota" disabled
-                            class="w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none cursor-not-allowed">
-                            <option value="Aktif"       {{ old('status_anggota', $anggota->status_anggota) == 'Aktif'       ? 'selected' : '' }}>Aktif</option>
-                            <option value="Tidak Aktif" {{ old('status_anggota', $anggota->status_anggota) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
-                        </select>
+                        <input
+                            type="text"
+                            id="status_anggota"
+                            value="{{ old('status_anggota', $anggota->status_anggota) }}"
+                            readonly
+                            class="w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500 cursor-not-allowed">
                     </div>
 
                     <label class="sm:col-span-3 text-sm text-slate-700">Verifikasi Admin</label>

@@ -40,10 +40,11 @@
 
                     <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Anggota..."
+                            data-auto-submit-search
                             class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
-                        <select name="id_jenis"
+                        <select name="id_jenis" onchange="this.form.submit()"
                             class="flex-1 sm:flex-none sm:min-w-48 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="">Tipe Keanggotaan</option>
@@ -54,7 +55,7 @@
                             @endforeach
                         </select>
 
-                        <select name="verifikasi"
+                        <select name="verifikasi" onchange="this.form.submit()"
                             class="flex-1 sm:flex-none rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="">Status</option>
@@ -63,7 +64,7 @@
                             <option value="Ditolak"       {{ request('verifikasi') == 'Ditolak'       ? 'selected' : '' }}>Ditolak</option>
                         </select>
 
-                        <select name="sort"
+                        <select name="sort" onchange="this.form.submit()"
                             class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="terbaru" {{ request('sort', 'terbaru') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
@@ -300,6 +301,20 @@
                 iconChecked  ?.classList.toggle('hidden', !allSelected);
             });
         })();
+    </script>
+
+    <script>
+        document.querySelectorAll('[data-auto-submit-search]').forEach((input) => {
+            let timeoutId;
+
+            input.addEventListener('input', () => {
+                clearTimeout(timeoutId);
+
+                timeoutId = setTimeout(() => {
+                    input.form?.requestSubmit();
+                }, 350);
+            });
+        });
     </script>
 
     @include('components.confirm-delete')

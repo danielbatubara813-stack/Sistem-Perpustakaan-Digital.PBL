@@ -31,7 +31,6 @@
             <div class="mx-4 border-t border-gray-200"></div>
 
             {{-- Navigation --}}
-
             <nav class="flex-1 px-3 py-4 poppins overflow-y-auto">
                 @php
                     function is_route_active($routeName)
@@ -86,6 +85,10 @@
                                 <circle cx="9" cy="7" r="4" />
                             </svg>
                             <span class="relative z-10">Anggota</span>
+                            @if ($anggotaMenunggu > 0)
+                                <span
+                                    class="relative z-10 ml-auto w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+                            @endif
                         </a>
                     </li>
                     <li>
@@ -143,8 +146,7 @@
                                 class="absolute inset-0 w-0 bg-blue-800 group-hover:w-full transition-all duration-300 ease-in-out z-0"></span>
                             <svg xmlns="http://www.w3.org/2000/svg" class="relative z-10" width="18"
                                 height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-files-icon lucide-files">
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M15 2h-4a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V8" />
                                 <path
                                     d="M16.706 2.706A2.4 2.4 0 0 0 15 2v5a1 1 0 0 0 1 1h5a2.4 2.4 0 0 0-.706-1.706z" />

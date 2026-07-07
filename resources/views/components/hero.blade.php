@@ -43,6 +43,9 @@
                 {{-- Search --}}
                 <form action="{{ route('cari-buku-page') }}" method="GET" class="mt-8 w-full max-w-2xl">
 
+                    {{-- Supaya halaman cari-buku otomatis scroll ke daftar buku setelah pencarian --}}
+                    <input type="hidden" name="scroll" value="daftar-buku">
+
                     <div class="flex items-center gap-2">
 
                         <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari judul, penulis, ISBN, penerbit, atau subjek..."
