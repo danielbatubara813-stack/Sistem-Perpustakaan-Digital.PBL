@@ -150,7 +150,7 @@ class AnggotaController extends Controller
             'phone'           => 'required|unique:anggota,no_hp,' . $id . ',id_anggota',
             'gender'          => 'required',
             'birth_date'      => 'required|date',
-            'ktp_photo'       => 'required|image|mimes:jpg,jpeg,png|max:10240',
+            'ktp_photo'       => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
             'profile_photo'   => 'nullable|image|mimes:jpg,jpeg,png|max:10240',
             ], [
             'membership_type.required' => 'Tipe keanggotaan wajib dipilih.',
@@ -176,6 +176,12 @@ class AnggotaController extends Controller
             'profile_photo.mimes'      => 'Foto profil harus berformat jpg, jpeg, atau png.',
             'profile_photo.max'        => 'Ukuran foto profil maksimal 10 MB.',
         ]);
+
+        if (!$request->hasFile('ktp_photo') && !$anggota->foto_ktp) {
+        return back()
+            ->withErrors(['ktp_photo' => 'Foto KTP wajib diunggah.'])
+            ->withInput();
+        }
 
         $updateData = [
             'id_jenis'              => $request->membership_type,

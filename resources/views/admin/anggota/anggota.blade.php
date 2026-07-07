@@ -21,12 +21,12 @@
                     </span>
                 </div>
             @endif
+
             {{-- Tabs --}}
             <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
                 <a id="daftarTab" href="{{ route('admin.anggota.daftar') }}"
                     class="px-4 py-2 text-sm {{ request()->routeIs('admin.anggota.daftar') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">
                     Daftar Anggota
-                    <span id="daftarTypeLabel" class="ml-2 text-sm text-slate-500"></span>
                 </a>
                 <a href="{{ route('admin.anggota.jenis') }}"
                     class="px-4 py-2 text-sm {{ request()->routeIs('admin.anggota.jenis*') ? 'bg-blue-600 text-white shadow rounded' : 'text-slate-600' }}">
@@ -39,11 +39,7 @@
                 <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
 
                     <div class="bg-slate-100 rounded-md p-2 flex flex-wrap items-center gap-2 w-full md:w-max">
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="Cari Anggota..."
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari Anggota..."
                             class="w-full sm:w-auto sm:flex-1 sm:max-w-56 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200" />
 
@@ -58,15 +54,16 @@
                             @endforeach
                         </select>
 
-                        <select name="status"
+                        <select name="verifikasi"
                             class="flex-1 sm:flex-none rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="">Status</option>
-                            <option value="Aktif"       {{ request('status') == 'Aktif'       ? 'selected' : '' }}>Aktif</option>
-                            <option value="Tidak Aktif" {{ request('status') == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                            <option value="Menunggu"      {{ request('verifikasi') == 'Menunggu'      ? 'selected' : '' }}>Menunggu</option>
+                            <option value="Terverifikasi" {{ request('verifikasi') == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
+                            <option value="Ditolak"       {{ request('verifikasi') == 'Ditolak'       ? 'selected' : '' }}>Ditolak</option>
                         </select>
 
-                        <select id="sort"
+                        <select name="sort"
                             class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300
                             px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="terbaru" {{ request('sort', 'terbaru') == 'terbaru' ? 'selected' : '' }}>Terbaru</option>
@@ -101,7 +98,6 @@
         </div>
     </div>
 
-
     <div class="bg-white p-6 rounded-lg mt-4 shadow-lg">
         <div class="mb-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
@@ -124,7 +120,6 @@
                     Seleksi Semua Data
                 </button>
 
-                {{-- Form hapus massal — action ke route destroyAnggota (DELETE /) --}}
                 <form id="multi-delete-form" method="POST" action="{{ route('admin.anggota.destroy') }}" data-delete-name="ids">
                     @csrf
                     @method('DELETE')
@@ -168,9 +163,43 @@
                                     value="{{ $member->id_anggota }}" />
                             </td>
                             <td class="px-6 py-4 font-medium text-gray-900">{{ $member->nomor_identitas }}</td>
-                            <td class="px-6 py-4 font-medium text-gray-900">{{ $member->nama }}</td>
+                            <td class="px-6 py-4 font-medium text-gray-900">
+                                <div class="flex items-center gap-2">
+                                    {{ $member->nama }}
+                                    @if ($member->status_anggota === 'Aktif')
+                                        <span class="inline-flex items-center gap-1 bg-green-100 text-green-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                            Aktif
+                                        </span>
+                                    @else
+                                        <span class="inline-flex items-center gap-1 bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                            <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                            Tidak Aktif
+                                        </span>
+                                    @endif
+                                </div>
+                            </td>
                             <td class="px-6 py-4 hidden lg:table-cell">{{ $member->jenisKeanggotaan->nama_jenis ?? 'N/A' }}</td>
-                            <td class="px-6 py-4 hidden lg:table-cell">{{ $member->status_anggota }}</td>
+                            <td class="px-6 py-4 hidden lg:table-cell">
+                                @if ($member->verifikasi_admin === 'Terverifikasi')
+                                    <span class="inline-flex items-center gap-1 bg-green-100 text-green-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                                        Terverifikasi
+                                    </span>
+                                @elseif ($member->verifikasi_admin === 'Menunggu')
+                                    <span class="inline-flex items-center gap-1 bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                        <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                                        Menunggu
+                                    </span>
+                                @elseif ($member->verifikasi_admin === 'Ditolak')
+                                    <span class="inline-flex items-center gap-1 bg-red-100 text-red-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                                        <span class="w-1.5 h-1.5 bg-red-500 rounded-full"></span>
+                                        Ditolak
+                                    </span>
+                                @else
+                                    <span class="text-slate-400 text-xs">-</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 hidden lg:table-cell">{{ $member->tanggal_diubah }}</td>
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.anggota.edit', $member->id_anggota) }}"
@@ -258,7 +287,6 @@
 
     <script>
         (function () {
-            // ── Select All ──────────────────────────────────────────────
             const selectAllBtn  = document.getElementById('selectAllTopBtn');
             const iconUnchecked = selectAllBtn?.querySelector('.icon-unchecked');
             const iconChecked   = selectAllBtn?.querySelector('.icon-checked');
@@ -271,9 +299,6 @@
                 iconUnchecked?.classList.toggle('hidden',  allSelected);
                 iconChecked  ?.classList.toggle('hidden', !allSelected);
             });
-
-            // Bulk delete handled by global `selectDataAndConfirmDelete.js` (modal + form submit)
-            // No inline delete handler to avoid conflicts with site-wide behavior.
         })();
     </script>
 
