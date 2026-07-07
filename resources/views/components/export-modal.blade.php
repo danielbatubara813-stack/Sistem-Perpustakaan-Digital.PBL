@@ -21,7 +21,8 @@
                 </div>
                 <!-- Modal body -->
                 <div class="space-y-4 md:space-y-6 pt-4 md:pt-6">
-                    <form action="{{ route('admin.export.laporan') }}" method="POST" class=" space-y-4">
+                    <form id="form-export" action="{{ route('admin.export.laporan') }}" method="POST"
+                        class="space-y-4">
                         @method('POST')
                         @csrf
                         <div class="grid md:grid-cols-2 gap-4">
@@ -31,7 +32,7 @@
                                     Jenis Laporan
                                 </label>
 
-                                <select name="jenis_laporan"
+                                <select name="jenis_laporan" required
                                     class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:ring-2 focus:ring-blue-200 focus:border-blue-600">
                                     <option value="transaksi">Laporan Transaksi</option>
                                     <option value="reservasi">Laporan Reservasi</option>
@@ -45,7 +46,7 @@
                                     Rentang Data
                                 </label>
 
-                                <select id="jenis-filter" name="jenis_filter"
+                                <select id="jenis-filter" name="jenis_filter" required
                                     class="w-full rounded-lg border border-slate-300 px-3 py-2">
                                     <option value="semua">Seluruh Data</option>
                                     <option value="periode">Berdasarkan Periode</option>
@@ -59,8 +60,10 @@
                                             Tanggal Awal
                                         </label>
 
-                                        <input type="date" name="tanggal_awal"
+                                        <input type="date" id="tanggal_awal" name="tanggal_awal"
                                             class="w-full rounded-lg border border-slate-300 px-3 py-2">
+
+                                        <p id="error-tanggal-awal" class="hidden text-sm text-red-600 mt-1"></p>
                                     </div>
 
                                     <div>
@@ -68,8 +71,10 @@
                                             Tanggal Akhir
                                         </label>
 
-                                        <input type="date" name="tanggal_akhir"
+                                        <input type="date" id="tanggal_akhir" name="tanggal_akhir"
                                             class="w-full rounded-lg border border-slate-300 px-3 py-2">
+
+                                        <p id="error-tanggal-akhir" class="hidden text-sm text-red-600 mt-1"></p>
                                     </div>
 
                                 </div>
@@ -88,20 +93,84 @@
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
 
+                        const form = document.getElementById('form-export');
+
                         const filter = document.getElementById('jenis-filter');
                         const tanggal = document.getElementById('filter-tanggal');
+
+                        const tanggalAwal = document.getElementById('tanggal_awal');
+                        const tanggalAkhir = document.getElementById('tanggal_akhir');
+
+                        const errorAwal = document.getElementById('error-tanggal-awal');
+                        const errorAkhir = document.getElementById('error-tanggal-akhir');
+
+                        function clearError() {
+                            errorAwal.textContent = '';
+                            errorAkhir.textContent = '';
+
+                            errorAwal.classList.add('hidden');
+                            errorAkhir.classList.add('hidden');
+
+                            tanggalAwal.classList.remove('border-red-500');
+                            tanggalAkhir.classList.remove('border-red-500');
+                        }
 
                         function toggleTanggal() {
                             if (filter.value === 'periode') {
                                 tanggal.classList.remove('hidden');
                             } else {
                                 tanggal.classList.add('hidden');
+
+                                tanggalAwal.value = '';
+                                tanggalAkhir.value = '';
+
+                                clearError();
                             }
                         }
 
                         toggleTanggal();
 
                         filter.addEventListener('change', toggleTanggal);
+
+                        form.addEventListener('submit', function(e) {
+
+                            clearError();
+
+                            let valid = true;
+
+                            if (filter.value === 'periode') {
+
+                                if (!tanggalAwal.value) {
+                                    errorAwal.textContent = 'Tanggal awal wajib diisi.';
+                                    errorAwal.classList.remove('hidden');
+                                    tanggalAwal.classList.add('border-red-500');
+                                    valid = false;
+                                }
+
+                                if (!tanggalAkhir.value) {
+                                    errorAkhir.textContent = 'Tanggal akhir wajib diisi.';
+                                    errorAkhir.classList.remove('hidden');
+                                    tanggalAkhir.classList.add('border-red-500');
+                                    valid = false;
+                                }
+
+                                if (
+                                    tanggalAwal.value &&
+                                    tanggalAkhir.value &&
+                                    tanggalAwal.value > tanggalAkhir.value
+                                ) {
+                                    errorAkhir.textContent = 'Tanggal akhir harus sama atau setelah tanggal awal.';
+                                    errorAkhir.classList.remove('hidden');
+                                    tanggalAkhir.classList.add('border-red-500');
+                                    valid = false;
+                                }
+                            }
+
+                            if (!valid) {
+                                e.preventDefault();
+                            }
+
+                        });
 
                     });
                 </script>

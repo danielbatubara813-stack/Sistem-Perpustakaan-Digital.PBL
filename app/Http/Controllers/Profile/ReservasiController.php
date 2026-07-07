@@ -29,30 +29,48 @@ class ReservasiController extends Controller
     {
         try {
             $user = Auth::guard('web')->user();
+
             $request->validate([
-                'id_buku' => 'required|integer',
+                'id_buku' => 'required|integer|exists:buku,id_buku',
             ]);
 
-            $exists = Reservasi::where(['id_anggota' => $user->id_anggota, 'id_buku' => $request->id_buku,])
-                ->whereIn('status', ['Menunggu Konfirmasi', 'Menunggu Antrian', 'Diterima'])->exists();
+            // Cek apakah anggota sudah memiliki reservasi untuk buku yang sama
+            $exists = Reservasi::where('id_anggota', $user->id_anggota)
+                ->where('id_buku', $request->id_buku)
+                ->whereIn('status', [
+                    'Draft',
+                    'Menunggu Konfirmasi',
+                    'Menunggu Antrian',
+                    'Siap Diambil',
+                    'Diterima'
+                ])
+                ->exists();
 
             if ($exists) {
-                return back()->with('error', "Reservasi gagal dibuat, reservasi sudah pernah dilakukan");
+                return back()->with(
+                    'error',
+                    'Reservasi gagal dibuat, buku ini sudah ada pada daftar reservasi Anda.'
+                );
             }
 
-            $reservasi = Reservasi::create([
+            Reservasi::create([
                 'id_anggota' => $user->id_anggota,
                 'id_buku' => $request->id_buku,
                 'tanggal_diajukan' => now(),
+                'status' => 'Draft',
             ]);
 
             return redirect()
                 ->back()
-                ->with('success', "Reservasi berhasil dibuat silahkan ke menu reservasi pada profile untuk mengajukan reservasi");
+                ->with(
+                    'success',
+                    'Buku berhasil ditambahkan ke daftar reservasi. Silakan buka menu Reservasi pada profil untuk mengajukan reservasi.'
+                );
+
         } catch (Exception $e) {
             return redirect()
                 ->back()
-                ->with('error', "Reservasi gagal dibuat");
+                ->with('error', 'Reservasi gagal dibuat.');
         }
     }
     public function ajukanReservasi(Request $request)

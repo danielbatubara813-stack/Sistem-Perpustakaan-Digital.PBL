@@ -51,7 +51,18 @@ class ReservasiController extends Controller
             // filter status
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);
-            })
+            })->where('status', '!=', 'Draft')->orderByRaw("
+                CASE status
+                    WHEN 'Menunggu Konfirmasi' THEN 1
+                    WHEN 'Menunggu Antrian' THEN 2
+                    WHEN 'Siap Diambil' THEN 3
+                    WHEN 'Selesai' THEN 4
+                    WHEN 'Kadaluarsa' THEN 5
+                    WHEN 'Dibatalkan' THEN 6
+                    WHEN 'Ditolak' THEN 7
+                    ELSE 8
+                END
+            ")
             ->latest('tanggal_dibuat')->paginate(10)->withQueryString();
 
         return view('admin.peminjaman.daftar-reservasi', compact('reservasi'));
@@ -64,7 +75,7 @@ class ReservasiController extends Controller
                 ->where('nomor_reservasi', $request->nomor_reservasi)
                 ->firstOrFail();
 
-            if (! $reservasi->anggota || ! $reservasi->anggota->dapatMengaksesLayanan()) {
+            if (!$reservasi->anggota || !$reservasi->anggota->dapatMengaksesLayanan()) {
                 return back()->with('error', $reservasi->anggota?->pesanAksesDitolak() ?? 'Data anggota pada reservasi ini tidak ditemukan.');
             }
 
@@ -109,19 +120,19 @@ class ReservasiController extends Controller
                     ->lockForUpdate()
                     ->firstOrFail();
 
-                if (! $reservasi->anggota) {
+                if (!$reservasi->anggota) {
                     throw ValidationException::withMessages([
                         'nomor_reservasi' => 'Data anggota pada reservasi ini tidak ditemukan.',
                     ]);
                 }
 
-                if (! $reservasi->anggota->dapatMengaksesLayanan()) {
+                if (!$reservasi->anggota->dapatMengaksesLayanan()) {
                     throw ValidationException::withMessages([
                         'nomor_reservasi' => $reservasi->anggota->pesanAksesDitolak(),
                     ]);
                 }
 
-                if (! $reservasi->itemBuku || ! $reservasi->itemBuku->buku) {
+                if (!$reservasi->itemBuku || !$reservasi->itemBuku->buku) {
                     throw ValidationException::withMessages([
                         'nomor_reservasi' => 'Data item buku pada reservasi ini tidak lengkap.',
                     ]);
@@ -133,7 +144,7 @@ class ReservasiController extends Controller
                     $q->where('id_tipe', $reservasi->itemBuku->buku->id_tipe)->orWhereNull('id_tipe');
                 })->first();
 
-                if (! $aturan) {
+                if (!$aturan) {
                     throw ValidationException::withMessages([
                         'nomor_reservasi' => 'Aturan peminjaman belum tersedia.',
                     ]);
@@ -181,7 +192,7 @@ class ReservasiController extends Controller
     private function buatKodePeminjaman(): string
     {
         do {
-            $kodePeminjaman = 'PJ'.strtoupper(Str::random(6));
+            $kodePeminjaman = 'PJ' . strtoupper(Str::random(6));
         } while (
             Peminjaman::where(
                 'kode_peminjaman',

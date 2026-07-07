@@ -74,7 +74,6 @@ class PengembalianCepatController extends Controller
                     'total_denda' => $total_denda,
                 ]);
 
-                $this->kirimEmailPengembalian($pengembalian);
                 $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
 
                 $kode_peminjaman = $peminjaman->kode_peminjaman;
@@ -97,19 +96,6 @@ class PengembalianCepatController extends Controller
                 ->back()
                 ->with('error', 'Pengembalian buku gagal');
         }
-    }
-
-    public function kirimEmailPengembalian($pengembalian)
-    {
-        $pengembalian->load([
-            'peminjaman.anggota',
-            'peminjaman.itemBuku.buku'
-        ]);
-
-        // Mail::to($pengembalian->peminjaman->anggota->email)
-        //     ->send(new PengembalianBukuMail($pengembalian));
-        Mail::to('danielbatubara813@gmail.com')
-            ->send(new PengembalianBukuMail($pengembalian));
     }
 
     public function checkReservasi($id_buku, $id_item)

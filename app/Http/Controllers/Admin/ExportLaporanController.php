@@ -10,11 +10,17 @@ use App\Models\Pengembalian;
 use App\Models\Reservasi;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
 
 class ExportLaporanController extends Controller
 {
     public function export(Request $request)
     {
+        $request->validate([
+            'jenis_laporan' => 'required',
+            'jenis_filter' => 'required',
+        ]);
+
         switch ($request->jenis_laporan) {
             case 'transaksi':
                 return $this->exportTransaksi($request);
@@ -53,8 +59,8 @@ class ExportLaporanController extends Controller
             $query->whereBetween(
                 'tanggal_peminjaman',
                 [
-                    $request->tanggal_awal,
-                    $request->tanggal_akhir
+                    Carbon::parse($request->tanggal_awal)->startOfDay(),
+                    Carbon::parse($request->tanggal_akhir)->endOfDay(),
                 ]
             );
         }
@@ -99,8 +105,8 @@ class ExportLaporanController extends Controller
             $query->whereBetween(
                 'tanggal_diajukan',
                 [
-                    $request->tanggal_awal,
-                    $request->tanggal_akhir
+                    Carbon::parse($request->tanggal_awal)->startOfDay(),
+                    Carbon::parse($request->tanggal_akhir)->endOfDay(),
                 ]
             );
         }
@@ -149,8 +155,8 @@ class ExportLaporanController extends Controller
             $query->whereBetween(
                 'tanggal_daftar',
                 [
-                    $request->tanggal_awal,
-                    $request->tanggal_akhir
+                    Carbon::parse($request->tanggal_awal)->startOfDay(),
+                    Carbon::parse($request->tanggal_akhir)->endOfDay(),
                 ]
             );
         }
@@ -202,8 +208,8 @@ class ExportLaporanController extends Controller
             $query->whereBetween(
                 'tanggal_dibuat',
                 [
-                    $request->tanggal_awal,
-                    $request->tanggal_akhir
+                    Carbon::parse($request->tanggal_awal)->startOfDay(),
+                    Carbon::parse($request->tanggal_akhir)->endOfDay(),
                 ]
             );
         }

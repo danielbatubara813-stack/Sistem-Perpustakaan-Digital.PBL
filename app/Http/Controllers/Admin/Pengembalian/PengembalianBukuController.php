@@ -79,8 +79,7 @@ class PengembalianBukuController extends Controller
                     'tanggal_pengembalian' => now(),
                     'total_denda' => $total_denda,
                 ]);
-
-                $this->kirimEmailPengembalian($pengembalian);
+                
                 $this->checkReservasi($itemBuku->id_buku, $peminjaman->id_item);
             });
             return redirect()
@@ -95,17 +94,6 @@ class PengembalianBukuController extends Controller
                 ->back()
                 ->with('error', 'Pengembalian buku gagal');
         }
-    }
-
-    public function kirimEmailPengembalian($pengembalian)
-    {
-        $pengembalian->load([
-            'peminjaman.anggota',
-            'peminjaman.itemBuku.buku'
-        ]);
-
-        Mail::to('franklinchang0129@gmail.com')
-            ->send(new PengembalianBukuMail($pengembalian));
     }
 
     public function checkReservasi($id_buku, $id_item)

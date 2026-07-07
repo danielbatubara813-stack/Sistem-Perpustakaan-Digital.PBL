@@ -5,10 +5,9 @@
      </div>
      <div class="hidden lg:flex items-center gap-3">
          <div class="text-right">
-             <p class="font-medium">Admin</p>
+             <p class="font-medium">{{ Auth::user()->username }}</p>
              <p class="text-xs text-gray-500">Pengelola Perpus</p>
          </div>
-         <img class="rounded-full w-10 h-10" src="https://i.pinimg.com/736x/1d/ec/e2/1dece2c8357bdd7cee3b15036344faf5.jpg"
-             alt="Avatar Admin">
+         <img class="rounded-full w-10 h-10 object-cover" src="{{ asset('images/default-avatar.svg') }}" alt="Avatar Admin">
      </div>
  </div>

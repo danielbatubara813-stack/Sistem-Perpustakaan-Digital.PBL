@@ -11,8 +11,7 @@
                     class="flex flex-col lg:flex-row items-center gap-2">
                     @csrf
                     <!-- Preview -->
-                    <img id="preview"
-                        src="{{ $user->foto_profile_url }}"
+                    <img id="preview" src="{{ $user->foto_profile_url }}"
                         class="w-48 h-48 rounded-md object-cover border-2 border-gray-300">
                     <div class="w-full">
                         <label class="block text-sm font-medium text-gray-700 mb-2">

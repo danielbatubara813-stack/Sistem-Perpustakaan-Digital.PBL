@@ -33,7 +33,7 @@
                             <option value="30_hari" {{ request('tanggal') == '30_hari' ? 'selected' : '' }}>30 hari</option>
                         </select>
 
-                        {{-- <select name="status"
+                        <select name="status"
                             class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
 
                             <option value="">Semua Status</option>
@@ -46,7 +46,7 @@
                             <option value="Hilang" {{ request('status') == 'Hilang' ? 'selected' : '' }}>
                                 Hilang
                             </option>
-                        </select> --}}
+                        </select>
 
                         <select name="sort"
                             class="flex-1 sm:flex-none sm:min-w-40 rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
