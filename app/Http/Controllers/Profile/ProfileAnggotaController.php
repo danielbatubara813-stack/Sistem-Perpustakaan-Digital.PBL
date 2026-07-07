@@ -14,7 +14,7 @@ class ProfileAnggotaController extends Controller
 {
     private function getProfileData()
     {
-        $user = Anggota::with('jenisKeanggotaan')  
+        $user = Anggota::with('jenisKeanggotaan')
                     ->find(Auth::guard('web')->id());
 
         $totalPeminjaman = Peminjaman::where('id_anggota', $user->id_anggota)->count();
@@ -56,15 +56,21 @@ class ProfileAnggotaController extends Controller
     {
         $user = Anggota::find(Auth::guard('web')->id());
 
-        $request->validate([
-            'current_password' => 'required',
-            'password'         => 'required|min:6|confirmed',
-        ]);
+        // Validasi kata sandi baru
+        if (!$request->password) {
+            return back()->with('error', 'Kata sandi baru wajib diisi.');
+        }
 
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors([
-                'current_password' => 'Kata sandi saat ini salah.'
-            ]);
+        if (strlen($request->password) < 6) {
+            return back()->with('error', 'Kata sandi baru minimal 6 karakter.');
+        }
+
+        if ($request->password !== $request->password_confirmation) {
+            return back()->with('error', 'Konfirmasi kata sandi tidak cocok.');
+        }
+
+        if (Hash::check($request->password, $user->password)) {
+            return back()->with('error', 'Kata sandi baru tidak boleh sama dengan kata sandi sebelumnya.');
         }
 
         $user->password = Hash::make($request->password);

@@ -197,78 +197,70 @@
 </div>
 
 <script>
-    var filterRoot = document.querySelector('[data-filter-sidebar="{{ $filterId }}"]');
+    (function () {
+        var filterRoot = document.querySelector('[data-filter-sidebar="{{ $filterId }}"]');
+        if (!filterRoot) return;
 
-    // Collapse functionality
-    if (filterRoot) {
-        filterRoot.querySelectorAll('.collapse-btn').forEach(btn => {
-            btn.addEventListener('click', function(e) {
-                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'LABEL') {
-                    const content = this.nextElementSibling;
-                    const icon = this.querySelector('.collapse-icon');
+        // ── Collapse ────────────────────────────────────────────────
+        filterRoot.querySelectorAll('.filter-collapse').forEach(function (section) {
+            var btn     = section.querySelector('.collapse-btn');
+            var content = section.querySelector('.collapse-content');
+            var icon    = section.querySelector('.collapse-icon');
+            if (!btn || !content) return;
 
-                    content.classList.toggle('hidden');
-                    if (icon) {
-                        const rotation = icon.style.transform === 'rotate(90deg)' ? 'rotate(0deg)' : 'rotate(90deg)';
-                        icon.style.transform = rotation;
-                    }
-                }
+            // default: buka
+            content.style.maxHeight = content.scrollHeight + 'px';
+            content.style.overflow  = 'hidden';
+            if (icon) icon.style.transform = 'rotate(90deg)';
+
+            btn.addEventListener('click', function () {
+                var isOpen = content.style.maxHeight !== '0px';
+                content.style.maxHeight = isOpen ? '0px' : content.scrollHeight + 'px';
+                if (icon) icon.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(90deg)';
             });
         });
-    }
 
-    // Slider synchronization
-    var sliderDari = document.getElementById('{{ $filterId }}-sliderDari');
-    var sliderKe = document.getElementById('{{ $filterId }}-sliderKe');
-    var inputDari = document.getElementById('{{ $filterId }}-inputDari');
-    var inputKe = document.getElementById('{{ $filterId }}-inputKe');
-    var sliderFill = document.getElementById('{{ $filterId }}-sliderFill');
+        // ── Dual range slider ───────────────────────────────────────
+        var sliderDari = document.getElementById('{{ $filterId }}-sliderDari');
+        var sliderKe   = document.getElementById('{{ $filterId }}-sliderKe');
+        var inputDari  = document.getElementById('{{ $filterId }}-inputDari');
+        var inputKe    = document.getElementById('{{ $filterId }}-inputKe');
+        var fill       = document.getElementById('{{ $filterId }}-sliderFill');
+        if (!sliderDari || !sliderKe || !inputDari || !inputKe || !fill) return;
 
-    if (sliderDari && sliderKe && inputDari && inputKe && sliderFill) {
-        function updateSlider() {
-            const rangeMin = parseInt(sliderDari.min);
-            const rangeMax = parseInt(sliderDari.max);
-            const fromValue = Math.max(rangeMin, Math.min(parseInt(sliderDari.value), rangeMax));
-            const toValue = Math.max(rangeMin, Math.min(parseInt(sliderKe.value), rangeMax));
-            const min = Math.min(fromValue, toValue);
-            const max = Math.max(fromValue, toValue);
-            const denominator = rangeMax - rangeMin || 1;
-            const minPercent = ((min - rangeMin) / denominator) * 100;
-            const maxPercent = ((max - rangeMin) / denominator) * 100;
+        function updateUI() {
+            var rangeMin = parseInt(sliderDari.min);
+            var rangeMax = parseInt(sliderDari.max);
+            var a = Math.min(parseInt(sliderDari.value), parseInt(sliderKe.value));
+            var b = Math.max(parseInt(sliderDari.value), parseInt(sliderKe.value));
+            var denom = rangeMax - rangeMin || 1;
 
-            sliderFill.style.left = minPercent + '%';
-            sliderFill.style.right = (100 - maxPercent) + '%';
+            fill.style.left  = ((a - rangeMin) / denom * 100) + '%';
+            fill.style.right = ((rangeMax - b) / denom * 100) + '%';
 
-            inputDari.value = min;
-            inputKe.value = max;
+            inputDari.value = a;
+            inputKe.value   = b;
         }
 
-        sliderDari.addEventListener('input', updateSlider);
-        sliderKe.addEventListener('input', updateSlider);
-        inputDari.addEventListener('change', () => {
-            sliderDari.value = inputDari.value;
-            updateSlider();
+        sliderDari.addEventListener('input', updateUI);
+        sliderKe.addEventListener('input', updateUI);
+
+        inputDari.addEventListener('change', function () {
+            sliderDari.value = this.value;
+            updateUI();
         });
-        inputKe.addEventListener('change', () => {
-            sliderKe.value = inputKe.value;
-            updateSlider();
+        inputKe.addEventListener('change', function () {
+            sliderKe.value = this.value;
+            updateUI();
         });
 
-        updateSlider();
-    }
+        updateUI();
+    })();
 </script>
 
 <style>
     .slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        width: 20px;
-        height: 20px;
-        border-radius: 50%;
-        background: white;
-        cursor: pointer;
-        border: 2px solid #3b82f6;
-        z-index: 5;
+        pointer-events: none;  /* elemen input-nya tidak menangkap klik */
     }
 
     .slider-thumb::-webkit-slider-thumb {
@@ -280,6 +272,7 @@
         background: white;
         cursor: pointer;
         border: 2px solid #3b82f6;
+        pointer-events: all;   /* hanya thumb-nya yang bisa diklik */
     }
 
     .slider-thumb::-moz-range-thumb {
@@ -289,5 +282,6 @@
         background: white;
         cursor: pointer;
         border: 2px solid #3b82f6;
+        pointer-events: all;
     }
 </style>
