@@ -152,8 +152,8 @@
                 @if (isset($anggota))
                     <label class="sm:col-span-3 text-sm text-slate-700">Status Anggota</label>
                     <div class="sm:col-span-9">
-                        <select name="status_anggota"
-                            class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
+                        <select id="status_anggota" name="status_anggota" disabled
+                            class="w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500 outline-none cursor-not-allowed">
                             <option value="Aktif"       {{ old('status_anggota', $anggota->status_anggota) == 'Aktif'       ? 'selected' : '' }}>Aktif</option>
                             <option value="Tidak Aktif" {{ old('status_anggota', $anggota->status_anggota) == 'Tidak Aktif' ? 'selected' : '' }}>Tidak Aktif</option>
                         </select>
@@ -161,7 +161,7 @@
 
                     <label class="sm:col-span-3 text-sm text-slate-700">Verifikasi Admin</label>
                     <div class="sm:col-span-9">
-                        <select name="verifikasi_admin"
+                        <select id="verifikasi_admin" name="verifikasi_admin"
                             class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-200">
                             <option value="Menunggu"      {{ old('verifikasi_admin', $anggota->verifikasi_admin) == 'Menunggu'      ? 'selected' : '' }}>Menunggu</option>
                             <option value="Terverifikasi" {{ old('verifikasi_admin', $anggota->verifikasi_admin) == 'Terverifikasi' ? 'selected' : '' }}>Terverifikasi</option>
@@ -285,8 +285,20 @@
             setupPreview('ktpInput',     'ktpPreview',     'ktpPlaceholder');
             setupPreview('profileInput', 'profilePreview', 'profilePlaceholder');
 
+            const verifikasiSelect = document.getElementById('verifikasi_admin');
+            const statusSelect = document.getElementById('status_anggota');
+
+            function syncStatusAnggota() {
+                if (!verifikasiSelect || !statusSelect) return;
+                statusSelect.value = verifikasiSelect.value === 'Terverifikasi' ? 'Aktif' : 'Tidak Aktif';
+            }
+
+            verifikasiSelect?.addEventListener('change', syncStatusAnggota);
+            syncStatusAnggota();
+
             // Update label tab sesuai tipe keanggotaan yang dipilih
             const membershipSelect = document.getElementById('membership_type');
+            const daftarLabel = document.getElementById('daftarLabel');
             function updateDaftarLabel() {
                 if (!daftarLabel || !membershipSelect) return;
                 const txt = membershipSelect.options[membershipSelect.selectedIndex]?.text || '';

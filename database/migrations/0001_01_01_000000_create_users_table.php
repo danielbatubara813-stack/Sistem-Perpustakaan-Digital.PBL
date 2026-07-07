@@ -4,7 +4,8 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
@@ -25,11 +26,11 @@ return new class extends Migration {
             $table->string('email')->unique();
             $table->string('nama');
             $table->string('no_hp', 15)->unique();
-            $table->enum('status_anggota', ["Aktif", "Tidak Aktif"]);
-            $table->enum('jenis_kelamin', ["Laki-Laki", "Perempuan"]);
+            $table->enum('status_anggota', ['Aktif', 'Tidak Aktif'])->default('Tidak Aktif');
+            $table->enum('jenis_kelamin', ['Laki-Laki', 'Perempuan']);
             $table->date('tanggal_lahir');
             $table->string('profile')->nullable();
-            $table->enum('verifikasi_admin', ['Menunggu', "Terverifikasi", "Ditolak"]);
+            $table->enum('verifikasi_admin', ['Menunggu', 'Terverifikasi', 'Ditolak'])->default('Menunggu');
             $table->string('foto_ktp')->nullable();
             $table->string('password');
             $table->timestamp('tanggal_daftar')->useCurrent();

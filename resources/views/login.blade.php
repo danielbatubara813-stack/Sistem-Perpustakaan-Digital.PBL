@@ -68,6 +68,12 @@
                 </div>
             @endif
 
+            @if (session('success'))
+                <div class="text-green-600 text-sm mt-2 font-bold text-center">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             <!-- Tombol Masuk -->
             <div class="pt-2">
                 <button type="submit"

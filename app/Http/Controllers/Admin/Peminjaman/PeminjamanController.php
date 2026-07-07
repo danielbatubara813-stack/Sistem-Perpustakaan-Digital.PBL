@@ -23,7 +23,7 @@ class PeminjamanController extends Controller
     {
         $query = Peminjaman::with([
             'anggota',
-            'itemBuku.buku.penulis'
+            'itemBuku.buku.penulis',
         ])
             ->where('status', 'Dipinjam');
 
@@ -32,8 +32,8 @@ class PeminjamanController extends Controller
 
             $query->whereHas('anggota', function ($query) use ($search) {
                 $query
-                    ->where('nama', 'like', '%' . $search . '%')
-                    ->orWhere('nomor_identitas', 'like', '%' . $search . '%');
+                    ->where('nama', 'like', '%'.$search.'%')
+                    ->orWhere('nomor_identitas', 'like', '%'.$search.'%');
             });
         }
 
@@ -78,7 +78,7 @@ class PeminjamanController extends Controller
             $query->where(function ($query) use ($search) {
                 $query
                     ->whereHas('jenisKeanggotaan', function ($query) use ($search) {
-                        $query->where('nama_jenis', 'like', '%' . $search . '%');
+                        $query->where('nama_jenis', 'like', '%'.$search.'%');
                     });
             });
         }
@@ -147,6 +147,10 @@ class PeminjamanController extends Controller
 
         $anggotaMemilikiDenda = false;
 
+        $anggotaDapatMeminjam = false;
+
+        $pesanStatusAnggota = null;
+
         $pesanDendaAnggota = null;
 
         $loanPreview = null;
@@ -160,9 +164,14 @@ class PeminjamanController extends Controller
                 ->where('nomor_identitas', $request->nomor_identitas)
                 ->first();
 
-            $anggotaNotFound = !$anggota;
+            $anggotaNotFound = ! $anggota;
 
             if ($anggota) {
+                $anggotaDapatMeminjam = $anggota->dapatMengaksesLayanan();
+                $pesanStatusAnggota = $anggotaDapatMeminjam
+                    ? null
+                    : $anggota->pesanAksesDitolak();
+
                 $memberLoans = Peminjaman::with('itemBuku.buku.penulis')
                     ->where('id_anggota', $anggota->id_anggota)
                     ->where('status', 'Dipinjam')
@@ -184,15 +193,15 @@ class PeminjamanController extends Controller
         if ($request->filled('id_item')) {
             $itemBuku = ItemBuku::with([
                 'buku.penulis',
-                'buku.tipe'
+                'buku.tipe',
             ])
                 ->where('id_item', $request->id_item)
                 ->first();
 
-            $itemNotFound = !$itemBuku;
+            $itemNotFound = ! $itemBuku;
         }
 
-        if ($anggota && $itemBuku) {
+        if ($anggota && $itemBuku && $anggotaDapatMeminjam) {
             $tanggalPeminjaman = Carbon::today();
 
             $aturanPeminjaman = $this->ambilAturanPeminjaman(
@@ -231,6 +240,8 @@ class PeminjamanController extends Controller
                 'memberLoans',
                 'aturanPerpanjangan',
                 'anggotaMemilikiDenda',
+                'anggotaDapatMeminjam',
+                'pesanStatusAnggota',
                 'pesanDendaAnggota',
                 'loanPreview',
                 'anggotaNotFound',
@@ -244,11 +255,11 @@ class PeminjamanController extends Controller
         $validated = $request->validate([
             'nomor_identitas' => [
                 'required',
-                'exists:anggota,nomor_identitas'
+                'exists:anggota,nomor_identitas',
             ],
             'id_item' => [
                 'required',
-                'exists:item_buku,id_item'
+                'exists:item_buku,id_item',
             ],
         ], [
             'nomor_identitas.required' => 'ID anggota wajib diisi.',
@@ -264,6 +275,12 @@ class PeminjamanController extends Controller
             )
                 ->lockForUpdate()
                 ->firstOrFail();
+
+            if (! $anggota->dapatMengaksesLayanan()) {
+                throw ValidationException::withMessages([
+                    'nomor_identitas' => $anggota->pesanAksesDitolak(),
+                ]);
+            }
 
             $itemBuku = ItemBuku::with('buku')
                 ->where('id_item', $validated['id_item'])
@@ -294,7 +311,6 @@ class PeminjamanController extends Controller
             $aturanPeminjaman = $this->ambilAturanPeminjaman($anggota, $itemBuku);
 
             $hariIni = Carbon::today();
-
 
             $terlambat = Peminjaman::where('id_anggota', $anggota->id_anggota)
                 ->where('status', 'Dipinjam')
@@ -355,7 +371,7 @@ class PeminjamanController extends Controller
                     ->lockForUpdate()
                     ->first();
 
-                if (!$peminjaman) {
+                if (! $peminjaman) {
                     throw ValidationException::withMessages([
                         'kode_peminjaman' => 'Data peminjaman tidak ditemukan.',
                     ]);
@@ -363,9 +379,15 @@ class PeminjamanController extends Controller
 
                 $peminjaman->load(['anggota', 'itemBuku.buku']);
 
-                if (!$peminjaman->anggota) {
+                if (! $peminjaman->anggota) {
                     throw ValidationException::withMessages([
                         'kode_peminjaman' => 'Data anggota pada peminjaman ini tidak ditemukan.',
+                    ]);
+                }
+
+                if (! $peminjaman->anggota->dapatMengaksesLayanan()) {
+                    throw ValidationException::withMessages([
+                        'kode_peminjaman' => $peminjaman->anggota->pesanAksesDitolak(),
                     ]);
                 }
 
@@ -374,7 +396,7 @@ class PeminjamanController extends Controller
                     $this->pesanDendaAnggota($peminjaman->anggota)
                 );
 
-                if (!$statusPerpanjangan['boleh']) {
+                if (! $statusPerpanjangan['boleh']) {
                     throw ValidationException::withMessages([
                         'kode_peminjaman' => $statusPerpanjangan['pesan'],
                     ]);
@@ -391,9 +413,9 @@ class PeminjamanController extends Controller
 
                 $judulBuku = $peminjaman->itemBuku?->buku?->judul_buku ?? $peminjaman->id_item;
 
-                $pesanSukses = 'Perpanjangan buku "' . $judulBuku . '" berhasil selama '
-                    . self::PERIODE_PERPANJANGAN_HARI . ' hari. Tanggal jatuh tempo baru: '
-                    . $tanggalJatuhTempoBaru->format('d-m-Y') . '.';
+                $pesanSukses = 'Perpanjangan buku "'.$judulBuku.'" berhasil selama '
+                    .self::PERIODE_PERPANJANGAN_HARI.' hari. Tanggal jatuh tempo baru: '
+                    .$tanggalJatuhTempoBaru->format('d-m-Y').'.';
             });
         } catch (ValidationException $e) {
             return redirect()
@@ -414,7 +436,7 @@ class PeminjamanController extends Controller
     {
         [$jenisKeanggotaan, $tipeKoleksi] = $this->ambilPilihanAturan();
 
-        $rule = new AturanPeminjaman();
+        $rule = new AturanPeminjaman;
 
         return view(
             'admin.peminjaman.form-aturan-peminjaman',
@@ -467,7 +489,7 @@ class PeminjamanController extends Controller
     {
         $ids = $request->input('id_aturan', []);
 
-        if (!is_array($ids) || !count($ids)) {
+        if (! is_array($ids) || ! count($ids)) {
             return redirect()
                 ->back()
                 ->with('error', 'Pilih minimal satu aturan peminjaman.');
@@ -477,7 +499,7 @@ class PeminjamanController extends Controller
 
         return redirect()
             ->back()
-            ->with('success', count($ids) . ' aturan peminjaman berhasil dihapus.');
+            ->with('success', count($ids).' aturan peminjaman berhasil dihapus.');
     }
 
     private function statusPerpanjangan(Peminjaman $peminjaman, ?string $pesanDendaAnggota): array
@@ -496,8 +518,8 @@ class PeminjamanController extends Controller
             return [
                 'boleh' => false,
                 'kode' => 'status_tidak_aktif',
-                'pesan' => 'Perpanjangan ditolak. Status peminjaman saat ini "' . $peminjaman->status
-                    . '"; hanya peminjaman aktif dengan status Dipinjam yang dapat diperpanjang.',
+                'pesan' => 'Perpanjangan ditolak. Status peminjaman saat ini "'.$peminjaman->status
+                    .'"; hanya peminjaman aktif dengan status Dipinjam yang dapat diperpanjang.',
                 'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
                 'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
             ];
@@ -508,7 +530,7 @@ class PeminjamanController extends Controller
                 'boleh' => false,
                 'kode' => 'sudah_diperpanjang',
                 'pesan' => 'Perpanjangan tidak tersedia. Item buku ini sudah pernah diperpanjang pada '
-                    . $tanggalPerpanjangan . '; setiap peminjaman satu item buku hanya dapat diperpanjang satu kali.',
+                    .$tanggalPerpanjangan.'; setiap peminjaman satu item buku hanya dapat diperpanjang satu kali.',
                 'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
                 'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
             ];
@@ -530,10 +552,10 @@ class PeminjamanController extends Controller
                 'kode' => $hariMenujuJatuhTempo < 0 ? 'lewat_jatuh_tempo' : 'hari_jatuh_tempo',
                 'pesan' => $hariMenujuJatuhTempo < 0
                     ? 'Perpanjangan ditolak. Buku sudah melewati tanggal jatuh tempo '
-                        . $tanggalJatuhTempo->format('d-m-Y') . ' selama '
-                        . abs($hariMenujuJatuhTempo) . ' hari; perpanjangan hanya dapat dilakukan 1 atau 2 hari sebelum jatuh tempo.'
+                        .$tanggalJatuhTempo->format('d-m-Y').' selama '
+                        .abs($hariMenujuJatuhTempo).' hari; perpanjangan hanya dapat dilakukan 1 atau 2 hari sebelum jatuh tempo.'
                     : 'Perpanjangan ditolak. Hari ini adalah tanggal jatuh tempo '
-                        . $tanggalJatuhTempo->format('d-m-Y') . '; perpanjangan harus dilakukan 1 atau 2 hari sebelum jatuh tempo.',
+                        .$tanggalJatuhTempo->format('d-m-Y').'; perpanjangan harus dilakukan 1 atau 2 hari sebelum jatuh tempo.',
                 'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
                 'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
             ];
@@ -544,9 +566,9 @@ class PeminjamanController extends Controller
                 'boleh' => false,
                 'kode' => 'terlalu_awal',
                 'pesan' => 'Perpanjangan ditolak. Perpanjangan hanya dapat dilakukan 1 atau 2 hari sebelum jatuh tempo. Hari ini '
-                    . $tanggalHariIni->format('d-m-Y') . ', jatuh tempo '
-                    . $tanggalJatuhTempo->format('d-m-Y') . ', sisa '
-                    . $hariMenujuJatuhTempo . ' hari.',
+                    .$tanggalHariIni->format('d-m-Y').', jatuh tempo '
+                    .$tanggalJatuhTempo->format('d-m-Y').', sisa '
+                    .$hariMenujuJatuhTempo.' hari.',
                 'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
                 'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
             ];
@@ -555,8 +577,8 @@ class PeminjamanController extends Controller
         return [
             'boleh' => true,
             'kode' => 'boleh',
-            'pesan' => 'Dapat diperpanjang selama ' . self::PERIODE_PERPANJANGAN_HARI
-                . ' hari sampai ' . $tanggalJatuhTempoBaru->format('d-m-Y') . '.',
+            'pesan' => 'Dapat diperpanjang selama '.self::PERIODE_PERPANJANGAN_HARI
+                .' hari sampai '.$tanggalJatuhTempoBaru->format('d-m-Y').'.',
             'tanggal_jatuh_tempo_baru' => $tanggalJatuhTempoBaru,
             'hari_menuju_jatuh_tempo' => $hariMenujuJatuhTempo,
         ];
@@ -584,11 +606,11 @@ class PeminjamanController extends Controller
 
         if ($pengembalianDenda) {
             return 'Perpanjangan ditolak karena anggota masih memiliki denda Rp '
-                . number_format((int) $pengembalianDenda->total_denda, 0, ',', '.')
-                . ' pada peminjaman ' . $pengembalianDenda->kode_peminjaman
-                . ' (item ' . $pengembalianDenda->id_item . ', tanggal pengembalian '
-                . Carbon::parse($pengembalianDenda->tanggal_pengembalian)->format('d-m-Y')
-                . '). Selesaikan denda terlebih dahulu.';
+                .number_format((int) $pengembalianDenda->total_denda, 0, ',', '.')
+                .' pada peminjaman '.$pengembalianDenda->kode_peminjaman
+                .' (item '.$pengembalianDenda->id_item.', tanggal pengembalian '
+                .Carbon::parse($pengembalianDenda->tanggal_pengembalian)->format('d-m-Y')
+                .'). Selesaikan denda terlebih dahulu.';
         }
 
         $peminjamanTerlambat = Peminjaman::where('id_anggota', $anggota->id_anggota)
@@ -597,7 +619,7 @@ class PeminjamanController extends Controller
             ->orderBy('tanggal_jatuh_tempo')
             ->first();
 
-        if (!$peminjamanTerlambat) {
+        if (! $peminjamanTerlambat) {
             return null;
         }
 
@@ -605,10 +627,10 @@ class PeminjamanController extends Controller
         $hariTerlambat = (int) $tanggalJatuhTempo->diffInDays(Carbon::today(), false);
 
         return 'Perpanjangan ditolak karena anggota memiliki peminjaman terlambat '
-            . $peminjamanTerlambat->kode_peminjaman . ' (item '
-            . $peminjamanTerlambat->id_item . ') yang jatuh tempo pada '
-            . $tanggalJatuhTempo->format('d-m-Y') . ' dan sudah terlambat '
-            . $hariTerlambat . ' hari. Kembalikan buku atau selesaikan denda terlebih dahulu.';
+            .$peminjamanTerlambat->kode_peminjaman.' (item '
+            .$peminjamanTerlambat->id_item.') yang jatuh tempo pada '
+            .$tanggalJatuhTempo->format('d-m-Y').' dan sudah terlambat '
+            .$hariTerlambat.' hari. Kembalikan buku atau selesaikan denda terlebih dahulu.';
     }
 
     private function ambilPeriodePeminjaman(Anggota $anggota, ItemBuku $itemBuku): int
@@ -733,6 +755,7 @@ class PeminjamanController extends Controller
 
         if ($filter === 'hari_ini') {
             $query->whereDate($kolom, $hariIni->toDateString());
+
             return;
         }
 
@@ -740,6 +763,7 @@ class PeminjamanController extends Controller
             $query
                 ->whereDate($kolom, '>=', $hariIni->copy()->subDays(6)->toDateString())
                 ->whereDate($kolom, '<=', $hariIni->toDateString());
+
             return;
         }
 
@@ -758,7 +782,7 @@ class PeminjamanController extends Controller
     private function buatKodePeminjaman(): string
     {
         do {
-            $kodePeminjaman = 'PJ' . strtoupper(Str::random(6));
+            $kodePeminjaman = 'PJ'.strtoupper(Str::random(6));
         } while (
             Peminjaman::where(
                 'kode_peminjaman',

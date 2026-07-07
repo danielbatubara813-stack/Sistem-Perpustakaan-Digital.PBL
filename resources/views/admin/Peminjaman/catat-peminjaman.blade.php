@@ -9,11 +9,14 @@
     $kodeItem = old('id_item', request('id_item'));
     $aturanPerpanjangan = $aturanPerpanjangan ?? collect();
     $anggotaMemilikiDenda = (bool) ($anggotaMemilikiDenda ?? false);
+    $anggotaDapatMeminjam = (bool) ($anggotaDapatMeminjam ?? false);
+    $pesanStatusAnggota = $pesanStatusAnggota ?? null;
     $pesanDendaAnggota = $pesanDendaAnggota ?? null;
     $maksimalPeminjamanTercapai = (bool) ($loanPreview['maksimal_tercapai'] ?? false);
     $peminjamanDitutup = (bool) ($loanPreview['peminjaman_ditutup'] ?? false);
     $canStore =
         $anggota &&
+        $anggotaDapatMeminjam &&
         $itemBuku &&
         $itemBuku->status_item === 'Tersedia' &&
         !$peminjamanDitutup &&
@@ -186,6 +189,12 @@
                 </div>
             </div>
 
+            @if (!$anggotaDapatMeminjam)
+                <div class="mb-4 p-4 bg-red-100 rounded text-sm text-red-700">
+                    {{ $pesanStatusAnggota }}
+                </div>
+            @endif
+
             @if ($memberLoans->count())
                 @if ($anggotaMemilikiDenda)
                     <div class="mb-4 p-4 bg-yellow-100 rounded text-sm text-yellow-800">
@@ -349,6 +358,10 @@
             @elseif (!$anggota)
                 <div class="mt-4 p-4 bg-yellow-100 rounded">
                     Pilih anggota terlebih dahulu sebelum menyimpan peminjaman.
+                </div>
+            @elseif (!$anggotaDapatMeminjam)
+                <div class="mt-4 p-4 bg-red-100 rounded text-red-700">
+                    {{ $pesanStatusAnggota }}
                 </div>
             @elseif ($peminjamanDitutup)
                 <div class="mt-4 p-4 bg-yellow-100 rounded">

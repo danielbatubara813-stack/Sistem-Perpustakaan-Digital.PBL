@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
@@ -18,7 +17,13 @@ class AnggotaSeeder extends Seeder
 
             $jenisIdentitas = $faker->randomElement([
                 'NIM',
-                'NIBN'
+                'NIBN',
+            ]);
+
+            $verifikasiAdmin = $faker->randomElement([
+                'Menunggu',
+                'Terverifikasi',
+                'Ditolak',
             ]);
 
             DB::table('anggota')->insert([
@@ -37,27 +42,22 @@ class AnggotaSeeder extends Seeder
 
                 'nama' => $faker->name(),
 
-                'no_hp' => '08' . $faker->numerify('##########'),
+                'no_hp' => '08'.$faker->numerify('##########'),
 
-                'status_anggota' => $faker->randomElement([
-                    'Aktif',
-                    'Tidak Aktif'
-                ]),
+                'status_anggota' => $verifikasiAdmin === 'Terverifikasi'
+                    ? 'Aktif'
+                    : 'Tidak Aktif',
 
                 'jenis_kelamin' => $faker->randomElement([
                     'Laki-Laki',
-                    'Perempuan'
+                    'Perempuan',
                 ]),
 
                 'tanggal_lahir' => $faker->date(),
 
                 'profile' => null,
 
-                'verifikasi_admin' => $faker->randomElement([
-                    'Menunggu',
-                    'Terverifikasi',
-                    'Ditolak'
-                ]),
+                'verifikasi_admin' => $verifikasiAdmin,
 
                 'foto_ktp' => null,
 

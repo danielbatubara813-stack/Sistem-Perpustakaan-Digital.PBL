@@ -4,18 +4,14 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\LupaPasswordController;
 use App\Http\Controllers\Auth\RegisterController;
-
 use App\Http\Controllers\DaftarBukuController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\HubungiKamiController;
-use App\Http\Controllers\Profile\ReservasiController;
-use App\Http\Controllers\TentangController;
-
 use App\Http\Controllers\Profile\PeminjamanController;
 use App\Http\Controllers\Profile\ProfileAnggotaController;
-use App\Mail\PengembalianBukuMail;
-use App\Models\Pengembalian;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Profile\ReservasiController;
+use App\Http\Controllers\TentangController;
+use App\Http\Middleware\EnsureAnggotaAktif;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Pengunjung
@@ -36,7 +32,7 @@ Route::get('/lupa-password', [LupaPasswordController::class, 'tampilForm'])->nam
 Route::post('/lupa-password', [LupaPasswordController::class, 'prosesReset'])->name('lupa-password.proses');
 
 // Route Profile Anggota (hanya anggota yang sudah login)
-Route::middleware('auth:web')->group(function () {
+Route::middleware(['auth:web', EnsureAnggotaAktif::class])->group(function () {
     Route::post('/reservasi/buat', [ReservasiController::class, 'createReservasiSementara'])->name('reservasi-create');
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');

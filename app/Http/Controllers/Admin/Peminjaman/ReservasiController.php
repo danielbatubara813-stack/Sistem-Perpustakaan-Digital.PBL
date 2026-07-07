@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class ReservasiController extends Controller
 {
@@ -31,7 +32,6 @@ class ReservasiController extends Controller
                         });
                 });
             })
-
 
             // filter waktu
             ->when($request->waktu, function ($query) use ($request) {
@@ -60,11 +60,18 @@ class ReservasiController extends Controller
     public function reservasiDisetujui(Request $request)
     {
         try {
-            $reservasi = Reservasi::where('nomor_reservasi', $request->nomor_reservasi)->firstOrFail();
+            $reservasi = Reservasi::with('anggota')
+                ->where('nomor_reservasi', $request->nomor_reservasi)
+                ->firstOrFail();
+
+            if (! $reservasi->anggota || ! $reservasi->anggota->dapatMengaksesLayanan()) {
+                return back()->with('error', $reservasi->anggota?->pesanAksesDitolak() ?? 'Data anggota pada reservasi ini tidak ditemukan.');
+            }
+
             $reservasi->update([
                 'status' => 'Siap Diambil',
                 'tanggal_konfirmasi' => now(),
-                'tanggal_expired' => now()->addDays(2)
+                'tanggal_expired' => now()->addDays(2),
             ]);
 
             return back()->with('success', 'Reservasi berhasil dikonfirmasi');
@@ -83,7 +90,7 @@ class ReservasiController extends Controller
 
             if ($reservasi->id_item) {
                 ItemBuku::where('id_item', $reservasi->id_item)->update([
-                    'status_item' => 'Tersedia'
+                    'status_item' => 'Tersedia',
                 ]);
             }
 
@@ -97,7 +104,28 @@ class ReservasiController extends Controller
     {
         try {
             DB::transaction(function () use ($request) {
-                $reservasi = Reservasi::where('nomor_reservasi', $request->nomor_reservasi)->firstOrFail();
+                $reservasi = Reservasi::with(['anggota', 'itemBuku.buku'])
+                    ->where('nomor_reservasi', $request->nomor_reservasi)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if (! $reservasi->anggota) {
+                    throw ValidationException::withMessages([
+                        'nomor_reservasi' => 'Data anggota pada reservasi ini tidak ditemukan.',
+                    ]);
+                }
+
+                if (! $reservasi->anggota->dapatMengaksesLayanan()) {
+                    throw ValidationException::withMessages([
+                        'nomor_reservasi' => $reservasi->anggota->pesanAksesDitolak(),
+                    ]);
+                }
+
+                if (! $reservasi->itemBuku || ! $reservasi->itemBuku->buku) {
+                    throw ValidationException::withMessages([
+                        'nomor_reservasi' => 'Data item buku pada reservasi ini tidak lengkap.',
+                    ]);
+                }
 
                 $aturan = AturanPeminjaman::where(function ($q) use ($reservasi) {
                     $q->where('id_jenis', $reservasi->anggota->id_jenis)->orWhereNull('id_jenis');
@@ -105,8 +133,10 @@ class ReservasiController extends Controller
                     $q->where('id_tipe', $reservasi->itemBuku->buku->id_tipe)->orWhereNull('id_tipe');
                 })->first();
 
-                if (!$aturan) {
-                    return back()->with('error', 'Aturan peminjaman belum tersedia');
+                if (! $aturan) {
+                    throw ValidationException::withMessages([
+                        'nomor_reservasi' => 'Aturan peminjaman belum tersedia.',
+                    ]);
                 }
 
                 // cek jumlah pinjaman aktif
@@ -114,7 +144,9 @@ class ReservasiController extends Controller
                     ->where('status', 'Dipinjam')->count();
 
                 if ($jumlahPinjam >= $aturan->batas_peminjaman) {
-                    return back()->with('error', 'Melebihi batas peminjaman');
+                    throw ValidationException::withMessages([
+                        'nomor_reservasi' => 'Melebihi batas peminjaman.',
+                    ]);
                 }
 
                 // buat peminjaman
@@ -124,20 +156,23 @@ class ReservasiController extends Controller
                     'id_item' => $reservasi->id_item,
                     'tanggal_peminjaman' => now(),
                     'tanggal_jatuh_tempo' => now()->addDays($aturan->periode_peminjaman),
-                    'status' => 'Dipinjam'
+                    'status' => 'Dipinjam',
                 ]);
 
                 $reservasi->update([
                     'status' => 'Selesai',
-                    'tanggal_selesai' => now()
+                    'tanggal_selesai' => now(),
                 ]);
 
                 $reservasi->itemBuku->update([
-                    'status_item' => 'Dipinjam'
+                    'status_item' => 'Dipinjam',
                 ]);
 
             });
+
             return back()->with('success', 'Reservasi berhasil dibuat menjadi peminjaman');
+        } catch (ValidationException $e) {
+            return back()->with('error', collect($e->errors())->flatten()->implode(' '));
         } catch (Exception $e) {
             return back()->with('error', 'Reservasi gagal dibuat menjadi peminjaman');
         }
@@ -146,7 +181,7 @@ class ReservasiController extends Controller
     private function buatKodePeminjaman(): string
     {
         do {
-            $kodePeminjaman = 'PJ' . strtoupper(Str::random(6));
+            $kodePeminjaman = 'PJ'.strtoupper(Str::random(6));
         } while (
             Peminjaman::where(
                 'kode_peminjaman',

@@ -9,6 +9,16 @@ class Anggota extends Authenticatable
 {
     use Notifiable;
 
+    public const STATUS_AKTIF = 'Aktif';
+
+    public const STATUS_TIDAK_AKTIF = 'Tidak Aktif';
+
+    public const VERIFIKASI_MENUNGGU = 'Menunggu';
+
+    public const VERIFIKASI_TERVERIFIKASI = 'Terverifikasi';
+
+    public const VERIFIKASI_DITOLAK = 'Ditolak';
+
     protected $table = 'anggota';
 
     protected $primaryKey = 'id_anggota';
@@ -32,16 +42,40 @@ class Anggota extends Authenticatable
         'tanggal_diubah',
         'password',
     ];
+
     public function getFotoProfileUrlAttribute()
     {
         if ($this->profile) {
-            return asset('storage/' . $this->profile);
+            return asset('storage/'.$this->profile);
         }
 
         return asset('images/default-avatar.svg');
     }
 
     protected $hidden = ['password'];
+
+    public function dapatMengaksesLayanan(): bool
+    {
+        return $this->status_anggota === self::STATUS_AKTIF
+            && $this->verifikasi_admin === self::VERIFIKASI_TERVERIFIKASI;
+    }
+
+    public function pesanAksesDitolak(): string
+    {
+        if ($this->verifikasi_admin === self::VERIFIKASI_MENUNGGU) {
+            return 'Akun anggota sedang menunggu verifikasi admin.';
+        }
+
+        if ($this->verifikasi_admin === self::VERIFIKASI_DITOLAK) {
+            return 'Akun anggota ditolak oleh admin dan statusnya tidak aktif.';
+        }
+
+        if ($this->status_anggota !== self::STATUS_AKTIF) {
+            return 'Akun anggota tidak aktif.';
+        }
+
+        return 'Akun anggota belum dapat mengakses layanan.';
+    }
 
     public function jenisKeanggotaan()
     {
@@ -54,7 +88,6 @@ class Anggota extends Authenticatable
 
     public function peminjaman()
     {
-    return $this->hasMany(Peminjaman::class, 'id_anggota', 'id_anggota');
+        return $this->hasMany(Peminjaman::class, 'id_anggota', 'id_anggota');
     }
-
 }
