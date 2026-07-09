@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Profile;
 
+use App\Http\Controllers\Admin\Peminjaman\PeminjamanController as AdminPeminjamanController;
 use App\Http\Controllers\Controller;
 use App\Models\Anggota;
 use App\Models\Peminjaman;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 
@@ -69,7 +71,7 @@ class PeminjamanController extends Controller
         $user = Auth::guard('web')->user();
 
         $peminjaman = Peminjaman::where('id_anggota', $user->id_anggota)
-            ->where('status', '!=', ['Dikembalikan', 'Terlambat'])
+            ->where('status', 'Dipinjam')
             ->with([
                 'itemBuku.buku.penulis',
             ])
@@ -79,6 +81,23 @@ class PeminjamanController extends Controller
         return view('profile.peminjaman-sekarang', $this->getProfileData())
             ->with('peminjaman', $peminjaman)
             ->with('totalAktif', $peminjaman->count());
+    }
+
+    public function perpanjang(Request $request, string $kodePeminjaman)
+    {
+        $user = Auth::guard('web')->user();
+
+        $milikAnggota = Peminjaman::where('kode_peminjaman', $kodePeminjaman)
+            ->where('id_anggota', $user->id_anggota)
+            ->exists();
+
+        if (! $milikAnggota) {
+            return redirect()
+                ->back()
+                ->with('error', 'Data peminjaman tidak ditemukan.');
+        }
+
+        return app(AdminPeminjamanController::class)->perpanjang($request, $kodePeminjaman);
     }
 
     public function sejarahPeminjamanPage()

@@ -36,6 +36,7 @@ Route::middleware(['auth:web', EnsureAnggotaAktif::class])->group(function () {
     Route::post('/reservasi/buat', [ReservasiController::class, 'createReservasiSementara'])->name('reservasi-create');
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/peminjaman-sekarang', [PeminjamanController::class, 'peminjamanSekarangPage'])->name('peminjaman-sekarang-page');
+        Route::post('/peminjaman-sekarang/{kodePeminjaman}/perpanjang', [PeminjamanController::class, 'perpanjang'])->name('peminjaman.perpanjang');
         Route::get('/sejarah-peminjaman', [PeminjamanController::class, 'sejarahPeminjamanPage'])->name('sejarah-peminjaman-page');
         Route::get('/akun-saya', [ProfileAnggotaController::class, 'akunSayaPage'])->name('akun-saya-page');
         Route::post('/akun-saya/update', [ProfileAnggotaController::class, 'updateProfile'])->name('akun-saya.update');                    // ✅ updateProfile
