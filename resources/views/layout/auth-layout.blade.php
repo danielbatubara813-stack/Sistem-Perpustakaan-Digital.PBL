@@ -28,8 +28,7 @@
                 <div class="flex items-start justify-between">
                     <div class="flex items-center gap-3">
                         <img class="w-16 h-16 rounded-md p-1 object-contain"
-                            src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
-                            alt="Logo Polibatam" />
+                            src="{{ asset('static/Logo_Website.png') }}" alt="Logo Libratech" />
                         <div class="leading-none text-white flex flex-col justify-center">
                             <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Libratech</h1>
                             <h1 class="poppins font-extrabold text-lg lg:text-xl tracking-wide m-0">Perpustakaan Digital

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Buku;
 use App\Models\Anggota;
+use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
 {
@@ -43,7 +44,13 @@ class HomeController extends Controller
 
         $penikmat_koleksi = Anggota::with('jenisKeanggotaan')
             ->withCount('peminjaman')
-            ->orderByDesc('peminjaman_count')
+            ->addSelect([
+                'total_buku' => DB::table('peminjaman')
+                    ->join('item_buku', 'item_buku.id_item', '=', 'peminjaman.id_item')
+                    ->whereColumn('peminjaman.id_anggota', 'anggota.id_anggota')
+                    ->selectRaw('COUNT(DISTINCT item_buku.id_buku)')
+            ])
+            ->orderByDesc('total_buku')
             ->take(3)
             ->get();
 

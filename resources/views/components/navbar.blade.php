@@ -7,9 +7,8 @@
 
         {{-- Brand --}}
         <div class="flex items-center gap-3">
-            <img class="w-10 h-10 bg-white rounded-md p-1"
-                src="https://upload.wikimedia.org/wikipedia/id/thumb/2/2c/Politeknik_Negeri_Batam.png/1280px-Politeknik_Negeri_Batam.png"
-                alt="Logo Digital" />
+            <img class="w-10 h-10 bg-white rounded-md p-1" src="{{ asset('static/Logo_Website.png') }}"
+                alt="Logo Libratech" />
             <div class="leading-tight">
                 <h1 class="uppercase poppins font-bold text-lg lg:text-2xl text-white tracking-wide">Libratech</h1>
                 <p class="poppins text-xs text-blue-200">Perpustakaan Digital</p>

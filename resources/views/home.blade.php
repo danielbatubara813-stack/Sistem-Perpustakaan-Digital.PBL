@@ -108,14 +108,16 @@
                 @foreach ($penikmat_koleksi as $akun)
                     <div
                         class="bg-white rounded-md p-4 border border-gray-300 grid grid-cols-3 gap-4 hover:scale-105 hover:shadow-md transition-all duration-300">
-                        <img class="aspect-square object-cover object-top rounded-full"
-                            src="{{ $akun->profile ? $akun->profile : asset('static/profileDefault.jpg') }}"
+                        <img class="w-36 aspect-square object-cover object-top rounded-full"
+                            src="{{ $akun->profile ? asset('storage/' . $akun->profile) : asset('static/profileDefault.jpg') }}"
                             alt="">
                         <div class="col-span-2 flex justify-between flex-col">
-                            <h4 class="text-2xl font-bold uppercase mb-0">{{ $akun->nama }}</h4>
-                            <h4 class="text-sm">{{ $akun->jenis_keanggotaan }}</h4>
+                            <div>
+                                <h4 class="text-2xl font-bold uppercase mb-0">{{ $akun->nama }}</h4>
+                                <h4 class="text-sm">{{ $akun->jenisKeanggotaan->nama_jenis }}</h4>
+                            </div>
                             <div class="flex justify-evenly items-center border border-black rounded-md">
-                                <p class="p-2 text-nowrap">{{ $akun->total_peminjaman }} Pinjam</p>
+                                <p class="p-2 text-nowrap">{{ $akun->peminjaman_count }} Pinjam</p>
                                 <div class="h-full w-px bg-black"></div>
                                 <p class="p-2">{{ $akun->total_buku }} Judul</p>
                             </div>
