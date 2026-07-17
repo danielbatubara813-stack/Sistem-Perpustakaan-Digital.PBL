@@ -20,28 +20,46 @@
         </div>
 
         @forelse ($peminjaman as $item)
+            @php
+                $sudahDiperpanjang = !empty($item->tanggal_perpanjangan);
+            @endphp
             <div
                 class="border border-gray-300 p-4 rounded-xl transition-all duration-300 ease-in-out hover:shadow-md bg-white">
-                <a href="{{ route('detail-buku-page', $item->itemBuku->buku->id_buku) }}">
+                {{-- MOBILE CARD --}}
+                <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 lg:gap-2">
 
-                    {{-- MOBILE CARD --}}
-                    <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 lg:gap-2">
-
-                        {{-- Book Cover --}}
-                        <div class="w-full flex justify-center items-start">
+                    {{-- Book Cover --}}
+                    <div class="w-full flex flex-col items-center gap-3">
+                        <a href="{{ route('detail-buku-page', $item->itemBuku->buku->id_buku) }}">
                             <img src="{{ $item->itemBuku->buku->cover_buku &&
                             Storage::disk('public')->exists('covers/' . $item->itemBuku->buku->cover_buku)
                                 ? asset('storage/covers/' . $item->itemBuku->buku->cover_buku)
                                 : asset('static/bookcover.png') }}"
                                 class="w-28 lg:w-36 aspect-[1/1.6] rounded-lg lg:rounded-md object-cover border border-gray-300 shadow-sm lg:shadow-md"
                                 alt="{{ $item->itemBuku->buku->judul_buku }}">
-                        </div>
+                        </a>
 
-                        {{-- Book Info --}}
-                        <div class="col-span-1 lg:col-span-3 space-y-3 lg:space-y-4">
+                        @if (!$sudahDiperpanjang)
+                            <form
+                                action="{{ route('profile.peminjaman.perpanjang', $item->kode_peminjaman) }}"
+                                method="POST" class="w-28 lg:w-36">
+                                @csrf
+                                <button type="submit" title="Perpanjang peminjaman"
+                                    class="inline-flex w-full items-center justify-center rounded-md bg-blue-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-200">
+                                    Perpanjang
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
+                    {{-- Book Info --}}
+                    <div class="col-span-1 lg:col-span-3 space-y-3 lg:space-y-4">
+                        <a href="{{ route('detail-buku-page', $item->itemBuku->buku->id_buku) }}"
+                            class="block hover:text-blue-700 transition">
                             <h4 class="font-bold text-lg lg:text-xl line-clamp-2 lg:line-clamp-none">
                                 {{ $item->itemBuku->buku->judul_buku }}
                             </h4>
+                        </a>
 
                             <button class="text-sm flex gap-2 items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
@@ -116,7 +134,7 @@
                             <div class="lg:text-end">
                                 <h4 class="text-xs lg:text-sm text-gray-500">Tanggal Peminjaman</h4>
                                 <h6 class="font-bold text-sm lg:text-base">
-                                    {{ \Carbon\Carbon::parse($item->tanggal)->translatedFormat('l, d M Y') }}
+                                    {{ \Carbon\Carbon::parse($item->tanggal_peminjaman)->translatedFormat('l, d M Y') }}
                                 </h6>
                             </div>
                             <div class="lg:text-end">
@@ -128,7 +146,6 @@
                         </div>
 
                     </div>
-                </a>
 
             </div>
         @empty
