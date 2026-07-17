@@ -1,4 +1,5 @@
 @extends('layout.auth-layout')
+@section('title', 'Login')
 @section('content')
     <div class="flex items-center justify-center flex-col w-full h-full">
         <h2 class="text-3xl font-extrabold text-black text-center mb-2">Selamat Datang!</h2>
@@ -53,7 +54,7 @@
 
                 @if (!Route::is('admin.login-page'))
                     <div class="text-right mt-2">
-                        <a href="{{ route('verifikasi-email') }}"
+                        <a href="{{ route('password.request') }}"
                             class="text-[11px] font-bold text-gray-800 hover:text-blue-800 transition-colors">
                             Lupa kata sandi?
                         </a>

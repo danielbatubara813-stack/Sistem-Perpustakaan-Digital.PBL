@@ -1,4 +1,5 @@
 @extends('layout.auth-layout')
+@section('title', 'Reset Password')
 @section('content')
     <div class="flex items-center justify-center flex-col w-full h-full">
         <div class="text-start w-full lg:w-3/4">
@@ -16,9 +17,20 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('lupa-password.proses') }}" class="space-y-6 w-full lg:w-3/4">
+        <form method="POST" action="{{ route('password.update') }}" class="space-y-6 w-full lg:w-3/4">
+            @if ($errors->any())
+                <div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             @csrf
-
+            @method('POST')
+            <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="email" value="{{ $email }}">
             <!-- Kata Sandi Baru -->
             <div class="space-y-2 text-start">
                 <label class="flex items-center gap-2 text-xs font-bold text-black">
@@ -29,11 +41,8 @@
                     </svg>
                     Kata Sandi Baru
                 </label>
-                <input type="password" name="kata_sandi_baru" placeholder="Masukkan kata sandi baru"
-                    class="w-full px-4 py-3 border @error('kata_sandi_baru') border-red-500 @else 'border-gray-400' @enderror rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
-                @error('kata_sandi_baru')
-                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
-                @enderror
+                <input type="password" name="password" placeholder="Masukkan kata sandi baru"
+                    class="w-full px-4 py-3 border @error('password') border-red-500 @else 'border-gray-400' @enderror rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
             </div>
 
             <!-- Konfirmasi Kata Sandi -->
@@ -46,11 +55,8 @@
                     </svg>
                     Konfirmasi Kata Sandi Baru
                 </label>
-                <input type="password" name="konfirmasi_kata_sandi" placeholder="Ulangi kata sandi baru"
-                    class="w-full px-4 py-3 border @error('konfirmasi_kata_sandi') border-red-500 @else 'border-gray-400' @enderror rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
-                @error('konfirmasi_kata_sandi')
-                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
-                @enderror
+                <input type="password" name="password_confirmation" placeholder="Ulangi kata sandi baru"
+                    class="w-full px-4 py-3 border @error('password_confirmation') border-red-500 @else 'border-gray-400' @enderror rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
             </div>
 
             @if (session('error'))

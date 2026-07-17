@@ -1,4 +1,5 @@
 @extends('layout.auth-layout')
+@section('title', 'Verifikasi Email')
 @section('content')
     <div class="flex items-center justify-center flex-col w-full h-full">
         <div class="text-start w-full lg:w-3/4">
@@ -16,10 +17,19 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('lupa-password.proses') }}" class="space-y-6 w-full lg:w-3/4">
+        <form method="POST" action="{{ route('password.email') }}" class="space-y-6 w-full lg:w-3/4">
             @csrf
-
+            @method('POST')
             <!-- Email -->
+            @if ($errors->any())
+                <div class="w-full bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    <ul class="list-disc list-inside text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="space-y-2 text-start">
                 <label class="flex items-center gap-2 text-xs font-bold text-black">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -31,9 +41,6 @@
                 </label>
                 <input type="email" name="email" value="{{ old('email') }}" placeholder="Masukkan email anda"
                     class="w-full px-4 py-3 border @error('email') border-red-400 @else 'border-gray-400' @enderror rounded-[10px] focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent text-sm transition-all">
-                @error('email')
-                    <p class="text-red-500 text-xs mt-1 font-medium">{{ $message }}</p>
-                @enderror
             </div>
 
             @if (session('error'))

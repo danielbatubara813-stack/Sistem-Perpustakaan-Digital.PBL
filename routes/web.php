@@ -22,14 +22,21 @@ Route::get('/hubungi-kami', [HubungiKamiController::class, 'hubungiKamiPage'])->
 Route::post('/hubungi-kami/kirim-pesan', [HubungiKamiController::class, 'kirimPesan'])->name('kirim-pesan');
 Route::get('/tentang', [TentangController::class, 'tentangPage'])->name('tentang-page');
 
-// Auth Anggota (hanya untuk yang belum login)
 Route::get('/login', [LoginController::class, 'login'])->name('login-page');
 Route::post('/login', [LoginController::class, 'proses'])->name('login.proses');
+
 Route::get('/register', [RegisterController::class, 'register'])->name('register-page');
 Route::post('/register', [RegisterController::class, 'prosesRegister']);
-Route::get('/verifikasi-email', [LupaPasswordController::class, 'verifikasiEmail'])->name('verifikasi-email');
-Route::get('/lupa-password', [LupaPasswordController::class, 'tampilForm'])->name('lupa-password.tampil');
-Route::post('/lupa-password', [LupaPasswordController::class, 'prosesReset'])->name('lupa-password.proses');
+
+Route::get('/lupa-password', [LupaPasswordController::class, 'verifikasiEmail'])
+    ->name('password.request');
+Route::post('/lupa-password', [LupaPasswordController::class, 'checkVerifikasiEmail'])
+    ->name('password.email');
+
+Route::get('/reset-password/{token}', [LupaPasswordController::class, 'showResetPassword'])
+    ->name('password.reset');
+Route::post('/reset-password', [LupaPasswordController::class, 'prosesReset'])
+    ->name('password.update');
 
 // Route Profile Anggota (hanya anggota yang sudah login)
 Route::middleware(['auth:web', EnsureAnggotaAktif::class])->group(function () {

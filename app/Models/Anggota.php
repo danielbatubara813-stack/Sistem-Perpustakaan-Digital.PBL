@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
-class Anggota extends Authenticatable
+class Anggota extends Authenticatable implements CanResetPasswordContract
 {
     use Notifiable;
-
+    use CanResetPassword;
     public const STATUS_AKTIF = 'Aktif';
 
     public const STATUS_TIDAK_AKTIF = 'Tidak Aktif';
@@ -46,7 +48,7 @@ class Anggota extends Authenticatable
     public function getFotoProfileUrlAttribute()
     {
         if ($this->profile) {
-            return asset('storage/'.$this->profile);
+            return asset('storage/' . $this->profile);
         }
 
         return asset('images/default-avatar.svg');
