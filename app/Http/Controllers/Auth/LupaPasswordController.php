@@ -30,19 +30,32 @@ class LupaPasswordController extends Controller
             'email.exists' => 'Email tidak ditemukan.',
         ]);
 
+        // Ambil data anggota berdasarkan email
         $anggota = Anggota::where('email', $request->email)->first();
 
+        // Cek apakah akun sudah aktif
+        if ($anggota->status_anggota !== 'Aktif') {
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'email' => 'Akun Anda belum terverifikasi. Silakan verifikasi akun terlebih dahulu.'
+                ]);
+        }
+
+        // Generate token
         $token = Password::broker('anggota')->createToken($anggota);
 
+        // Buat URL reset password
         $url = route('password.reset', [
             'token' => $token,
             'email' => $anggota->email,
         ]);
 
+        // Kirim email
         Mail::to($anggota->email)
             ->send(new ResetPasswordMail($anggota, $url));
 
-        return redirect()->back()->with(
+        return back()->with(
             'success',
             'Link reset password berhasil dikirim ke email Anda.'
         );
