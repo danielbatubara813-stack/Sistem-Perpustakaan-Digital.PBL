@@ -13,6 +13,12 @@ class AturanPeminjamanSeeder extends Seeder
         DB::table('aturan_peminjaman')->insert([
 
             [
+                'id_jenis' => null,
+                'id_tipe' => null,
+                'periode_peminjaman' => 7,
+                'batas_peminjaman' => 2,
+            ],
+            [
                 'id_jenis' => 1,
                 'id_tipe' => 1,
                 'periode_peminjaman' => 7,

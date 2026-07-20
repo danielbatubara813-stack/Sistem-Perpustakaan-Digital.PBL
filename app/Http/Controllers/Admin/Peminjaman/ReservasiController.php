@@ -47,7 +47,6 @@ class ReservasiController extends Controller
                     $query->whereBetween('tanggal_diajukan', [now()->subDays(30), now()]);
                 }
             })
-
             // filter status
             ->when($request->status, function ($query) use ($request) {
                 $query->where('status', $request->status);

@@ -41,6 +41,7 @@ class DatabaseSeeder extends Seeder
             
             // Reservasi
             // ReservasiSeeder::class,
+            ReservasiTestSeeder::class,
             PeminjamanSeederTambahan::class,
         ]);
     }

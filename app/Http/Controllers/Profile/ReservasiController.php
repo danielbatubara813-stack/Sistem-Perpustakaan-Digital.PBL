@@ -102,25 +102,42 @@ class ReservasiController extends Controller
 
             foreach ($reservasi as $data) {
                 // ambil aturan
-                $aturan = AturanPeminjaman::where('id_jenis', $data->anggota->id_jenis)
-                    ->where(function ($q) use ($data) {
-                        $q->where('id_tipe', $data->buku->id_tipe)
+                $aturan = AturanPeminjaman::where(function ($query) use ($data) {
+                    $query->where('id_jenis', $data->anggota->id_jenis)
+                        ->orWhereNull('id_jenis');
+                })
+                    ->where(function ($query) use ($data) {
+                        $query->where('id_tipe', $data->buku->id_tipe)
                             ->orWhereNull('id_tipe');
-                    })->first();
-                if (!$aturan) {
-                    return back()->with('error', 'Aturan peminjaman belum tersedia');
-                }
+                    })
+                    ->orderByRaw("
+                            CASE
+                                WHEN id_jenis IS NOT NULL AND id_tipe IS NOT NULL THEN 1
+                                WHEN id_jenis IS NOT NULL AND id_tipe IS NULL THEN 2
+                                WHEN id_jenis IS NULL AND id_tipe IS NOT NULL THEN 3
+                                ELSE 4
+                            END
+                    ")
+                    ->first();
+
+                // Jika tidak ada aturan sama sekali, gunakan default
+                $batasPeminjaman = $aturan?->batas_peminjaman ?? 2;
 
                 // cek jumlah buku dipinjam
                 $jumlahPinjam = Peminjaman::where('id_anggota', $data->id_anggota)
-                    ->where('status', 'Dipinjam')->count();
+                    ->where('status', 'Dipinjam')
+                    ->count();
 
                 // cek reservasi aktif
                 $jumlahReservasi = Reservasi::where('id_anggota', $data->id_anggota)
-                    ->whereIn('status', ['Menunggu Konfirmasi', 'Menunggu Antrian', 'Siap Diambil'])
+                    ->whereIn('status', [
+                        'Menunggu Konfirmasi',
+                        'Menunggu Antrian',
+                        'Siap Diambil'
+                    ])
                     ->count();
 
-                if (($jumlahPinjam + $jumlahReservasi) >= $aturan->batas_peminjaman) {
+                if (($jumlahPinjam + $jumlahReservasi) >= $batasPeminjaman) {
                     return back()->with('error', 'Anggota sudah mencapai batas peminjaman');
                 }
 
@@ -156,7 +173,7 @@ class ReservasiController extends Controller
     public function daftarReservasi()
     {
         $user = Auth::guard('web')->user();
-        $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '!=', 'Menunggu')->whereHas('anggota', function ($q) use ($user) {
+        $reservasi = Reservasi::with(['anggota', 'buku'])->whereHas('anggota', function ($q) use ($user) {
             $q->where('id_anggota', '=', $user->id_anggota);
         })->paginate(10);
         return view('profile.daftar-reservasi', compact('reservasi'));
