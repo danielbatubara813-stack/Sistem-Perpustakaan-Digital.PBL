@@ -19,7 +19,7 @@ class ReservasiController extends Controller
         $user = Auth::guard('web')->user();
         $reservasi = Reservasi::with(['anggota', 'buku'])->where('status', '=', 'Draft')->where('tanggal_diajukan', '!=', null)->orderBy('tanggal_diajukan', 'ASC')->whereHas('anggota', function ($q) use ($user) {
             $q->where('id_anggota', '=', $user->id_anggota);
-        })->paginate(10);
+        })->get();
 
         // dd($reservasi);
         return view('profile.reservasi', compact('reservasi'));
@@ -175,7 +175,7 @@ class ReservasiController extends Controller
         $user = Auth::guard('web')->user();
         $reservasi = Reservasi::with(['anggota', 'buku'])->whereHas('anggota', function ($q) use ($user) {
             $q->where('id_anggota', '=', $user->id_anggota);
-        })->paginate(10);
+        })->paginate(5);
         return view('profile.daftar-reservasi', compact('reservasi'));
     }
 

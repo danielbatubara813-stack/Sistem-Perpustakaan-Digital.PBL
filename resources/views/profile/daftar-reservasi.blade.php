@@ -23,12 +23,15 @@
                 <div
                     class="border border-gray-300 p-4 rounded-xl transition-all duration-300 ease-in-out hover:shadow-md bg-white">
                     <a href="{{ route('detail-buku-page', $item->buku->id_buku) }}">
-
+                        <div class="my-2 flex items-center gap-4 font-bold text-sm">
+                            <h6>Nomor Reservasi:</h6>
+                            <h6>{{ $item->nomor_reservasi }}</h6>
+                        </div>
                         {{-- MOBILE CARD --}}
                         <div class="grid grid-cols-1 lg:grid-cols-6 gap-4 lg:gap-2">
 
                             {{-- Book Cover --}}
-                            <div class="w-full flex justify-center items-center">
+                            <div class="w-full flex flex-col justify-center items-center">
                                 <img src="{{ $item->buku->cover_buku && Storage::disk('public')->exists('covers/' . $item->buku->cover_buku)
                                     ? asset('storage/covers/' . $item->buku->cover_buku)
                                     : asset('static/bookcover.png') }}"
@@ -41,17 +44,6 @@
                                 <h4 class="font-bold text-lg lg:text-xl line-clamp-2 lg:line-clamp-none">
                                     {{ $item->buku->judul_buku }}
                                 </h4>
-
-                                <button class="text-sm flex gap-2 items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
-                                        <path d="m21.854 2.147-10.94 10.939" />
-                                    </svg>
-                                    Bagikan
-                                </button>
 
                                 <div class="flex flex-wrap gap-2">
                                     @foreach ($item->buku->penulis as $data_penulis)
@@ -84,7 +76,43 @@
                             <div
                                 class="col-span-1 lg:col-span-2 flex flex-col lg:items-end gap-3 lg:gap-4 pt-2 lg:pt-0 border-t lg:border-t-0 border-gray-200">
 
-                                @if (in_array($item->status, ['Ditolak', 'Dibatalkan']))
+                                @if (in_array($item->status, ['Menunggu Konfirmasi', 'Siap Diambil']))
+                                    <div
+                                        class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-blue-600 bg-blue-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-blue-600 rounded-full text-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" x2="12" y1="8" y2="12" />
+                                            <line x1="12" x2="12.01" y1="16" y2="16" />
+                                        </svg>
+                                        <span>{{ $item->status }}</span>
+                                    </div>
+                                @elseif ($item->status == 'Selesai')
+                                    <div
+                                        class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-green-600 bg-green-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-green-600 rounded-full text-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" x2="12" y1="8" y2="12" />
+                                            <line x1="12" x2="12.01" y1="16" y2="16" />
+                                        </svg>
+                                        <span>{{ $item->status }}</span>
+                                    </div>
+                                @elseif ($item->status == 'Menunggu Antrian')
+                                    <div
+                                        class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-yellow-600 bg-yellow-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-yellow-600 rounded-full text-nowrap">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <line x1="12" x2="12" y1="8" y2="12" />
+                                            <line x1="12" x2="12.01" y1="16" y2="16" />
+                                        </svg>
+                                        <span>{{ $item->status }}</span>
+                                    </div>
+                                @elseif (in_array($item->status, ['Ditolak', 'Kadaluarsa', 'Dibatalkan']))
                                     <div
                                         class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-red-600 bg-red-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-red-600 rounded-full text-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
@@ -96,9 +124,9 @@
                                         </svg>
                                         <span>{{ $item->status }}</span>
                                     </div>
-                                @else
+                                @elseif ($item->status == 'Draft')
                                     <div
-                                        class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-blue-600 bg-blue-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-blue-600 rounded-full text-nowrap">
+                                        class="w-max flex items-center justify-center gap-2 lg:gap-4 border border-gray-600 bg-gray-600/15 px-4 lg:px-6 py-2 text-xs lg:text-sm font-medium text-gray-600 rounded-full text-nowrap">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                             stroke-linecap="round" stroke-linejoin="round">

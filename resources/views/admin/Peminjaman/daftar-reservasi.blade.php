@@ -151,10 +151,6 @@
                                         <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700">
                                             {{ $item->status }}
                                         </span>
-                                    @elseif ($item->status == 'Draft')
-                                        <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700">
-                                            {{ $item->status }}
-                                        </span>
                                     @endif
                                 </td>
 

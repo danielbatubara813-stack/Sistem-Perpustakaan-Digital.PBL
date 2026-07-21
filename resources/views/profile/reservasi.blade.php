@@ -4,7 +4,7 @@
 @section('content')
     <div class="w-full flex flex-col gap-4 p-4">
         @if (count($reservasi) > 0)
-            <form action="{{ route('profile.reservasi-ajukan') }}" method="POST">
+            <form action="{{ route('profile.reservasi-ajukan') }}" class="space-y-4" method="POST">
                 @csrf
                 @method('POST')
                 @foreach ($reservasi as $item)
