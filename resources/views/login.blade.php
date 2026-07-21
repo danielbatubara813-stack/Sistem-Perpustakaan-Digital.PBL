@@ -82,6 +82,11 @@
                     Masuk
                 </button>
             </div>
+            <div class="text-center text-xs font-bold text-black">
+                Belum punya akun?
+                <a href="{{ route('register-page') }}"
+                    class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">Daftar Sekarang</a>
+            </div>
 
         </form>
         <!-- End Form -->
